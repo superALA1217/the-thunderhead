@@ -941,7 +941,7 @@ client.on("message", async message => {
           "```css\n/ask [Question]```"
       )
       .setFooter(
-        "You can't use ban and kick if you can't ban or kick. Scroll by reacting `<` and `>.`"
+        "You can't use ban and kick if you can't ban or kick. Scroll by reacting < and >."
       );
     var MusicHelpEmbed = new Discord.RichEmbed()
       .setColor("482f95")
