@@ -1,6 +1,6 @@
 {
   "name": "Thunderhead",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "The Thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.",
   "main": "node server.js",
   "author": "Skrub#2280",
@@ -19,7 +19,7 @@
     "fs": "^0.0.2",
     "weather-js": "^2.0.0",
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
-    "express-fileupload": "1.1.6",
+    "express-fileupload": "^1.1.6",
     "node-opus": "^0.3.2",
     "simple-youtube-api": "^5.2.1",
     "ytdl-core": "^1.0.3",
@@ -29,7 +29,8 @@
     "request": "2.88.0",
     "windows-build-tools": "^5.2.2",
     "canvas": "^2.6.1",
-    "sqlite": "^4.1.0",
-    "sequelize": "^6.0.0"
+    "sqlite": "^3.0.3",
+    "sequelize": "^6.0.0",
+    "bad-words": "^3.0.3"
   }
 }
