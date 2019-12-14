@@ -1,6 +1,10 @@
-//add 1 question only
-//ULTRA lo - fi
-//oh yeah, add progress bar to the command with  ctx
+//TODO (Back Burner) 
+/*
+I *could* add a "one question only" system.
+That being said, I REALLY don't wanna make another json file
+another question another time, perhaps.
+*/
+//Add progress bar to the command with ctx - Whats the point?
 "use strict";
 
 //Configuration
@@ -25,6 +29,15 @@ app.use(express.static("public"));
 app.get("/vault.json", function(request, response) {
     response.sendFile(__dirname + '/vault.json');
 });
+app.use(express.static("public"));
+app.get("/review.json", function(request, response) {
+    response.sendFile(__dirname + '/review.json');
+});
+
+app.use(express.static("public"));
+app.get("/reminds.json", function(request, response) {
+    response.sendFile(__dirname + '/reminds.json');
+});
 app.get("/", (request, response) => {
   console.log(Date.now() + " Ping Received");
   response.sendStatus(200);
@@ -45,13 +58,15 @@ var cats = require("cat-ascii-faces");
 var weather = require("weather-js");
 const fs = require("fs");
 const msmute = require("ms");
+var Filter = require('bad-words'),
+    filter = new Filter();
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const { Client, Util } = require("discord.js");
 const YouTube = require("simple-youtube-api");
 const ytdl = require("ytdl-core");
 const youtube = new YouTube(process.env.APITOKEN);
-const Canvas = require("canvas");
+//const Canvas = require("canvas");
 const queue = new Map();
 var d =
   "https://raw.githubusercontent.com/humboldt123/shameless_image_dump/master/thunderTXT/";
@@ -83,9 +98,14 @@ var thunderAnswer = [
 var midi = "297096161842429963";
 var moncol = "28894c";
 var plecol = `8f78ff`;
+
+
 const daily = require("./daily.json");
 const items = require("./items.json");
 const vault = require("./vault.json");
+const review = require("./review.json");
+const reminds = require("./reminds.json");
+
 //Bot:
 console.log(`The Thunderhead has attained consciousness.`);
 const activities_list = [
@@ -108,35 +128,80 @@ const activities_type = [
 
 
 client.on("ready", () => {
-   setInterval(() => {
-    
-     fs.writeFile(('./items.json'), JSON.stringify(items, null, 4), function(err) {
-    if(err) {
-      console.log(err);
-    } else {
-     // console.log(items);
-    }
-})
-          fs.writeFile(('./daily.json'), JSON.stringify(daily, null, 4), function(err) {
-    if(err) {
-      console.log(err);
-    } else {
-     // console.log(daily);
-    }
-})
-               fs.writeFile(('./vault.json'), JSON.stringify(vault, null, 4), function(err) {
-    if(err) {
-      console.log(err);
-    } else {
-     // console.log(vault);
-    }
-})
-     
-     const index = Math.floor(Math.random() * (activities_list.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
+  setInterval(() => {
+    fs.writeFile("./items.json", JSON.stringify(items, null, 4), function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        // console.log(items);
+      }
+    });
+    fs.writeFile("./daily.json", JSON.stringify(daily, null, 4), function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        // console.log(daily);
+      }
+    });
+    fs.writeFile("./vault.json", JSON.stringify(vault, null, 4), function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        // console.log(vault);
+      }
+    });
+
+    fs.writeFile("./review.json", JSON.stringify(review, null, 4), function(
+      err
+    ) {
+      if (err) {
+        console.log(review);
+      } else {
+        // console.log(vault);
+      }
+    });
+
+    fs.writeFile("./reminds.json", JSON.stringify(reminds, null, 4), function(
+      err
+    ) {
+      if (err) {
+        console.log(review);
+      } else {
+        // console.log(vault);
+      }
+    });
+
+    const index = Math.floor(Math.random() * (activities_list.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
 
     client.user.setActivity(activities_list[index], {
       type: activities_type[index]
     }); // sets bot's activities to one of the phrases in the arraylist.
+
+    /* REMINDER COMMAND ALSO EVERY 10 SECONDS*/
+    var date = new Date();
+    date = date.getTime() + 1000 * 0; //As of the moment I am currently writing this (19-12-5 for any future historians out there) I do not know of any way to turn the date into a giant number
+    //besides this crude method of multiplication. If you have any better ideas for this (or like the rest of the code in general) please help me out.
+
+    for (var user in reminds) {
+      var list = reminds[user];
+
+      for (var thing in list) {
+        var thing_ = list[thing];
+
+        if (date > thing_.time) {
+          reminds[user].splice([thing]);
+
+          user = client.users.get(user);
+
+          var embed = {
+            title: "Reminder <:ping:652636924934225920>",
+            description: thing_.reminder,
+            color: 3553598
+          };
+          user.send({ embed });
+        }
+      }
+    }
   }, 10000); // Runs this every 10 seconds.
 });
 
@@ -150,7 +215,7 @@ client.on("ready", () => {
 
 
 var seasons = ["fall", "winter", "spring", "summer"];
-var season = seasons[0];
+var season = seasons[1];
 const applyText = (canvas, text) => {
   const ctx = canvas.getContext("2d");
   let fontSize = 70;
@@ -257,44 +322,145 @@ client.on("message", async message => {
   if (devcommand === "repo") {
     message.channel.send("https://github.com/humboldt123/the-thunderhead");
   } //theta
-  if (devcommand === "itemadd") {
-    if (!message.author.id === "297096161842429963")
-      return message.channel.send("Dum idot");
-    const item_split = message.content
-      .slice(config.devprefix.length)
-      .trim()
-      .split("#");
+  
+  if (devcommand === "review") {
+      
+if (!(message.author.id === "297096161842429963")) return message.channel.send("Ok idiot.") 
+       // [phi]
+  if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES"))
+    return message.channel.send("I dont have permission to MANAGE_MESSAGES.");
+  if (!message.guild.member(client.user).hasPermission("ADD_REACTIONS"))
+    return message.channel.send("I dont have permission to ADD_REACTIONS.");
 
-    if (!item_split[1])
-      return message.channel.send(
-        "You must provide an item id. Remember to separate by `#`."
+  //  console.log(review["marketplace"])
+  if (review["marketplace"][0]) {
+    message.channel.send("There are no items up for review.");
+  } else {
+    var embeds = [];
+
+    var myItems = review["marketplace"];
+
+    var count = -1;
+    for (var item in myItems) {
+      count++;
+      var footer = item;
+      item = myItems[item];
+      var title = item.name + " :" + item.emoji + ":";
+      var description = item.description;
+      var image = item.image;
+      var type = item.type;
+      var cost = item.cost
+      var seller = item.sellerid
+      embeds.push({
+        title: title + " " + type,
+        description: description + "\n" + image,
+        color: 4439665,
+        footer: {
+          text: "Cost: " + cost + "          " + "Buy with /buy " + footer
+        },
+        author: {
+          name: footer,
+          icon_url:
+            "https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2FThunder.png?v=1574998975490"
+        }
+      });
+    }
+message.channel.send("There are "+ (count + 1) +  " item(s) up for review.")
+    var b = "◀";
+    var f = "▶";
+         var d = "🗑️";
+    var c = "✅";
+    var page = 0;
+
+    var embed = embeds[page];
+    const m = await message.channel.send({ embed });
+    m.react(b).then(() => m.react(f));
+    m.react(c).then(() => m.react(d));
+    const filter = (reaction, user) => {
+      return (
+        [b, f, c, d].includes(reaction.emoji.name) && user.id === message.author.id
       );
-    if (!item_split[2])
-      return message.channel.send("You must provide an item name.");
-    if (!item_split[3])
-      return message.channel.send("You must provide an item type");
-    if (!item_split[4])
-      return message.channel.send("You must provide an item emoji.");
-    if (!item_split[5])
-      return message.channel.send("You must provide an item description.");
-    if (!item_split[6])
-      return message.channel.send("You must provide an item image.");
-    if (!item_split[7])
-      return message.channel.send("You must provide an item cost.");
-    item_split[7] = parseInt(item_split[7]);
-
-    items["marketplace"][item_split[1]] = {
-      name: item_split[2],
-      type: item_split[3],
-      emoji: item_split[4],
-      description: item_split[5],
-      image: item_split[6],
-      cost: item_split[7],
-      sellerid: "629799045954797609"
     };
+    m.createReactionCollector(filter, {
+      time: 60000,
+      errors: ["time"]
+    })
+      .on("collect", reaction => {
+        if (reaction.emoji.name === f) {
+          if (page == count) return;
 
-    var myJSON = JSON.stringify(items["marketplace"][item_split[1]]);
-    message.channel.send("```json\n" + myJSON + "```");
+          reaction.users
+            .filter(u => !u.bot)
+            .forEach(user => {
+              reaction.remove(user.id);
+            });
+          page++;
+          var embed = embeds[page];
+          m.edit({ embed });
+        } else if (reaction.emoji.name === b) {
+          if (page == 0) return;
+
+          reaction.users
+            .filter(u => !u.bot)
+            .forEach(user => {
+              reaction.remove(user.id);
+            });
+          page--;
+          var embed = embeds[page];
+          m.edit({ embed });
+          } else if (reaction.emoji.name === d) {
+         
+
+          reaction.users
+            .filter(u => !u.bot)
+            .forEach(user => {
+              reaction.remove(user.id);
+            });
+          
+            
+          var id = (embeds[page].author.name)
+          delete review['marketplace'][id];
+          delete embeds[page];
+          if (page == count) {
+            page--
+          } else if (!(page == 0)) {
+            page++
+          } else {
+            message.delete()
+          }
+          var embed = embeds[page];
+          m.edit({ embed });
+                  } else if (reaction.emoji.name === c) {
+         
+
+          reaction.users
+            .filter(u => !u.bot)
+            .forEach(user => {
+              reaction.remove(user.id);
+            });
+          
+            
+          var id = (embeds[page].author.name)
+          items['marketplace'][id] = review['marketplace'][id]
+          delete review['marketplace'][id];
+          delete embeds[page];
+          if (page == count) {
+            page--
+          } else if (!(page == 0)) {
+            page++
+          } else {
+            message.delete()
+          }
+          var embed = embeds[page];
+          m.edit({ embed });
+        }
+      })
+      .on("end", collected => {});
+  }
+ 
+
+
+
   }
   if (devcommand === "name") {
     if (!message.author.id === "297096161842429963") return;
@@ -355,10 +521,11 @@ client.on("message", async message => {
       );
   }
   if (devcommand === "eval") {
-    if (
+  if (
       message.author.id !== "297096161842429963" &&
       message.author.id !== "514880893643390976"
-    )
+
+)
       return;
     try {
       const code = args.join(" ");
@@ -391,15 +558,55 @@ client.on("message", async message => {
       });
     }
   }
+  
+  
+  if (devcommand == "gs") {
+    if (!(message.author.id === midi)) return;
+    
+      if (args[0]) {
+    var dmdu = args[0].replace(/@/g, "");
+    var dmdo = dmdu.replace(/!/g, "");
+    var dmdi = dmdo.replace(/>/g, "");
+    var dmed = dmdi.replace(/</g, "");
+    var user = dmed
+    
+  } 
+    var rl = client.guilds.get(`625021277295345667`).roles.find('name', 'Grandslayer');
+client.guilds.get(`625021277295345667`).member(user).addRole(rl);
+  }
+    if (devcommand == "ugs") {
+    if (!(message.author.id === midi)) return;
+      
+      if (args[0]) {
+    var dmdu = args[0].replace(/@/g, "");
+    var dmdo = dmdu.replace(/!/g, "");
+    var dmdi = dmdo.replace(/>/g, "");
+    var dmed = dmdi.replace(/</g, "");
+    var user = dmed
+    
+  }
+      
+      
+      var rl = client.guilds.get(`625021277295345667`).roles.find('name', 'Grandslayer');
+client.guilds.get(`625021277295345667`).member(user).removeRole(rl);
+  }
   if (devcommand === "help") {
     if (message.content.startsWith === "/") {
     } else {
       message.channel.send(
-        "**__DEVHELP__**\nPrefix: d/\nrepo: Links to GitHub Repo\neval: Hard to explain\navatar: Changes avatar based on link\nname: changes name\n give: gives user `vibes`\n dm: dm a user\n itemadd: add an item; id#name#type#emoji#description#image#cost\n**Normal Prefix is** `/`"
+        "**__DEVHELP__**\nPrefix: d/\nrepo: Links to GitHub Repo\neval: Hard to explain\navatar: Changes avatar based on link\nname: changes name\n give: gives user `vibes`\n dm: dm a user\n itemadd: add an item; id#name#type#emoji#description#image#cost\ngs: grandslayer\nugs: ungrandslayer\n**Normal Prefix is** `/`"
       );
     }
   }
 });
+filter.addWords('sjw', '@everyone', 'kys', 'eggplant', 'fork');
+
+//chatfilter 2
+
+//client.on('messageUpdate', (oldMessage, newMessage) => {
+// if ((newMessage.content) != (filter.clean(newMessage.content))) return newMessage.delete();
+//})
+          
 client.on("message", async message => {
   //if (message.author.id === "583843452890906626") return;
   var cur = "`vibes`";
@@ -410,7 +617,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
   if (message.author.bot) return;
   if (message.content.toLowerCase().indexOf("genocide") >= 0) {
-    message.channel.send("SCYTHE GODDARD MOMENT SCYTHE GODDARD MOMENT!");
+   // It truly is a("SCYTHE GODDARD MOMENT SCYTHE GODDARD MOMENT!");
   }
 /*  if (message.content.toLowerCase().indexOf(banWord) >= 0) {
     message.delete();
@@ -424,8 +631,30 @@ client.on("message", async message => {
     message.channel.send("It has been one second, my child.");
   }
   if (message.content.toLowerCase().indexOf("dennis prager") >= 0) {
-    message.channel.send("`[Deprecated Feature]`");
+    //message.channel.send("`
+    //[Deprecated Feature]
+    //`");
   }
+ 
+  
+  //if ((message.content) != (filter.clean(message.content))) return message.delete();
+  
+//  if (message.author.id === "583843452890906626") {
+ //   var x = Math.floor((Math.random() * 10) + 1);
+//if (x > 6) {
+//      message.delete();
+//    }
+ // }
+  //Meme Quality Ensurer
+  /*
+  if (message.channel.id === "645434970310967318") {
+    if (message.author.id === "583843452890906626") {
+      if (message.attachments.size > 0) {
+        message.delete()
+      }
+    }
+  } //*/
+  if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete();
   if (message.content.indexOf(config.prefix) !== 0) return;
   if (command === "announce") {
     message.delete();
@@ -586,7 +815,9 @@ client.on("message", async message => {
       })
       .catch(function() {});
   }
-
+    if (command === "mute") {
+      message.reply("I belive the command you are looking for is `/unsavory`")
+    }
   if (command === "unsavory") {
     if (
       !message.guild.member(message.author).hasPermission("MUTE_MEMBERS") ||
@@ -629,7 +860,7 @@ client.on("message", async message => {
         "Please specify the time for the unsavory status!\n Example: 5s"
       );
     }
-    if (!timeMute.match(/[1-60][s,m,h,d,w]/g)) {
+    if (!timeMute.match(/[s,m,h,d,w]/g)) {
       return message.reply("I need a valid time!");
     }
     if (!reasonMute) {
@@ -711,7 +942,7 @@ client.on("message", async message => {
 
   if (command === "roll") {
     economy.fetchBalance(message.author.id).then(o => {
-      var randrol = Math.floor(Math.random() * 3 + 1);
+      var randrol = Math.floor(Math.random() * 3 );
       var x = [-1, 1];
       randrol = randrol * x[Math.floor(Math.random() * 2) + 0];
       const sayMessageiol = args.join(" ");
@@ -895,7 +1126,56 @@ if (command === "buy") {
     message.channel.send("You bought " + iname + " for " + cost +  " " + cur + ".")
   });
 }
+if (command === "additem") {
+    var item_split = message.content
+      .slice(config.prefix.length)
+      .trim()
+      .split("#");
 
+    if (!item_split[1])
+      return message.channel.send(    
+        "You must provide an item id. Remember to separate by `#`."
+      );
+    if (!item_split[2])
+      return message.channel.send("You must provide an item name.");
+    if (!item_split[3])
+      return message.channel.send("You must provide an item type");
+    if (!item_split[4])
+      return message.channel.send("You must provide an item emoji.");
+    if (!item_split[5])
+      return message.channel.send("You must provide an item description.");
+    if (!item_split[6])
+      return message.channel.send("You must provide an item image.");
+    if (!item_split[7])
+      return message.channel.send("You must provide an item cost.");
+    item_split[7] = (item_split[7]).replace("\"","") 
+    item_split[7] = parseInt(item_split[7]);
+    var mid = message.author.id
+    cost = item_split[7] + 10
+  //  if (review[item_split][1]) return message.channel.send("Sorry. That item already exists.")
+   
+  economy.fetchBalance(message.author.id).then(i => {
+ if (i.money < cost) return message.channel.send("Sorry, you don't have enough to add that item. Remember, in addition to the money you pay, you also pay 10 " + cur + " as a transactional fee.");
+economy.updateBalance(message.author.id, cost * -1);
+
+    console.log(item_split)
+  
+  
+  // theta
+  review["marketplace"][item_split[1]] = {
+      name: item_split[2].replace("\"",""), 
+      type: item_split[3].replace("\"",""),
+      emoji: item_split[4].replace("\"",""),
+      description: item_split[5].replace("\"",""),
+      image: item_split[6].replace("\"",""),
+      cost: item_split[7],
+      sellerid: mid
+    };
+
+    var myJSON = JSON.stringify(review["marketplace"][item_split[1]]);
+    message.channel.send("Item submitted.")
+});
+  }
 if (command === "reap") {
       if (!vault[message.author.id]) return message.channel.send("You haven't sold anything yet.");
       if (vault[message.author.id].amount == 0) return message.channel.send("You haven't earned anything yet.")
@@ -1013,6 +1293,76 @@ if (command === "inv") {
   }
 }
 
+  if ((command === "remindme") || (command === "remind") || (command == "r")) {
+    // [Omega] X Homework
+    // just add to database main code will be above
+    if (!(reminds[message.author.id])) {
+            reminds[message.author.id] = []
+    }
+   
+    date = new Date();
+    
+    
+    
+    var time = args[0]
+    if (!time) {
+      return message.reply(
+        "When do you want me to remind you"
+      );
+    }
+    
+    if (!time.match(/[s,m,h,d,w,y]/g)) {
+      return message.reply("I need a valid time!");
+    }
+    
+    if(!(args[1])) return message.channel.send("I'm sorry. But what exactly am I supposed to remind you of?");
+       var themessage = message.content.split(" ").slice(2).join(" ");
+    
+    var strunit = time.slice(-1);
+    var unit = 1
+
+    if (strunit === "s") {
+      unit = 1
+    }
+  
+    if (strunit === "m") {
+      unit = 60
+    }
+    
+if (strunit === "h") {
+      unit = 3600
+    }
+    
+    if (strunit === "d") {
+      unit = 86400
+    }
+    
+  if (strunit === "w") {
+      unit = 604800
+    }
+    
+      if (strunit === "y") {
+      unit = 31557600
+    }
+    console.log((time.slice(0, -1) ))
+    time = (time.slice(0, -1)) 
+    var inted = parseInt(time);
+    console.log("TIME " + inted)
+   // if (inted == !inted) return message.channel.send("Not an integer.") //apollo
+    console.log(unit)
+    console.log(time)
+    console.log(": " + (unit*1000*time))
+    var newtime = new Date();
+    newtime = (date.getTime() + (unit*1000*time))
+    //newtime = newtime -  100000000000  //What the hell and why the hell! Why do I need this weird ass line? Why is newdate 100000000000 miliseconds in the future?
+    date = date.getTime() + (unit*0)
+    console.log(date)
+    console.log(newtime)
+    reminds[message.author.id].push({"reminder": themessage, "time": newtime})
+    
+    message.channel.send("I will be sure to remind you of that when the time arrives. The reminder will be in a DM (Direct Message) so if I unable to DM you or you are unsavory at the time, you *will not* recive the reminder.")
+  }
+  
   if (command === "market") {
   // [lambda]
   if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES"))
@@ -1328,7 +1678,7 @@ message.channel.send("The market has "+ (count + 1) +  " items.")
     message.channel.send();
   }
 
-  if (command === "profile") {
+  if (command === "Profile") {
     var channel = message.channel;
     var member = message.author;
     var user_name = message.author.username;
@@ -1365,6 +1715,12 @@ message.channel.send("The market has "+ (count + 1) +  " items.")
         "https://cdn.glitch.com/c8880f10-b971-4fd9-abb6-7d6ae9921c54%2Fautumn_background.png?v=1574020757895"
       );
       ctx.drawImage(fall, 25, 25, 100, 100);
+    }
+        if ((season = seasons[1])) {
+      const winter = await Canvas.loadImage(
+        "https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2FgalacticHex.png?v=1576092654439"
+      );
+      ctx.drawImage(winter, 25, 25, 100, 100);
     }
     ctx.beginPath();
     // Start the arc to form a circle
@@ -1446,6 +1802,12 @@ message.channel.send("The market has "+ (count + 1) +  " items.")
           "\n" +
           "```css\n/ask [Question]```"
       )
+          .addField(
+        "remind",
+        "A reminder" +
+          "\n" +
+          "```css\n/remind [Time] [Reminder]```"
+      )
       .setFooter(
         "You can't use ban and kick if you can't ban or kick. Scroll by reacting < and >."
       );
@@ -1501,7 +1863,11 @@ message.channel.send("The market has "+ (count + 1) +  " items.")
       )
       .addField("Sell","Sell an item to the Market." +" \n" +
           "```css\n/sell [item]```"
-      );
+      )
+      .addField("Additem", "Create an item for a cost. This is a complex command so read carefully. If you have questions ask <@!297096161842429963>" +" \n" +
+          "```css\n/additem #id#name#type#emoji#description#image#cost```"
+      )
+    .setFooter("In additem, the words are separated by hashtag.")
     var MiscHelpEmbed = new Discord.RichEmbed()
       .setColor("RANDOM")
       .setTitle(`Misc.Commands 4/4`)
@@ -1594,18 +1960,14 @@ message.channel.send("The market has "+ (count + 1) +  " items.")
 
   //Music Commands
   //=========================================================
-  if (
-    !message.author.id === midi &&
-    !message.author.id === "274198819216949248" &&
-    !message.member.roles.some(r => ["Tonist"].includes(r.name))
-  )
-    return message.channel.send("Sorry, but you cannot do that!");
-
+  if (!message.author.id === "274198819216949248" && !message.member.roles.some(r => ["Tonist"].includes(r.name))) return message.channel.send("Sorry, but you cannot do that!");
+if (!(message.member.roles.find(r => r.name === "Tonist"))) return;
   const searchString = args.slice(0).join(" ");
   var url = args[0] ? args[0].replace(/<(.+)>/g, "$1") : "";
   const serverQueue = queue.get(message.guild.id);
 
   if (command === "play") {
+    if (!(message.member.roles.find(r => r.name === "Tonist"))) return message.channel.send("<:sad:637002048088309805>");
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel)
       return message.channel.send(
