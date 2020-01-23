@@ -1,6 +1,6 @@
 {
   "name": "Thunderhead",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "The Thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.",
   "main": "node server.js",
   "author": "Skrub#2280",
@@ -20,12 +20,12 @@
     "express-fileupload": "^1.1.6",
     "node-opus": "^0.3.2",
     "simple-youtube-api": "^5.2.1",
-    "ytdl-core": "^1.0.3",
+    "ytdl-core": "^1.0.6",
     "es6-map": "0.1.5",
     "cat-facts": "1.0.2",
     "cat-ascii-faces": "2.0.0",
     "request": "2.88.0",
     "sqlite": "^3.0.3",
-    "discord-eco": "^0.0.10"
+    "discord-economy": "^1.2.2"
   }
 }
