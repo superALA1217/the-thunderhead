@@ -555,7 +555,7 @@ client.on("message", async message => {
             if (command === "kick") {
                 if (!message.member.hasPermission("KICK_MEMBERS"))
                     return message.reply(
-                        "Sorry, I will not allow you to push someobdy under a speeding train."
+                        "Sorry, I will not allow you to kick users."
                     );
                 let member =
                     message.mentions.members.first() || message.guild.members.get(args[0]);
@@ -565,7 +565,7 @@ client.on("message", async message => {
                     );
                 if (!member.kickable)
                     return message.reply(
-                        "You cannot push this person under a speeding train."
+                        "You cannot kick this person."
                     );
                 let reason = args.slice(1).join(" ");
                 if (!reason) reason = "For Fun.";
@@ -577,23 +577,23 @@ client.on("message", async message => {
                         )
                     );
                 message.channel.send(
-                    `${member.user.tag}has been pushed under a speeding train by ${message.author.tag}\n**Reason**:\n${reason}`
+                    `${member.user.tag}has been kicked by ${message.author.tag}\n**Reason**:\n${reason}`
                 );
             }
 
             if (command === "ban") {
                 if (!message.member.hasPermission("BAN_MEMBERS"))
                     return message.reply(
-                        "Sorry, you don't have permissions to glean! If you go on like this I could mark you as an unsavory."
+                        "Sorry, you don't have permissions to ban! If you go on like this I could mark you as an unsavory."
                     );
                 let member = message.mentions.members.first();
                 if (!member) return message.reply("Please mention a valid server member.");
                 if (!member.bannable)
                     return message.reply(
-                        "I cannot glean due to the separation of Scythe and State."
+                        "I cannot ban this user."
                     );
                 let reason = args.slice(1).join(" ");
-                if (!reason) reason = "For Fun; like a New Order Scythe.";
+                if (!reason) reason = "No reason provived.";
                 await member
                     .ban(reason)
                     .catch(error =>
@@ -916,13 +916,13 @@ client.on("message", async message => {
 
                 //10% chance to fail and earn nothing. You earn between 1-500 coins. And you get one of those 3 random jobs.
                 var output = await eco.Work(message.author.id, {
-                        failurerate: 60,
-                        money: Math.floor(Math.random() * 4),
+                        failurerate: 99, //todo: change and implement cooldown
+                        money: Math.floor((Math.random() * 10) + 1),
                         jobs: ['Accountant', 'Revival Center Doctor', 'Nimbus Agent']
                     })
                     //50% chance to fail and earn nothing. You earn between 1-100 coins. And you get one out of 20 random jobs.
                 var funnyMessage = "Please do not hate the unsavories."
-                if (output.earned == 0) return message.reply(`You failed to earn money.${funnyMessage}`)
+                if (output.earned == 0) return message.reply(`You failed to earn money. ${funnyMessage}`)
                 message.channel.send(`${message.author.username}
 You worked as a ${output.job} and earned ${output.earned} ${cur}
 You now own ${output.balance} ${cur}`)
@@ -1171,228 +1171,65 @@ You now own ${output.balance} ${cur}`)
 
 
             if (command === "help") {
-                if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES"))
-                    return message.channel.send("I dont have permission to MANAGE_MESSAGES.");
-                if (!message.guild.member(client.user).hasPermission("ADD_REACTIONS"))
-                    return message.channel.send("I dont have permission to ADD_REACTIONS.");
-                var b = "◀";
-                var f = "▶";
-                var page = 1;
-                var HelpEmbed = new Discord.RichEmbed()
-                    .setColor(thunderColor)
-                    .setTitle(`Commands 1/4`)
-                    .addField(
-                        "Help",
-                        "A command to use if you require assistance. Clever you, you are already using it." +
-                        " \n" +
-                        "```css\n/help```"
-                    )
-                    .addField(
-                        "Ping",
-                        "Pong~! Use this to debug the latency. It may be slowed a fraction of a second due to unsavories." +
-                        " \n" +
-                        "```css\n/ping```"
-                    )
-                    .addField(
-                        "Roleme",
-                        "Self assign a role." +
-                        " \n" +
-                        "```css\n/roleme [role]```"
-                    )
-                    .addField(
-                        "Purge",
-                        "Cleans 2-200 messages from the chat." +
-                        " \n" +
-                        "```css\n/purge [2-200]```"
-                    )
-                    .addField(
-                        "Lock/Unlock",
-                        "Locks/Unlocks the channel." +
-                        " \n" +
-                        "```css\n/[lock/unlock]```"
-                    )
-                    .addField(
-                        "Kick",
-                        "Push someone under a speeding train." +
-                        " \n" +
-                        "```css\n/kick [user] [reason]```"
-                    )
-                    .addField(
-                        "Unsavory",
-                        "Makes a user an Unsavory." +
-                        " \n" +
-                        "```css\n/unsavory [user] [time] [reason]```"
-                    )
-                    .addField(
-                        "Ban",
-                        'Glean a soul. "Everyone is innocent, even the guilty. And everyone is guilty of something. Both states are undeniably true." -H.S. Curie' +
-                        " \n" +
-                        "```css\n/ban [user] [reason]```"
-                    )
-                    .addField("Poll", "Poll Users" + "\n" + "```css\n/poll [Question]```")
-                    .addField(
-                        "Announce",
-                        "Make an announcement. Share with the world." +
-                        "\n" +
-                        "```css\n/announce [Title (Must Be One Word)] [Announcement]```"
-                    )
-                    .addField(
-                        "ask",
-                        "Ask me a question, I will answer truthfully." +
-                        "\n" +
-                        "```css\n/ask [Question]```"
-                    )
-                    .addField(
-                        "remind",
-                        "A reminder" +
-                        "\n" +
-                        "```css\n/remind [Time] [Reminder]```"
-                    )
-                    .setFooter(
-                        "You can't use ban and kick if you can't ban or kick. Scroll by reacting < and >."
-                    );
-                var MusicHelpEmbed = new Discord.RichEmbed()
-                    .setColor(musicColor)
-                    .setTitle(`Music Commands 2/4`)
-                    .addField(
-                        "Play",
-                        "Play music in a voice channel my backbrain has quite the collection of songs.\n" +
-                        "```/play [SongTitle/YouTubeUrl]```"
-                    )
-                    .addField("Stop", "End the music if it bothers you.\n" + "```/stop```")
-                    .addField("Skip", "Skip a song.\n" + "```/skip```")
-                    .addField(
-                        "Queue",
-                        "A command used to see the music that is being played.\n" +
-                        "```/queue```"
-                    )
-                    .addField(
-                        "Volume",
-                        "A command used to set the volume of the music. Hearing is essential for all humans.\n" +
-                        "```/volume [1-5]```"
-                    )
-                    .setFooter("You Must have the role Tonist to use music commands");
-                var EconomyHelpEmbed = new Discord.RichEmbed()
-                    .setColor(currencyColor)
-                    .setTitle(`Economy Commands 3/4`)
-                    .addField("Balance", "Checks your balance." + " \n" + "```css\n/bal```")
-                    .addField(
-                        "Pay",
-                        "Pays a user." + " \n" + "```css\n/pay [user] [amount]```"
-                    )
-                    .addField(
-                        "Roll/Slots",
-                        "Gambles an amount, although I do not suggest it. The odds of winning do not appear to be high." +
-                        " \n" +
-                        "```css\n/[roll] [amount]```"
-                    )
-                    .addField("Daily", "Your daily B.I.G (Basic Income Guarantee)." + " \n" +
-                        "```css\n/daily```"
-                    )
+            var helpMessage = "📜 __Commands__ (Page 1/4)\n"
+              + "`/help [page]`: A command to use if you require assistance. " + "\n"
+              + "`/ping`: A command to check if I am avaliable. It may be slowed a fraction of a second due to unsavories." + "\n"
+              + "`/roleme [Role]`: A command to assign yourself a role." + "\n"
+              + "`/ask [Question]`: Ask me a question." + "\n"
+              + "`/remind [Time] [Reminder]: I can remind you of something if need be.`" + "\n"
+              + "`/userinfo [@User]`: Find out more about a person." + "\n"
+              + "`/weather [Location]`: I try to divert rain away from people but it is always good to double check." + "\n"
 
-                .addField("Leaderboard", "Who has the most money." + " \n" +
-                        "```css\n/leaderboard```"
-                    )
-                    .addField("Work", "An Actual Job" + " \n" +
-                        "```css\n/work```"
-                    )
+              + "ᵁˢᵉ ʰᵉˡᵖ ᶠᵒˡˡᵒʷᵉᵈ ᵇʸ ᵗʰᵉ ʰᵉˡᵖ ᵖᵃᵍᵉ ᵗᵒ ˢᵉᵉ ᵐᵒʳᵉ ᶜᵒᵐᵐᵃⁿᵈˢ"
 
-                .addField("Undebt", "Clear all gambling debts." + " \n" +
-                    "```css\n/undebt```"
-                )
 
-                .setFooter("Don't even try rolling a negative integer.")
-                var MiscHelpEmbed = new Discord.RichEmbed()
-                    .setColor("RANDOM")
-                    .setTitle(`Misc.Commands 4/4`)
-                    .addField(
-                        "Userinfo",
-                        "Find out more about a person, search the backbrain.." +
-                        " \n" +
-                        "```css\n/userinfo [user]```"
-                    )
-                    .addField(
-                        "Weather",
-                        "It behoves you to know what I have seletected the weather to be at you location" +
-                        " \n" +
-                        "```css\n/weather [ZipCode]```"
-                    )
-                    .addField("f", "Pay your respects" + " \n" + "```css\n/f```");
-                const m = await message.channel.send(HelpEmbed);
-                m.react(b).then(() => m.react(f));
-                const filter = (reaction, user) => {
-                    return (
-                        [b, f].includes(reaction.emoji.name) && user.id === message.author.id
-                    );
-                };
-                m.createReactionCollector(filter, {
-                        time: 60000,
-                        errors: ["time"]
-                    })
-                    .on("collect", reaction => {
-                        if (reaction.emoji.name === f) {
-                            if (page == 4) return;
-                            if (page == 3) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(MiscHelpEmbed);
-                                page = 4;
-                            }
-                            if (page == 2) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(EconomyHelpEmbed);
-                                page = 3;
-                            }
-                            if (page == 1) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(MusicHelpEmbed);
-                                page = 2;
-                            }
-                        } else if (reaction.emoji.name === b) {
-                            if (page == 1) return;
-                            if (page == 2) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(HelpEmbed);
-                                page = 1;
-                            }
-                            if (page == 3) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(MusicHelpEmbed);
-                                page = 2;
-                            }
-                            if (page == 4) {
-                                reaction.users
-                                    .filter(u => !u.bot)
-                                    .forEach(user => {
-                                        reaction.remove(user.id);
-                                    });
-                                m.edit(EconomyHelpEmbed);
-                                page = 3;
-                            }
-                        }
-                    })
-                    .on("end", collected => {
-                        message.channel.send("timed out.");
-                    });
+            var economyMessage = "💸 __Economy Commands__ (Page 2/4)\n"
+              + "`/help 2`: Help for the economy commands. " + "\n"
+              + "`/bal {User}`: Check your (or someone else's) balance." + "\n"
+              + "`/daily`: Your daily Basic Income Guarantee." + "\n"
+              + "`/work`: Work to try to earn money. (100% failAccurate + Add cooldown.)" + "\n"
+              + "`/roll [amount]`: Gamble money I do not suggest this as the odds of losing are high." + "\n"
+              + "`/slots [amount]`: Same as roll, but with slots." + "\n"
+              + "`/pay [@User]`: Pay a user." + "\n"
+              + "`/leaderboard`: Check to see who has the most money." + "\n"
+              + "`/undebt`: Set your balance to zero if it is less than zero." + "\n"
+
+              + "ᴰᵒⁿ'ᵗ ᵉᵛᵉⁿ *ᵗʳʸ* ᵗᵒ ʳᵒˡˡ ᵃ ⁿᵉᵍᵃᵗᶦᵛᵉ ᵒʳ ᴺᵃᴺ ⁿᵘᵐᵇᵉʳ"
+
+
+            var musicMessage = "🎵 __Music Commands__ (Page 3/4)\n"
+              + "`/help 3`: Help for the music commands. " + "\n"
+              + "`/play [Song URL]`: Play a song or playlist. " + "\n"
+              + "`/stop`: Stop the music. " + "\n"
+              + "`/skip`: Skip the current song. " + "\n"
+              + "`/queue`: Check the queue of songs. " + "\n"
+              + "`/volume [Number]`: Set the volume as a number **between one to five**. " + "\n"
+
+              + "ʸᵒᵘ ⁿᵉᵉᵈ ᵗʰᵉ ᵗᵒⁿᶦˢᵗ ʳᵒˡᵉ ᵈᵒ ᵘˢᵉ ᵗʰᵉˢᵉ ᶜᵒᵐᵐᵃⁿᵈˢ ᵃⁿᵈ ᵃᵇᵘˢᵉ ᵒᶠ ᵗʰᵉ ʳᵒˡᵉ ᵐᵃʸ ʳᵉˢᵘˡᵗ ᶦⁿ ᵃ ᵇˡᵃᶜᵏˡᶦˢᵗ ᶠʳᵒᵐ ᵐᵘˢᶦᶜ ᶜᵒᵐᵐᵃⁿᵈˢ"
+
+
+            var modMessage = "🔧 __Mod Commands__ (Page 4/4)\n"
+              + "`/help 4`: Help for the moderation commands. " + "\n"
+              + "`/purge [Amount]`: Purge the chat up to 200 messages. " + "\n"
+              + "`/lock`: Lock the channel. " + "\n"
+              + "`/unlock`: Unlock the channel. " + "\n"
+              + "`/kick [@User]`: Kick a user from the server. " + "\n"
+              + "`/ban [@User]`: Ban a user from the server. " + "\n"
+              + "`/unsavory [@User] [Time] [Reason]`: Unsavory a user. " + "\n"
+              + "`/poll [Question]`: Make a poll. " + "\n"
+              + "`/announce [Title] [Announcement]`: Make an announcement. " + "\n"
+
+              + "ᴵᶠ ʸᵒᵘ ᵃʳᵉ ⁿᵒᵗ ᵃ ᵐᵒᵈ ᵗʰᵉˢᵉ ᶜᵒᵐᵐᵃⁿᵈˢ ʷᵒⁿᵗ ʷᵒʳᵏ ᶠᵒʳ ʸᵒᵘ"
+              
+              var page = args[0]
+            
+              if (!page) {page = 1}
+            
+              
+              var pages = ["0", helpMessage, economyMessage, musicMessage, modMessage]
+              var helpText = pages[page]
+              if (!helpText) {helpText = "Error: No Command at Help List " + (page)}
+              message.channel.send(helpText)
             }
 
             //Music Commands
