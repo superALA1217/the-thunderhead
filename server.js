@@ -1,4 +1,4 @@
-'use strict';
+var suspendBot = false
 
 //Requirements
 const Discord = require(`discord.js`);
@@ -14,7 +14,7 @@ const fs = require("fs");
 const msmute = require("ms");
 const request = require("request");
 
-var eco = require("discord-economy");
+var eco = require("discord-economy");  
 const catFacts = require("cat-facts");
 var cats = require("cat-ascii-faces");
 var weather = require("weather-js");
@@ -24,6 +24,10 @@ const ytdl = require("ytdl-core");
 const youtube = new YouTube(process.env.APITOKEN);
 const queue = new Map();
 
+// ~around 5ish minutes
+const workedRecently = new Set();
+
+//todo: marketplace - perhaps
 
 //Bot:
 console.log(`The Thunderhead has attained consciousness.`);
@@ -186,6 +190,8 @@ client.on("messageDelete", async message => { //Anti Urine Device
 */
 
 
+
+//message.on whatever control-f
 //Message Scan Misc./Developer
 client.on("message", async message => {
     if (message.content.length == 0) return;
@@ -230,7 +236,7 @@ client.on("message", async message => {
 
 
     if (developerCommand === "name") {
-        if (!message.author.id === "297096161842429963") return;
+        if (message.author.id !== "297096161842429963") return;
         try {
             client.user.setUsername(developerArgs.join(" ")).slice(4);
         } catch (err) {
@@ -240,7 +246,7 @@ client.on("message", async message => {
         }
     }
     if (developerCommand === "dm") {
-        if (!message.author.id === "297096161842429963") return;
+        if (message.author.id !== "297096161842429963") return;
         var a = message.author.id;
         console.log(a);
         var msgi = args.slice(1).join(" ");
@@ -262,38 +268,18 @@ client.on("message", async message => {
         }
     }
     if (developerCommand === "devsay") {
-        const sechan = client.channels.get(args[0]);
+      if (message.author.id !== "297096161842429963") return;  
+      const sechan = client.channels.get(args[0]);
         const sayMessage = args.join(" ");
         sechan.send(sayMessage.slice(18));
     }
-    if (developerCommand === "delet") {
-        if (!message.author.id === "297096161842429963" ||
-            !message.author.id === "428629542115082241"
-        )
-            return;
-        const deleteCount = parseInt(args[0], 10);
-        if (!deleteCount || deleteCount < 2 || deleteCount > 100)
-            return message.reply(
-                "I can delete no more than a hundred messages and asking to delete less than 2 is a redundancy."
-            );
-        console.log("BulkDelet Timeout");
-        msg => msg.delete({
-            timeout: 1000
-        });
-        message.channel
-            .bulkDelete(deleteCount)
-            .catch(error =>
-                message.reply(
-                    `Apologies,I was unable to delete the messages.Here is the error code to debug,have a perfect day:${error}`
-                )
-            );
+    if (developerCommand === "unsuspend") {
+      if (message.author.id !== "297096161842429963") return;
+      suspendBot = false;
+      message.channel.send("Suspend = " + suspendBot)
     }
     if (developerCommand === "eval") {
-        if (
-            message.author.id !== "297096161842429963" &&
-            message.author.id !== "514880893643390976"
-
-        )
+        if (message.author.id !== "297096161842429963")
             return;
         try {
             const code = args.join(" ");
@@ -329,7 +315,7 @@ client.on("message", async message => {
     }
     if (developerCommand === 'resetdaily') {
         if (message.author.id === skrubUserId) {
-            var output = await eco.ResetDaily(message.author.id)
+            var output = await eco.ResetDaily(args[0])
 
             message.reply(output) //It will send 'Daily Reset.'
         }
@@ -365,24 +351,19 @@ client.on("message", async message => {
         var rl = client.guilds.get(`625021277295345667`).roles.find('name', 'Grandslayer');
         client.guilds.get(`625021277295345667`).member(user).removeRole(rl);
     }
-    if (developerCommand === "help") {
-        if (message.content.startsWith === "/") {} else {
-            message.channel.send(
-                "**__DEVHELP__**\nPrefix: d/\nrepo: Links to GitHub Repo\neval: Hard to explain\navatar: Changes avatar based on link\nname: changes name\n give: gives user `vibes`\n dm: dm a user\n itemadd: add an item; id#name#type#emoji#description#image#cost\ngs: grandslayer\nugs: ungrandslayer\n**Normal Prefix is** `/`"
-            );
-        }
-    }
 });
 
 
 
 client.on("message", async message => {
-            var cur = "`vibes`";
+            
+  
+        var cur = "`vibes`";
             const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
             const command = args.shift().toLowerCase();
             if (message.author.bot) return;
-
-
+          
+            
 
             if (message.content.toLowerCase().indexOf("genocide") >= 0) {
 
@@ -399,12 +380,13 @@ client.on("message", async message => {
                   message.guild.member(memberMute).addRole(muteRoleMute);
                 } */
 
-
+  
 
 
             if (message.content.toLowerCase().indexOf("1 sec") >= 0) {
                 message.channel.send("It has been one second, my child.");
             }
+            
             if (message.content.toLowerCase().indexOf("dennis prager") >= 0) {
                 //message.channel.send("`
                 //[Deprecated Feature]
@@ -432,7 +414,7 @@ client.on("message", async message => {
             //    }
             // }
             //Meme Quality Ensurer
-
+/*
             if (message.channel.id === "645434970310967318") {
                 if (message.author.id === "583843452890906626") {
                     if (message.attachments.size > 0) {
@@ -442,17 +424,21 @@ client.on("message", async message => {
                         if (random < 70) return message.delete();
 
                         if (random < 90) {
-                            client.users.get(message.author.id).send("You cannot post memes because your memes are bad until Skrub gets back.")
+                            client.users.get(message.author.id).send("You cannot post memes because your memes are bad.")
                         } else if (random < 80) {
                             client.users.get(message.author.id).send("You cannot post memes. Bypassing this via any means will result in loss of file upload permissions in all channels.")
                         }
                         message.delete()
                     }
                 }
-            } //
-            if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete();
+            } */
+try {
+  if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete(); } catch (e) {}
+  
             if (message.content.indexOf(config.prefix) !== 0) return;
-            if (command === "announce") {
+            if (suspendBot == true && message.author.id !== "297096161842429963") return message.author.send("Bot going through maintainence. Please check back later.");
+  
+        if (command === "announce") {
                 message.delete();
                 if (!message.member.hasPermission("MANAGE_MESSAGES"))
                     return message.reply(
@@ -474,22 +460,22 @@ client.on("message", async message => {
                 });
             }
 
-            if (command === "rule") {
+            if (command === "rule") {  
                 message.delete();
                 if (!message.member.hasPermission("MANAGE_MESSAGES"))
                     return message.reply(
-                        "My apologies, however only my esteemed Nimbus Agents are able to use that."
+                        "You cannot use that command."
                     );
                 var titl = args[0] + " " + args[1];
                 var content = args.slice(2).join(" ");
                 const embed = {
                     title: titl,
                     description: content,
-                    color: 9402623,
-                    author: {
-                        name: message.author.username,
-                        icon_url: message.author.displayAvatarURL
-                    }
+                    color: 3553598
+                //    author: {
+                //        name: message.author.username,
+                //        icon_url: message.author.displayAvatarURL
+                //    }
                 };
                 message.channel.send({
                     embed
@@ -513,7 +499,7 @@ client.on("message", async message => {
                     );
                 message.channel.send(FEmbed);
             }
-
+  
             if (command === "say") {
                 if (message.author.id != "378567687158104067")
                     return message.reply(
@@ -581,7 +567,7 @@ client.on("message", async message => {
                 );
             }
 
-            if (command === "ban") {
+            if (command === "ban"|| command === "execute" || command === "glean") {
                 if (!message.member.hasPermission("BAN_MEMBERS"))
                     return message.reply(
                         "Sorry, you don't have permissions to ban! If you go on like this I could mark you as an unsavory."
@@ -593,7 +579,7 @@ client.on("message", async message => {
                         "I cannot ban this user."
                     );
                 let reason = args.slice(1).join(" ");
-                if (!reason) reason = "No reason provived.";
+                if (!reason) reason = "No reason provided.";
                 await member
                     .ban(reason)
                     .catch(error =>
@@ -602,7 +588,7 @@ client.on("message", async message => {
                         )
                     );
                 message.reply(
-                    `${member.user.tag}has been gleaned by ${message.author.tag}\n**Reason**:\n${reason}`
+                    `${member.user.tag} has been gleaned by ${message.author.tag}\n**Reason**:\n${reason}`
                 );
             }
 
@@ -733,7 +719,7 @@ client.on("message", async message => {
             }
 
             if (command === "purge") {
-                if (!message.member.hasPermission("MANAGE_MESSAGES"))
+                if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id !== "297096161842429963")
                     return message.reply(
                         "Sorry, you don't have permissions to use this! If you continue I may be forced to mark you unsavory, have am perfect day."
                     );
@@ -786,30 +772,30 @@ client.on("message", async message => {
 
                 if (!isInt(stake)) return message.channel.send("Sorry, please choose a valid number");
                 if (stake < 1 || stake > balance) return message.channel.send("Sorry, you cannot roll that amount.");
-
-                balance = balance;
                 var staticStake = stake;
 
-                var profitFactor = randomNumber(-3, 2);
-                var profit = randomNumber(1, 2);
+                var profitFactor =  Math.floor((Math.random() * 6) + 1) - 4;
+              
                 var profitWord = "broke even and gained";
                 var profitColor = "88b5ba"; //Light Grey Cyan-esque
-
-                if (profitFactor > 0) {
+            
+                if (0 < profitFactor) {
                     // positive value
                     profitWord = "gained";
-                    stake = stake * profit;
+                    stake = stake * profitFactor;
                     profitColor = "2ebf50"; //Green
                 } else if (profitFactor < 0) {
                     // negative value
                     profitWord = "lost";
                     stake = stake * -1;
                     profitColor = "ff3333"; //red
+                } else {
+                  stake = 0;
                 }
 
                 var rollEmbed = new Discord.RichEmbed()
                     .setTitle(message.author.username)
-                    .addField(`You ${profitWord} ${Math.abs(stake)} ${cur}`, `New Balance: **${balance + stake}**`)
+                    .addField(`You ${profitWord} ${Math.abs(stake)} ${cur}`, `New Balance: **${parseInt(balance) + parseInt(stake)}**`)
                     .setFooter(`The Thunderhead Casino Inc. ${message.author.username} 's account.'`, message.author.displayAvatarURL)
                     .setColor(profitColor);
 
@@ -838,6 +824,80 @@ client.on("message", async message => {
                     .setColor(currencyColor);
                 message.channel.send(balembed);
             }
+             
+            if (command === "cf" || command === "coinflip") {
+                var user = message.mentions.users.first()
+                var amount = args[1]
+                var side = args[2]
+                
+                if (!user) return message.reply('Sorry, who do you want to coinflip?')
+                if (!amount) return message.reply('Please proivde an amount to coinflip?')
+                if (!side) return message.reply('Please choose a side. Heads or Tails?')
+                if (side.toLowerCase() !== "heads" && side.toLowerCase() !== "tails") return message.reply('Please choose a side. Heads or Tails?')
+                
+                side = side.toLowerCase()
+                var output = await eco.FetchBalance(message.author.id)
+                if (output.balance < amount) return message.reply('Apologies, you cannot coinflip that amount.')
+                
+                var _output = await eco.FetchBalance(user.id)
+                if (_output.balance < amount) return message.reply(user.username + " does not have sufficient funds.")
+                
+                message.channel.send("<@!" + user.id + ">, accept the coinflip with /acceptcf ")
+                      try {
+                        var response = await message.channel.awaitMessages(
+                            message2 => message2.author.id === user.id && (message2.content === "/acceptcf" || message2.content === "/cfaccept" || message2.content === "/accept" || message2.content === "/cf"|| message2.content === "/cfyes"),
+                            {
+                                maxMatches: 1,
+                                time: 7000,
+                                errors: ["time"]
+                            }
+                        );
+                    } catch (err) {
+                        console.error(err);
+                        return message.channel.send(
+                            "They did not accept the coinflip within the five alloted seconds using /acceptcf."
+                        );
+                    }
+              
+              const choice = (response.first().content);
+              
+              if (choice) {
+                var items = ["tails", "tails", "heads", "tails",
+                             "tails", "tails", "heads", "heads",
+                             "heads", "heads", "tails", "tails",
+                             "heads", "tails", "heads", "heads",
+                             "tails", "tails", "heads", "tails",
+                             "heads", "heads", "heads", "heads",
+                             "tails", "heads", "tails", "tails"] // guarantee randomness, lookng at YOU squines
+                var item = items[Math.floor(Math.random() * items.length)]
+                
+                if (side === item) {
+                  item.charAt(0).toUpperCase()
+                  message.channel.send("The coin landed on "+ item + ". <@!"+ message.author.id + "> won " + amount + " " + cur)
+                  var transfer = await eco.Transfer(user.id, message.author.id, amount)
+                  var balText = `${message.author.username} won **${amount}** ${cur}.`
+                  var balembed = new Discord.RichEmbed()
+                    .addField(message.author.username, balText)
+                    .setColor(currencyColor);
+                  message.channel.send(balembed); 
+                  
+                } else {
+                  item.charAt(0).toUpperCase()
+                  message.channel.send("The coin landed on "+ item + ". <@!"+ user.id + "> won " + amount + " " + cur)
+                  var transfer = await eco.Transfer(message.author.id, user.id, amount)
+                   var balText = `${user.username} won **${amount}** ${cur}.`
+                   var balembed = new Discord.RichEmbed()
+                    .addField(user.username, balText)
+                    .setColor(currencyColor);
+                   message.channel.send(balembed); 
+                  
+                }
+
+              } 
+
+
+           
+            }
 
 
             /*REFER TO DEPRECATED MARKETPLACE AS TO WHY REMOVED*/
@@ -849,9 +909,9 @@ client.on("message", async message => {
                 curCount = curCount.balance
                 if (curCount < 0) {
                     await eco.SetBalance(message.author.id, 0)
-                    message.channel.send("After rendering people deadish, your gambling debts are gone.🦀🦀")
+                    message.channel.send("Your balance is now reset.")
                 } else {
-                    message.channel.send("You are not below 0!")
+                    message.channel.send("You are not below 0.")
                 }
 
 
@@ -867,8 +927,8 @@ client.on("message", async message => {
 
                 if (output.updated) {
 
-                    var profile = await eco.AddToBalance(message.author.id, 7)
-                    message.channel.send(`You have recived 7 ${cur} from the BIG (Basic Income Guarantee). Your balance is now ${profile.newbalance} ${cur}`);
+                    var profile = await eco.AddToBalance(message.author.id, 15)
+                    message.channel.send(`You have recived 15 ${cur} from the BIG (Basic Income Guarantee). Your balance is now ${profile.newbalance} ${cur}`);
 
                 } else {
                     message.channel.send(`You have already used up today's BIG (Basic Income Guarantee). Come back in ${output.timetowait}.`)
@@ -893,9 +953,7 @@ client.on("message", async message => {
 
                 } else {
 
-                    eco.Leaderboard({
-                        limit: 3, //Only takes top 3 ( Totally Optional )
-                    }).then(async users => { //make sure it is async
+                    eco.Leaderboard({}).then(async users => { //make sure it is async
 
                         if (users[0]) var firstplace = await client.fetchUser(users[0].userid) //Searches for the user object in discord for first place
                         if (users[1]) var secondplace = await client.fetchUser(users[1].userid) //Searches for the user object in discord for second place
@@ -912,24 +970,40 @@ client.on("message", async message => {
 
                 }
             }
+  
+  
             if (command === "work") {
 
                 //10% chance to fail and earn nothing. You earn between 1-500 coins. And you get one of those 3 random jobs.
-                var output = await eco.Work(message.author.id, {
-                        failurerate: 99, //todo: change and implement cooldown
-                        money: Math.floor((Math.random() * 10) + 1),
-                        jobs: ['Accountant', 'Revival Center Doctor', 'Nimbus Agent']
+                   if (workedRecently.has(message.author.id)) {
+            message.channel.send("You must wait five minutes before working again.");
+    } else {
+
+                     // Adds the user to the set so that they can't talk for a minute
+        workedRecently.add(message.author.id);
+        setTimeout(() => {
+          // Removes the user from the set after a minute
+          workedRecently.delete(message.author.id);
+        }, 300000);
+      
+              var output = await eco.Work(message.author.id, {
+                        failurerate: 60, 
+                        money: Math.floor((Math.random() * 9) + 1),
+                        jobs: ['Chef', 'Revival Center Doctor', 'Nimbus Agent']
                     })
-                    //50% chance to fail and earn nothing. You earn between 1-100 coins. And you get one out of 20 random jobs.
+                    //50% chance to fail and earn nothing. You earn between 1-9
+                
                 var funnyMessage = "Please do not hate the unsavories."
                 if (output.earned == 0) return message.reply(`You failed to earn money. ${funnyMessage}`)
-                message.channel.send(`${message.author.username}
-You worked as a ${output.job} and earned ${output.earned} ${cur}
-You now own ${output.balance} ${cur}`)
+                message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${cur}. You now own ${output.balance} ${cur}.`)
+
+
+    }
+          
 
 
             }
-
+          
             if (command === 'slots') {
 
                 var amount = args[0] //Coins to gamble
@@ -941,13 +1015,35 @@ You now own ${output.balance} ${cur}`)
 
                 var gamble = await eco.Slots(message.author.id, amount, {
                     width: 3,
-                    height: 1
+                    height: 4
                 }).catch(console.error)
                 message.channel.send(gamble.grid) //Grid checks for a 100% match vertical or horizontal.
                 message.channel.send(`You ${gamble.output}. New balance: ${gamble.newbalance} ${cur}`)
 
             }
+            
+            if (command === "market") { //todo
+              var stocks = {"BSA":{"BigSky Airlines": 3}, 
+                            "NNT":{"Next Youth Corner Turning": 6}, 
+                            "NHA":{"New Hope Aerospace Labs": 1}, 
+                            "SFS":{"Sea Steak Food Synthesis": 6}, 
+                            "ELR": {"Extra Lives Revival": 7},
+                            "ELA": {"Misso Soup and Ramen": 5},
+                            "POO": {"Prager University": 50}}
+              
 
+              
+              
+            }
+            
+            if (command === "buy") {
+            
+            }
+            
+            if (command === "sell") {
+            
+            }
+            
             if (command === "userinfo") {
                 let user = args[0]
                 if (!user) {
@@ -1037,7 +1133,9 @@ You now own ${output.balance} ${cur}`)
                 if (!args[0]) {
                     guild = message.guild;
                 }
-                const embed = new Discord.RichEmbed()
+              var createdAt = new Date(message.guild.createdAt) 
+              message.channel.send("createdAt => "+ createdAt.toString())
+              const embed = new Discord.RichEmbed()
                     .setColor(thunderColor)
                     .setAuthor(`Server: ${guild.name}`)
                     .setThumbnail(guild.iconURL)
@@ -1143,7 +1241,15 @@ You now own ${output.balance} ${cur}`)
                 );
             }
 
-            if (command === "ask") {
+            if (command === "ask") { //todo: ONE QUESTION ASK SYSTEM! DOITDOITDOITDOITDOIT
+                if (message.author.id === "614634259021430786")
+              {
+                
+                                    message.channel.send("You asked: *" + args.join(" ") + "*", {
+                        files: ["https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2Fno-no.png"]
+                    });
+              }else{
+      //todo: add math solver
                 var maybeViolate = message.content;
                 if (
                     maybeViolate.toLowerCase().indexOf("scythe") >= 0 ||
@@ -1166,17 +1272,100 @@ You now own ${output.balance} ${cur}`)
                     });
                 }
                 message.channel.send();
-            }
+            }}
+
+    if ((command === "remindme") || (command === "remind") || (command == "r")) {
+        // [Omega] X Homework
+        // just add to database main code will be above
+        if (!(reminds[message.author.id])) {
+            reminds[message.author.id] = []
+        }
+
+        var date = new Date();
 
 
+
+        var time = args[0]
+        if (!time) {
+            return message.reply(
+                "When do you want me to remind you"
+            );
+        }
+
+        if (!time.match(/[s,m,h,d,w,y]/g)) {
+            return message.reply("I need a valid time!");
+        }
+
+        if (!(args[1])) return message.channel.send("I'm sorry. But what exactly am I supposed to remind you of?");
+        var themessage = message.content.split(" ").slice(2).join(" ");
+
+        var strunit = time.slice(-1);
+        var unit = 1
+
+        if (strunit === "s") {
+            unit = 1
+        }
+
+        if (strunit === "m") {
+            unit = 60
+        }
+
+        if (strunit === "h") {
+            unit = 3600
+        }
+
+        if (strunit === "d") {
+            unit = 86400
+        }
+
+        if (strunit === "w") {
+            unit = 604800
+        }
+
+        if (strunit === "y") {
+            unit = 31557600
+        }
+        console.log((time.slice(0, -1)))
+        time = (time.slice(0, -1))
+        var inted = parseInt(time);
+        console.log("TIME " + inted)
+        // if (inted == !inted) return message.channel.send("Not an integer.") //apollo
+        console.log(unit)
+        console.log(time)
+        console.log(": " + (unit * 1000 * time))
+        var newtime = new Date();
+        newtime = (date.getTime() + (unit * 1000 * time))
+        //newtime = newtime -  100000000000  //What the hell and why the hell! Why do I need this weird ass line? Why is newdate 100000000000 miliseconds in the future?
+        date = date.getTime() + (unit * 0)
+        console.log(date)
+        console.log(newtime)
+        reminds[message.author.id].push({ "reminder": themessage, "time": newtime })
+
+        message.channel.send("I will be sure to remind you of that when the time arrives. The reminder will be in a DM (Direct Message) so if I unable to DM you or you are unsavory at the time, you *will not* recive the reminder.")
+    }
 
             if (command === "help") {
+            var devMessage = "☕ __Dev Commands__ (Page 0/4)\n"
+              + "`/help 0`: Help for developer commands. " + "\n"
+              + "`d/repo`: My GitHub repository." + "\n"
+              + "`d/eval [Code]`: Execute code." + "\n"
+              + "`d/avatar [Image Link]`: Set my profile picture to a different image." + "\n"
+              + "`d/name [Name]`: Change my Discord name." + "\n"
+              + "`d/give [@User] [Amount]`: Transfer currency to a user's account." + "\n"
+              + "`d/dm [@User] [Message]`: Direct message a user." + "\n"
+              + "`d/gs [@User]`: Give a user the role of Grandslayer on the ScythePosts Server." + "\n"
+              + "`d/ugs [@User]`: Unassign the Grandslayer role." + "\n"
+              + "`d/unsuspend`: Unsuspend the bot." + "\n"
+                
+              + "ᴰᵉᵛ ᵖʳᵉᶠᶦˣ ᶦˢ d/"
+            
+            
             var helpMessage = "📜 __Commands__ (Page 1/4)\n"
               + "`/help [page]`: A command to use if you require assistance. " + "\n"
               + "`/ping`: A command to check if I am avaliable. It may be slowed a fraction of a second due to unsavories." + "\n"
               + "`/roleme [Role]`: A command to assign yourself a role." + "\n"
               + "`/ask [Question]`: Ask me a question." + "\n"
-              + "`/remind [Time] [Reminder]: I can remind you of something if need be.`" + "\n"
+              + "`/remind [Time] [Reminder]`: I can remind you of something if need be." + "\n"
               + "`/userinfo [@User]`: Find out more about a person." + "\n"
               + "`/weather [Location]`: I try to divert rain away from people but it is always good to double check." + "\n"
 
@@ -1185,15 +1374,17 @@ You now own ${output.balance} ${cur}`)
 
             var economyMessage = "💸 __Economy Commands__ (Page 2/4)\n"
               + "`/help 2`: Help for the economy commands. " + "\n"
-              + "`/bal {User}`: Check your (or someone else's) balance." + "\n"
+              + "`/bal [@User]`: Check your (or someone else's) balance." + "\n"
               + "`/daily`: Your daily Basic Income Guarantee." + "\n"
-              + "`/work`: Work to try to earn money. (100% failAccurate + Add cooldown.)" + "\n"
+              + "`/work`: Work to try to earn money. Five minute cooldown." + "\n"
               + "`/roll [amount]`: Gamble money I do not suggest this as the odds of losing are high." + "\n"
               + "`/slots [amount]`: Same as roll, but with slots." + "\n"
               + "`/pay [@User]`: Pay a user." + "\n"
               + "`/leaderboard`: Check to see who has the most money." + "\n"
+              + "`/coinflip [@User] [Amount] [Heads or Tails]`: Bet an amount of money with a user. They must accept with `/acceptcf` within five seconds" + "\n"
               + "`/undebt`: Set your balance to zero if it is less than zero." + "\n"
-
+              
+           //   + "The following economy commands are in `beta`: market, buy, sell\n"
               + "ᴰᵒⁿ'ᵗ ᵉᵛᵉⁿ *ᵗʳʸ* ᵗᵒ ʳᵒˡˡ ᵃ ⁿᵉᵍᵃᵗᶦᵛᵉ ᵒʳ ᴺᵃᴺ ⁿᵘᵐᵇᵉʳ"
 
 
@@ -1226,22 +1417,19 @@ You now own ${output.balance} ${cur}`)
               if (!page) {page = 1}
             
               
-              var pages = ["0", helpMessage, economyMessage, musicMessage, modMessage]
+              var pages = [devMessage, helpMessage, economyMessage, musicMessage, modMessage]
               var helpText = pages[page]
-              if (!helpText) {helpText = "Error: No Command at Help List " + (page)}
+              if (!helpText) {helpText = "Error: No Command at `pages[" + (page)+ "]`"}
               message.channel.send(helpText)
             }
 
             //Music Commands
             //=========================================================
-            if (!message.author.id === "274198819216949248" && !message.member.roles.some(r => ["Tonist"].includes(r.name))) return message.channel.send("Sorry, but you cannot do that!");
-            if (!(message.member.roles.find(r => r.name === "Tonist"))) return;
-            const searchString = args.slice(0).join(" ");
+             const searchString = args.slice(0).join(" ");
             var url = args[0] ? args[0].replace(/<(.+)>/g, "$1") : "";
             const serverQueue = queue.get(message.guild.id);
-
+if (message.author.id === "399697395564281866") return;
             if (command === "play") {
-                if (!(message.member.roles.find(r => r.name === "Tonist"))) return message.channel.send("<:sad:637002048088309805>");
                 const voiceChannel = message.member.voiceChannel;
                 if (!voiceChannel)
                     return message.channel.send(
@@ -1328,7 +1516,26 @@ Please provide a value to select one of the 🔎 results ranging from 1-10.
         }
 
         serverQueue.volume = 2;
-    } else if (command == "study") {
+    }    else if (command == "gameing") {
+        const voiceChannel = message.member.voiceChannel;
+        if (!voiceChannel)
+            return message.channel.send(
+                "I'm sorry but you need to be in a voice channel to play music."
+            );
+        const playlist = await youtube.getPlaylist(
+            "https://www.youtube.com/playlist?list=PL0aso3-ouj1wubnlvMHRv-jX3trKE4_rY"
+        );
+        message.channel.send("Gameinge Beats B)");
+        const videos = await playlist.getVideos();
+        for (const video of Object.values(videos)) {
+            const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
+            await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
+        }
+
+        serverQueue.volume = 2;
+    }
+  
+  else if (command == "study") {
         const voiceChannel = message.member.voiceChannel;
         if (!voiceChannel)
             return message.channel.send(
@@ -1373,50 +1580,63 @@ Please provide a value to select one of the 🔎 results ranging from 1-10.
             );
         serverQueue.volume = args[0];
         serverQueue.connection.dispatcher.setVolumeLogarithmic(args[0] / 5);
-        var volval;
+         var volval;
         if (serverQueue.volume == 1) {
-            volval = `○──── :loud_sound:⠀`;
+            volval = `○────`;
         }
         if (serverQueue.volume == 2) {
-            volval = `─○─── :loud_sound:⠀`;
+            volval = `─○───`;
         }
         if (serverQueue.volume == 3) {
-            volval = `──○── :loud_sound:⠀`;
+            volval = `──○──`;
         }
         if (serverQueue.volume == 4) {
-            volval = `───○─ :loud_sound:⠀`;
+            volval = `───○─`;
         }
         if (serverQueue.volume == 5) {
-            volval = `────○ :loud_sound:⠀`;
+            volval = `────○`;
+        } 
+        else if (serverQueue.volume < 1) {
+            volval = "○ ─────";
         }
+        else if (serverQueue.volume > 5) {
+            volval = "───── ○";
+        } 
         message.channel.send(volval);
     } else if (command === "np") {
         if (!serverQueue) return message.channel.send("There is nothing playing.");
-        var volval;
+         var volval;
         if (serverQueue.volume == 1) {
-            volval = `○──── :loud_sound:⠀`;
+            volval = `○────`;
         }
         if (serverQueue.volume == 2) {
-            volval = `─○─── :loud_sound:⠀`;
+            volval = `─○───`;
         }
         if (serverQueue.volume == 3) {
-            volval = `──○── :loud_sound:⠀`;
+            volval = `──○──`;
         }
         if (serverQueue.volume == 4) {
-            volval = `───○─ :loud_sound:⠀`;
+            volval = `───○─`;
         }
         if (serverQueue.volume == 5) {
-            volval = `────○ :loud_sound:⠀`;
-        } else {
-            volval = "-----";
+            volval = `────○`;
+        } 
+        else if (serverQueue.volume < 1) {
+            volval = "○ ─────";
         }
-        return message.channel.send(`
-=========================================================
-ɴᴏᴡ ᴘʟᴀʏɪɴɢ: **${serverQueue.songs[0].title}**
-:white_circle:───────────────────────────────────────────
-◄◄⠀▐▐ ⠀►►⠀⠀　　${volval}    　　 :gear: ❐ ⊏⊐
-=========================================================
-`);
+        else if (serverQueue.volume > 5) {
+            volval = "───── ○";
+        } else {
+          volval = "Thunderhead Music"
+        }
+      const MusicEmbed = {"embed": 
+                          {"description": `ɴᴏᴡ ᴘʟᴀʏɪɴɢ \n **${serverQueue.songs[0].title}**`,
+                           "color": 9777040,
+                           "footer":{"icon_url": "https://cdn.glitch.com/967bdf25-e9cb-4a1f-bdb5-a102880988a9%2FMusic%20Icon.png?v=1560799891254","text": volval},
+                           "thumbnail": {"url": serverQueue.songs[0].thumbnail},
+                           "title": "Music"}}
+      return message.channel.send(MusicEmbed);
+      
     } else if (command === "queue") {
         if (!serverQueue) return message.channel.send("There is nothing playing.");
         return message.channel.send(`
@@ -1443,11 +1663,16 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join("\n")}
 });
 async function handleVideo(video, message, voiceChannel, playlist = false) {
     const serverQueue = queue.get(message.guild.id);
-    const song = {
+  
+
+  
+  const song = {
         id: video.id,
         title: Util.escapeMarkdown(video.title),
-        url: `https://www.youtube.com/watch?v=${video.id}`
+        url: `https://www.youtube.com/watch?v=${video.id}`,
+        thumbnail: video.thumbnails.high.url
     };
+  
     if (!serverQueue) {
         const queueConstruct = {
             textChannel: message.channel,
@@ -1507,31 +1732,39 @@ function play(guild, song) {
             play(guild, serverQueue.songs[0]);
         })
         .on("error", error => console.error(error));
-
-    var volval;
-    if (serverQueue.volume == 1) {
-        volval = `○──── :loud_sound:⠀`;
-    }
-    if (serverQueue.volume == 2) {
-        volval = `─○─── :loud_sound:⠀`;
-    }
-    if (serverQueue.volume == 3) {
-        volval = `──○── :loud_sound:⠀`;
-    }
-    if (serverQueue.volume == 4) {
-        volval = `───○─ :loud_sound:⠀`;
-    }
-    if (serverQueue.volume == 5) {
-        volval = `────○ :loud_sound:⠀`;
-    }
+         var volval;
+        if (serverQueue.volume == 1) {
+            volval = `○────`;
+        }
+        if (serverQueue.volume == 2) {
+            volval = `─○───`;
+        }
+        if (serverQueue.volume == 3) {
+            volval = `──○──`;
+        }
+        if (serverQueue.volume == 4) {
+            volval = `───○─`;
+        }
+        if (serverQueue.volume == 5) {
+            volval = `────○`;
+        } 
+        else if (serverQueue.volume < 1) {
+            volval = "○ ─────";
+        }
+        else if (serverQueue.volume > 5) {
+            volval = "───── ○";
+        } else {
+          volval = "Thunderhead Music"
+        }
     dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-    serverQueue.textChannel.send(`
-=========================================================
-ɴᴏᴡ ᴘʟᴀʏɪɴɢ: **${song.title}**
-:white_circle:───────────────────────────────────────────
-◄◄⠀▐▐ ⠀►►⠀⠀　　${volval}    　　 :gear: ❐ ⊏⊐
-=========================================================
-`);
+        const MusicEmbed = {"embed": 
+                          {"description": `ɴᴏᴡ ᴘʟᴀʏɪɴɢ \n **${serverQueue.songs[0].title}**`,
+                           "color": 9777040,
+                           "footer":{"icon_url": "https://cdn.glitch.com/967bdf25-e9cb-4a1f-bdb5-a102880988a9%2FMusic%20Icon.png?v=1560799891254","text": volval},
+                           "thumbnail": {"url": serverQueue.songs[0].thumbnail},
+                           "title": "Music"}}
+  
+  serverQueue.textChannel.send(MusicEmbed);
 }
 
 //Ping Spoof
