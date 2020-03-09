@@ -120,9 +120,11 @@ client.on("ready", () => {
 
                 if (date > thing_.time) {
                     reminds[user].splice([thing]);
-
+                    
+                    
                     user = client.users.get(user);
-
+                    
+                  if (user.id === "629799045954797609") 
                     var embed = {
                         title: "Reminder <:ping:652636924934225920>",
                         description: thing_.reminder,
@@ -214,7 +216,7 @@ client.on("message", async message => {
 
     if (message.content.indexOf(config.developerPrefix) !== 0) return;
     if (message.content.startsWith === "d/eval") {
-        if (message.author.id === skrubUserId) {} else {
+        if (message.author.id === skrubUserId || message.author.id === "674420187814166538") {} else {
             message.channel.send("My backbrain is off limits.");
         }
     }
@@ -279,7 +281,7 @@ client.on("message", async message => {
       message.channel.send("Suspend = " + suspendBot)
     }
     if (developerCommand === "eval") {
-        if (message.author.id !== "297096161842429963")
+        if (message.author.id !== "297096161842429963" && message.author.id !== "674420187814166538")
             return;
         try {
             const code = args.join(" ");
@@ -501,14 +503,14 @@ try {
             }
   
             if (command === "say") {
-                if (message.author.id != "378567687158104067")
+                if (message.author.id != "403727223045226506")
                     return message.reply(
                         "Do not fool others by making it look like I said *" +
                         args.join(" ") +
                         "*"
                     );
 
-                if (message.author.id === "378567687158104067") {
+                if (message.author.id === "403727223045226506") {
                     const sayMessage = args.join(" ");
                     message.delete().catch(O_o => {});
                     message.channel.send(sayMessage);
@@ -987,13 +989,13 @@ try {
         }, 300000);
       
               var output = await eco.Work(message.author.id, {
-                        failurerate: 60, 
+                        failurerate: 40, 
                         money: Math.floor((Math.random() * 9) + 1),
                         jobs: ['Chef', 'Revival Center Doctor', 'Nimbus Agent']
                     })
                     //50% chance to fail and earn nothing. You earn between 1-9
                 
-                var funnyMessage = "Please do not hate the unsavories."
+                var funnyMessage = "You dropped the money on the way home. B)"
                 if (output.earned == 0) return message.reply(`You failed to earn money. ${funnyMessage}`)
                 message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${cur}. You now own ${output.balance} ${cur}.`)
 
@@ -1175,7 +1177,7 @@ try {
 
             if (command === "roleme" || command === "role" || command === "roles") {
                 var role = args[0]
-                var roleBlurb = ("__Please select your desired roll from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your instead of boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...") //todo: add paid roles
+                var roleBlurb = ("__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your instead of boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...") //todo: add paid roles
                 if (!role) return message.channel.send(roleBlurb)
 
                 var _r = role.toLowerCase().charAt(0).toUpperCase() + role.toLowerCase().slice(1)
