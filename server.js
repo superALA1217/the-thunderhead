@@ -1,12 +1,8 @@
 var suspendBot = false
 
 //Requirements
-const Discord = require(`discord.js`);
+const Discord = require("discord.js");
 
-const {
-    Client,
-    Util
-} = require("discord.js");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
@@ -24,6 +20,38 @@ const ytdl = require("ytdl-core");
 const youtube = new YouTube(process.env.APITOKEN);
 const queue = new Map();
 
+//Ping Spoof
+const http = require("http");
+const express = require("express");
+const app = express();
+
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static("public"));
+
+// http://expressjs.com/en/starter/basic-routing.html
+app.get("/", function(request, response) {
+  response.sendFile(__dirname + "/views/index.html");
+});
+
+
+var bodyParser = require("body-parser");
+app.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+);
+
+
+app.get("/", (request, response) => {
+    console.log(Date.now() + " Ping Received");
+    response.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+setInterval(() => {
+    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
 // ~around 5ish minutes
 const workedRecently = new Set();
 
@@ -40,6 +68,19 @@ const activities_type = [
     "WATCHING", "LISTENING", "WATCHING",
     "WATCHING", "LISTENING"
 ];
+
+
+//CHAT//
+/*
+Huboldt123: The bot does not go online, despite now showing errors. It occasionally throws the "Something took too long error". What can I do?
+
+
+
+
+
+
+*/
+
 
 
 //Pre Definitions
@@ -84,7 +125,7 @@ function clean(text) {
 }
 
 function print(text) {
-    message.channel.send(text); // Annoying Predicted Error On Glitch; This works just fine
+    message.channel.send(text); 
 }
 
 
@@ -123,9 +164,8 @@ client.on("ready", () => {
                     
                     
                     user = client.users.get(user);
-                    
-                  if (user.id === "629799045954797609") 
-                    var embed = {
+                   
+                  var embed = {
                         title: "Reminder <:ping:652636924934225920>",
                         description: thing_.reminder,
                         color: 3553598
@@ -141,7 +181,8 @@ client.on("ready", () => {
 
 //Secret Channel
 client.on("message", async message => {
-    var secretChannel = client.channels.get("643129859115057184");
+/*squines//  if (message.author.id === "402200704141230101" || message.author.id === "678445814577627147") return message.delete();  //*/
+  var secretChannel = client.channels.get("643129859115057184");
     if (!secretChannel) {
         secretChannel = message.channel
     }
@@ -196,7 +237,8 @@ client.on("messageDelete", async message => { //Anti Urine Device
 //message.on whatever control-f
 //Message Scan Misc./Developer
 client.on("message", async message => {
-    if (message.content.length == 0) return;
+
+  if (message.content.length == 0) return;
 
     //Mentioned the Thunderhead?
     if (message.mentions.users.has("629799045954797609")) {
@@ -358,8 +400,6 @@ client.on("message", async message => {
 
 
 client.on("message", async message => {
-            
-  
         var cur = "`vibes`";
             const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
             const command = args.shift().toLowerCase();
@@ -737,7 +777,7 @@ try {
                     );
             }
 
-            if (command === "bal" || command === "vibecheck") {
+            if (command === "bal" || command === "vibecheck"|| command === "balance") {
                 var userToCheck = message.mentions.members.first();
 
                 if (!userToCheck) {
@@ -959,14 +999,21 @@ try {
 
                         if (users[0]) var firstplace = await client.fetchUser(users[0].userid) //Searches for the user object in discord for first place
                         if (users[1]) var secondplace = await client.fetchUser(users[1].userid) //Searches for the user object in discord for second place
-                        if (users[2]) var thirdplace = await client.fetchUser(users[2].userid) //Searches for the user object in discord for third place
+                        if (users[2]) var thirdplace = await client.fetchUser(users[2].userid)
+                        if (users[3]) var fourthplace = await client.fetchUser(users[3].userid)
+                        if (users[4]) var fifthplace = await client.fetchUser(users[4].userid)
+                        
 
-                        message.channel.send(`My leaderboard:
+                        message.channel.send(`Leaderboard:
  
 1 - ${firstplace && firstplace.username || 'Nobody Yet'} : ${users[0] && users[0].balance || 'None' } ${cur}
 2 - ${secondplace && secondplace.username || 'Nobody Yet'} : ${users[1] && users[1].balance || 'None'} ${cur}
-3 - ${thirdplace && thirdplace.username || 'Nobody Yet'} : ${users[2] && users[2].balance || 'None'} ${cur}`)
+3 - ${thirdplace && thirdplace.username || 'Nobody Yet'} : ${users[2] && users[2].balance || 'None'} ${cur}
+4 - ${fourthplace && fourthplace.username || 'Nobody Yet'} : ${users[3] && users[3].balance || 'None'} ${cur}
+5 - ${fifthplace && fifthplace.username || 'Nobody Yet'} : ${users[4] && users[4].balance || 'None'} ${cur}`)
 
+
+                      
 
                     })
 
@@ -991,11 +1038,11 @@ try {
               var output = await eco.Work(message.author.id, {
                         failurerate: 40, 
                         money: Math.floor((Math.random() * 9) + 1),
-                        jobs: ['Chef', 'Revival Center Doctor', 'Nimbus Agent']
+                        jobs: ['Chef', 'Revival Center Doctor', 'Nimbus Agent', 'Youtuber', 'Librarian', 'Peace Officer', 'Architect', 'Fireman']
                     })
                     //50% chance to fail and earn nothing. You earn between 1-9
                 
-                var funnyMessage = "You dropped the money on the way home. B)"
+                var funnyMessage = "Looks like today is not your day."
                 if (output.earned == 0) return message.reply(`You failed to earn money. ${funnyMessage}`)
                 message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${cur}. You now own ${output.balance} ${cur}.`)
 
@@ -1131,27 +1178,50 @@ try {
             }
 
             if (command === "serverinfo") {
-                var guild = client.guilds.get(args[0]);
-                if (!args[0]) {
-                    guild = message.guild;
-                }
-              var createdAt = new Date(message.guild.createdAt) 
-              message.channel.send("createdAt => "+ createdAt.toString())
-              const embed = new Discord.RichEmbed()
-                    .setColor(thunderColor)
-                    .setAuthor(`Server: ${guild.name}`)
-                    .setThumbnail(guild.iconURL)
-                    .addField(":white_small_square: Owner", "<@!" + guild.owner.id + ">")
-                    .addField(":white_small_square: ID", guild.id, true)
-                    .addField(":white_small_square: Users", guild.memberCount, true)
-                    .addField(":white_small_square: Channels", guild.channels.size, true);
-                message.channel.send(embed);
-            }
+           function checkDays(date) {
+    let now = new Date();
+    let lapsed = now.getTime() - date.getTime();
+    let days = Math.floor(lapsed / 86400000);
+    return days + (days == 1 ? " day" : " days") + " ago";
+};
+let discordGuildVerificationLevels = ["None", "Low", "Medium", "(╯°□°）╯︵  ┻━┻", "┻━┻ミヽ(ಠ益ಠ)ノ彡┻━┻"];
 
-            if (command === "weather") {
+let region = {
+    "brazil": "🇧🇷 Brazil",   
+    "eu-central": "🇪🇺 Central Europe",
+    "singapore": "🇸🇬 Singapore",
+    "us-central": "🇺🇸 U.S. Central",
+    "sydney": ":flag_au: Sydney",
+    "us-east": "🇺🇸 U.S. East",
+    "us-south": "🇺🇸 U.S. South",
+    "us-west": "🇺🇸: U.S. West",
+    "eu-west": "🇪🇺: Western Europe",
+    "vip-us-east": "🇺🇸 VIP U.S. East",
+    "london": "🇬🇧 London",
+    "amsterdam": "🇳🇱 Amsterdam",
+    "hongkong": "🇭🇰 Hong Kong",
+    "russia": "🇷🇺 Russia",
+    "southafrica": "🇿🇦  South Africa"
+};
+const embed = new Discord.RichEmbed()
+    .setAuthor(message.guild.name, message.guild.iconURL)
+    .addField("Name", message.guild.name, true)
+    .addField("ID", message.guild.id, true)
+    .addField("Owner", `${message.guild.owner.user.username}#${message.guild.owner.user.discriminator}`, true)
+    .addField("Region", region[message.guild.region], true)
+    .addField("Total | Humans | Bots", `${message.guild.members.size} | ${message.guild.members.filter(member => !member.user.bot).size} | ${message.guild.members.filter(member => member.user.bot).size}`, true)
+    .addField("Verification Level", discordGuildVerificationLevels[message.guild.verificationLevel], true)
+    .addField("Channels", message.guild.channels.size, true)
+    .addField("Roles", message.guild.roles.size, true)
+    .addField("Creation Date", `${message.channel.guild.createdAt.toUTCString().substr(0, 16)} (${checkDays(message.channel.guild.createdAt)})`, true)
+    .setColor("36393E")
+    .setThumbnail(message.guild.iconURL)
+message.channel.send({ embed });
+            }
+   if (command === "weather") {
                 if (!args[0]) return message.channel.send("Please enter a zipcode.");
                 weather.find({
-                    search: args[0],
+                    search: args.join(" "),
                     degreeType: "F"
                 }, function(err, result) {
                     if (result.length === 0) {
@@ -1174,7 +1244,27 @@ try {
                     message.channel.send(WeatherEmbed);
                 });
             }
-
+  if (command === "time") {
+    
+                    if (!args[0]) return message.channel.send("Please enter a zipcode.");
+                weather.find({
+                    search: args.join(" "),
+                    degreeType: "F"
+                }, function(err, result) {
+                    if (result.length === 0) {
+                        message.channel.send("**Please enter a valid location.**");
+                        return;
+                    }
+                    var location = result[0].location;
+                  var date = new Date();
+                  var hour = (((parseInt(date.getHours()*60))+(parseInt(location.timezone)*60))/60);
+                  if (hour > 24) hour = hour-24;
+                  var days = ["Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday", "Sunday"];
+                  var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"]
+                  message.channel.send("The time in " + location.name + " is " + days[date.getDate()] + " @ " + hour + ":" + date.getMinutes() + ". It is the year of the **" + years[date.getFullYear()-2020]+"**.") 
+                     
+                });
+  }
             if (command === "roleme" || command === "role" || command === "roles") {
                 var role = args[0]
                 var roleBlurb = ("__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your instead of boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...") //todo: add paid roles
@@ -1244,13 +1334,13 @@ try {
             }
 
             if (command === "ask") { //todo: ONE QUESTION ASK SYSTEM! DOITDOITDOITDOITDOIT
-                if (message.author.id === "614634259021430786")
-              {
-                
-                                    message.channel.send("You asked: *" + args.join(" ") + "*", {
-                        files: ["https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2Fno-no.png"]
-                    });
-              }else{
+           //     if (message.author.id === "614634259021430786")
+            //  {
+             //   
+              //                      message.channel.send("You asked: *" + args.join(" ") + "*", {
+                    //    files: ["https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2Fno-no.png"]
+                 //   });
+             // }else{
       //todo: add math solver
                 var maybeViolate = message.content;
                 if (
@@ -1274,7 +1364,7 @@ try {
                     });
                 }
                 message.channel.send();
-            }}
+            }
 
     if ((command === "remindme") || (command === "remind") || (command == "r")) {
         // [Omega] X Homework
@@ -1369,7 +1459,9 @@ try {
               + "`/ask [Question]`: Ask me a question." + "\n"
               + "`/remind [Time] [Reminder]`: I can remind you of something if need be." + "\n"
               + "`/userinfo [@User]`: Find out more about a person." + "\n"
+              + "`/serverinfo`: Find out more the current server." + "\n"
               + "`/weather [Location]`: I try to divert rain away from people but it is always good to double check." + "\n"
+              + "`/time [Location]`: Check what time it is somewhere if you have a friend in a different timezone." + "\n"
 
               + "ᵁˢᵉ ʰᵉˡᵖ ᶠᵒˡˡᵒʷᵉᵈ ᵇʸ ᵗʰᵉ ʰᵉˡᵖ ᵖᵃᵍᵉ ᵗᵒ ˢᵉᵉ ᵐᵒʳᵉ ᶜᵒᵐᵐᵃⁿᵈˢ"
 
@@ -1425,14 +1517,14 @@ try {
               message.channel.send(helpText)
             }
 
+  //if (message.author.id === "406523000666587138" || message.author.id === "402200704141230101") return;
             //Music Commands
             //=========================================================
              const searchString = args.slice(0).join(" ");
             var url = args[0] ? args[0].replace(/<(.+)>/g, "$1") : "";
             const serverQueue = queue.get(message.guild.id);
-if (message.author.id === "399697395564281866") return;
-            if (command === "play") {
-                const voiceChannel = message.member.voiceChannel;
+            if (command === "play") {  
+              const voiceChannel = message.member.voiceChannel;
                 if (!voiceChannel)
                     return message.channel.send(
                         "My apologies, but you need to be in a voice channel to play music."
@@ -1670,7 +1762,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
   
   const song = {
         id: video.id,
-        title: Util.escapeMarkdown(video.title),
+        title: Discord.escapeMarkdown(video.title),
         url: `https://www.youtube.com/watch?v=${video.id}`,
         thumbnail: video.thumbnails.high.url
     };
@@ -1768,34 +1860,4 @@ function play(guild, song) {
   
   serverQueue.textChannel.send(MusicEmbed);
 }
-
-//Ping Spoof
-const http = require("http");
-const express = require("express");
-const app = express();
-var bodyParser = require("body-parser");
-app.use(
-    bodyParser.urlencoded({
-        extended: true
-    })
-);
-
-//Syntax: Testfile
-//app.use(express.static("public"));
-//app.get("/testfile.json", function (request, response) {
-//    response.sendFile(__dirname + '/testfile.json');
-//});
-
-
-app.get("/", (request, response) => {
-    console.log(Date.now() + " Ping Received");
-    response.sendStatus(200);
-});
-
-app.listen(process.env.PORT);
-setInterval(() => {
-    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 280000);
-
-//Login
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);  
