@@ -47,10 +47,32 @@ app.get("/", (request, response) => {
     response.sendStatus(200);
 });
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT, () => {
+  console.info('Running on port ' + process.env.PORT);
+});
 setInterval(() => {
     http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
 }, 280000);
+
+// Routes
+app.use('/api/discord', require('./api/discord'));
+
+
+app.use((err, req, res, next) => {
+  switch (err.message) {
+    case 'NoCodeProvided':
+      return res.status(400).send({
+        status: 'ERROR',
+        error: err.message,
+      });
+    default:
+      return res.status(500).send({
+        status: 'ERROR',
+        error: err.message,
+      });
+  }
+});
+
 
 // ~around 5ish minutes
 const workedRecently = new Set();
@@ -179,62 +201,9 @@ client.on("ready", () => {
     }, 10000); // Runs this every 10 seconds.
 });
 
-//Secret Channel
-client.on("message", async message => {
-/*squines//  if (message.author.id === "402200704141230101" || message.author.id === "678445814577627147") return message.delete();  //*/
-  var secretChannel = client.channels.get("643129859115057184");
-    if (!secretChannel) {
-        secretChannel = message.channel
-    }
-    if (message.content.length == 0) return;
-
-    var MessageEmbed = new Discord.RichEmbed()
-        .setTitle(`${message.author.username} (ID: ${message.author.id}) sent a message in ${message.guild.name}`)
-        .addField(`In channel # ${message.channel.name}`, message.content)
-        .setFooter(`d/devsay ${message.channel.id}`, message.author.displayAvatarURL)
-        .setColor(thunderColor);
-    if (
-        message.channel.id === secretChannel.id ||
-        message.channel.id === "643137323290066954" ||
-        message.channel.id === "643131582982389760" ||
-        message.channel.id === "643134535726268426"
-    ) {} else {
-        const m = await secretChannel.send(MessageEmbed);
-        var b = "🗑️";
-        m.react(b);
-        const filter = (reaction, user) => {
-            return (
-                [b].includes(reaction.emoji.name) && user.id != "629799045954797609"
-            );
-        };
-        m.createReactionCollector(filter, {
-                time: 60000,
-                errors: ["time"]
-            })
-            .on("collect", reaction => {
-                if (reaction.emoji.name === b) {
-                    message.delete();
-                    m.delete();
-                }
-            })
-            .on("end", collected => {});
-    }
-});
-
-/*
-client.on("messageDelete", async message => { //Anti Urine Device
-   const deleteEmbed = new Discord.RichEmbed()
-   .setDescription(`${message.content}`)
-   .setColor("FF685E")
-   .setAuthor(`${message.author.username} deleted a message`, `${message.author.displayAvatarURL}`)
-   message.channel.send(deleteEmbed)
-})
-
-*/
 
 
 
-//message.on whatever control-f
 //Message Scan Misc./Developer
 client.on("message", async message => {
 
@@ -763,7 +732,7 @@ try {
             if (command === "purge") {
                 if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id !== "297096161842429963")
                     return message.reply(
-                        "Sorry, you don't have permissions to use this! If you continue I may be forced to mark you unsavory, have am perfect day."
+                        "Sorry, you don't have permissions to use this! If you continue I may be forced to mark you unsavory, have a perfect day."
                     );
                 const deleteCount = parseInt(args[0], 10);
                 if (!deleteCount || deleteCount < 2 || deleteCount > 100)
@@ -785,7 +754,7 @@ try {
                 } else {
                     userToCheck = userToCheck.user
                 }
-
+  
                 var output = await eco.FetchBalance(userToCheck.id)
 
 
@@ -1119,6 +1088,21 @@ try {
                     mentioneduser.createdAt.getMinutes() +
                     ":" +
                     mentioneduser.createdAt.getSeconds();
+              
+                 const joinedserver =
+                   message.guild.member(mentioneduser).joinedAt.getDate() +
+                    1 +
+                    "-" +
+                    (message.guild.member(mentioneduser).joinedAt.getMonth() + 1) +
+                    "-" +
+                    message.guild.member(mentioneduser).joinedAt.getFullYear() +
+                    " | " +
+                    message.guild.member(mentioneduser).joinedAt.getHours() +
+                    ":" +
+                   message.guild.member(mentioneduser).joinedAt.getMinutes() +
+                    ":" +
+                    message.guild.member(mentioneduser).joinedAt.getSeconds();
+              
                 let game;
                 if (user.presence.game === null) {
                     game = "Not currently Playing.";
@@ -1160,8 +1144,8 @@ try {
                         },
                         fields: [{
                             name: "**UserInfo:**",
-                            value: `**Username:** <@!${user.id}>\n**Joined Discord:** ${joineddiscord}\n**Last message:** ${messag}\n**Playing:** ${game}\n**Status:** ${status}\n**User is a robot:** ${user.bot}`
-                        }, {
+                            value: `**Username:** <@!${user.id}>\n**Joined Discord:** ${joineddiscord}\n**Joined This Server:** ${joinedserver}\n**Last message:** ${messag}\n**Playing:** ${game}\n**Status:** ${status}\n**User is a robot:** ${user.bot}`
+                        }, {  
                             name: "DiscordInfo:",
                             value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}`
                         }, {
