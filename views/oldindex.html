@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>Thunderhead</title>
+  <!-- import the webpage's stylesheet -->
+  <link rel="stylesheet" href="/style.css" />
+     <style>
+          .container {
+            display: flex;
+            width: 100%;
+            padding: 40px 0;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .container a {
+            background: #7289DA;
+            padding: 0 20px;
+            line-height: 35px;
+            color: #fff;
+            font-family: 'Helvetica', 'Arial', sans-sefir;
+            font-size: 20px;
+            display: block;
+            text-decoration: none;
+            border-radius: 3px;
+          }
+        </style>
+  
+  <!-- import the webpage's client-side javascript file -->
+  <script src="/client.js" defer></script>
+  <head>
+    <br />
+    <br />
+    <br />
+    <br />
+  </head>
+
+ 
+
+  <body>
+    <br /><br /><br /><br /><br />
+    <form id="container" action="https://discord.gg/xe4TVZs">
+      <button type="submit" id="get-started">Is it up?</button>
+    </form>
+
+    <br /><br /><br /><br />
+            <div class="container">
+          <a href="/api/discord/login">Connect with Discord</a>
+        </div>
+  <center>
+    <img id="avatarSect" src="https://cdn.discordapp.com/" alt="" />
+    <p id="textSect">
+      New Bot Feature: 
+    </p>
+    
+    <script>
+      docUrl = document.URL;
+      const args = atob(docUrl.slice("https://the-thunderhead.glitch.me/?".length).trim()).split("?"); 
+      document.getElementById("textSect").innerHTML = (args[0].split("=")[1] + "#" + args[1].split("=")[1] + "\n Balance:" + args[3].split("=")[1]);
+      
+      document.getElementById("avatarSect").src = "https://cdn.discordapp.com/"+args[2].split("=")[1]
+</script>
+    </center>
+    <center class="indexBlurb">
+      
+      <br />
+    </center>
+  </body>
+</html>
+
+<!-- <br> tags isntead of actual html? it works so i wont touch it, but if i ever actually learn html this is going to seem inefficent-->

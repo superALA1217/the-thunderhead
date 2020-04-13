@@ -1,0 +1,273 @@
+{
+  "dev": {
+    "ping": {
+      "name": "ping",
+      "state": "gamma",
+      "use": "ping",
+      "desc": "Returns latency and API latency"
+    },
+    "avatar": {
+      "name": "avatar",
+      "state": "delta",
+      "use": "avatar link",
+      "desc": "Set the bot avatar"
+    },
+    "name": {
+      "name": "name",
+      "state": "delta",
+      "use": "name name",
+      "desc": "Set the bot name"
+    },
+    "dm": {
+      "name": "dm",
+      "state": "delta",
+      "use": "dm [@User] [Message]",
+      "desc": "DM a user via the bot"
+    },
+    "repo": {
+      "name": "repo",
+      "state": "gamma",
+      "use": "repo",
+      "desc": "Links to the bot GitHub repo"
+    },
+    "unsuspend": {
+      "name": "unsuspend",
+      "state": "delta",
+      "use": "unsuspend",
+      "desc": "Unsuspend the bot; if its on."
+    },
+    "eval": {
+      "name": "eval",
+      "state": "delta",
+      "use": "eval [Valid JS Code]",
+      "desc": "⚠️||Execute any code via the bot||⚠️"
+    },
+    "give": {
+      "name": "give",
+      "state": "delta",
+      "use": "give [@User] [Amount]",
+      "desc": "Give a user currency"
+    },
+    "resetdaily": {
+      "name": "resetdaily",
+      "state": "delta",
+      "use": "resetdaily [User ID]",
+      "desc": "Reset the daily for a user"
+    },
+    "gs": {
+      "name": "gs",
+      "state": "delta",
+      "use": "gs [@User]",
+      "desc": "`addRole` 'Grandslayer' to user"
+    },
+    "ugs": {
+      "name": "ugs",
+      "state": "delta",
+      "use": "ugs [@User]",
+      "desc": "`removeRole` 'Grandslayer' from user"
+    }
+  },
+  "general": {
+    "ping": {
+      "name": "ping",
+      "state": "gamma",
+      "use": "ping",
+      "desc": "Pong! 🏓"
+    },
+
+    "help": {
+      "name": "help",
+      "state": "gamma",
+      "use": "help [Command]",
+      "desc": "Get a list of commands or, specific help on one command"
+    },
+    "ask": {
+      "name": "ask",
+      "state": "gamma",
+      "use": "ask [Question]",
+      "desc": "Ask me a question."
+    },
+    "roleme": {
+      "name": "roleme",
+      "state": "gamma",
+      "use": "roleme [Role]",
+      "desc": "Give youself a server role."
+    },
+    "remind": {
+      "name": "remind",
+      "state": "gamma",
+      "use": "remind [Time] [Reminder]",
+      "desc": "Add a reminder so you don't forget"
+    },
+
+    "userinfo": {
+      "name": "userinfo",
+      "state": "gamma",
+      "use": "userinfo [@User]",
+      "desc": "Find out more about a user"
+    },
+
+    "serverinfo": {
+      "name": "serverinfo",
+      "state": "gamma",
+      "use": "serverinfo",
+      "desc": "Find out more about this server"
+    },
+    "weather": {
+      "name": "weather",
+      "state": "gamma",
+      "use": "weather [Location]",
+      "desc": "Check on the weather"
+    },
+    "time": {
+      "name": "time",
+      "state": "gamma",
+      "use": "time [Location]",
+      "desc": "Check the time in a Location"
+    },
+    "site": {
+      "name": "site",
+      "state": "gamma",
+      "use": "site",
+      "desc": "The Thunderhead website; check your balance and maybe invite me to your server."
+    },
+    "event": {
+      "name": "event",
+      "state": "beta",
+      "use": "event [Time] [Name] [Description]",
+      "desc": "Make an event for everyone to join"
+    }
+  },
+  "eco": {
+    "bal": {
+      "name": "bal",
+      "state": "gamma",
+      "use": "bal [@User]",
+      "desc": "Check a user's balance"
+    },
+    "daily": {
+      "name": "daily",
+      "state": "gamma",
+      "use": "daily",
+      "desc": "Reap your daily cash"
+    },
+    "work": {
+      "name": "work",
+      "state": "gamma",
+      "use": "work",
+      "desc": "Try to work to earn money, five minute cooldown"
+    },
+    "roll": {
+      "name": "roll",
+      "state": "gamma",
+      "use": "roll [Amount]",
+      "desc": "Gamble an amount of money"
+    },
+    "slots": {
+      "name": "slots",
+      "state": "gamma",
+      "use": "slots [Amount]",
+      "desc": "Gamble an amount of money and see how close you were to winning... at the end"
+    },
+    "bal": {
+      "name": "pay",
+      "state": "gamma",
+      "use": "pay [@User]",
+      "desc": "Give a user some of your money"
+    },
+    "leaderboard": {
+      "name": "leaderboard",
+      "state": "gamma",
+      "use": "leaderboard",
+      "desc": "See the richest users"
+    },
+    "coinflip": {
+      "name": "coinflip",
+      "state": "gamma",
+      "use": "coinflip [@User] [Amount] [Heads or Tails]",
+      "desc": "Coinflip a user and see who wins. They must accept it with `[PREFIX]cfaccept`"
+    }
+  },
+  "music": {
+    "play": {
+      "name": "play",
+      "state": "gamma",
+      "use": "play [Song]",
+      "desc": "When used it will yield ten search results, simply type a number from 1-10 of which song should be played."
+    },
+    "stop": {
+      "name": "stop",
+      "state": "gamma",
+      "use": "stop",
+      "desc": "Stop the current music"
+    },
+    "skip": {
+      "name": "skip",
+      "state": "gamma",
+      "use": "skip",
+      "desc": "Skip the current song"
+    },
+    "queue": {
+      "name": "queue",
+      "state": "gamma",
+      "use": "queue",
+      "desc": "See the songs in the queue"
+    },
+    "vol": {
+      "name": "vol",
+      "state": "gamma",
+      "use": "vol [Amount]",
+      "desc": "Set the volume as a number from 1-5"
+    }
+  },
+  "mod": {
+    "purge": {
+      "name": "purge",
+      "state": "gamma",
+      "use": "purge [Amount]",
+      "desc": "Purge the channel upto 200 messages"
+    },
+    "lock": {
+      "name": "lock",
+      "state": "gamma",
+      "use": "lock",
+      "desc": "Lock the channel to prevent users from typing"
+    },
+    "unlock": {
+      "name": "unlock",
+      "state": "gamma",
+      "use": "unlock",
+      "desc": "Unlock the channel to let users type again"
+    },
+    "kick": {
+      "name": "kick",
+      "state": "gamma",
+      "use": "kick [@User]",
+      "desc": "Kick a user from the server"
+    },
+    "ban": {
+      "name": "ban",
+      "state": "gamma",
+      "use": "ban [@User]",
+      "desc": "Ban a user from the server"
+    },
+    "unsavory": {
+      "name": "unsavory",
+      "state": "gamma",
+      "use": "unasvory [@User] [Time] [Reason]",
+      "desc": "Mute a user for some time. Make sure to create a *Unsavory* role and place it above the user first."
+    },
+    "poll": {
+      "name": "poll",
+      "state": "gamma",
+      "use": "poll [Question]",
+      "desc": "Ask a question and have users vote"
+    },
+    "announce": {
+      "name": "announce",
+      "state": "gamma",
+      "use": "announce [One Word Title] [Announcement]",
+      "desc": "Make an announcement as an embed for the server"
+    }
+  }
+}
