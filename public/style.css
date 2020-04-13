@@ -1,0 +1,181 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+button
+{
+  background: #43b581;
+  color: #ffffff;
+  font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 20px;
+  border-radius: 3px;
+  border-color: #43b581;
+  cursor: pointer;
+  min-width: 165px;
+  min-height: 44px;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 100%;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+body
+{
+  font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+  background-color: #18191c;
+  color: #fff;
+  overflow: hidden;
+}
+
+.nitroDient
+{
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#7c75ee),color-stop(75%,#e767eb));
+  background-image: linear-gradient(180deg,#7c75ee,#e767eb 75%);
+  position: relative;
+  height: 330px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  font-size: 100%;
+}
+
+.content-1
+{
+  font-family: Whitney, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 20px;
+  text-transform: none;
+}
+
+.indexBlurb
+{
+  font-family: Whitney, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 20px;
+  text-transform: none;
+  
+  font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 20px;
+  display: block;
+}
+
+.center
+{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+#container
+{
+  text-align: center;
+}
+
+
+input {
+    padding: 10px;
+    height: 40px;
+    font-size: 16px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 3px;
+    color: var(--text-normal);
+    background-color: #40444b;
+    border: 1px solid var(--deprecated-text-input-border);
+    font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+    text-rendering: optimizeLegibility;
+}
+
+.theme-dark {
+    --header-primary: 
+#fff;
+--header-secondary:
+#b9bbbe;
+--text-normal:
+#dcddde;
+--text-muted:
+#72767d;
+--text-link:
+#00b0f4;
+--channels-default:
+#8e9297;
+--interactive-normal:
+#b9bbbe;
+--interactive-hover:
+#dcddde;
+--interactive-active:
+#fff;
+--interactive-muted:
+#4f545c;
+--background-primary:
+#36393f;
+--background-secondary:
+#2f3136;
+--background-tertiary:
+#202225;
+--background-accent:
+#4f545c;
+--background-floating:
+#18191c;
+--background-mobile-primary:
+#36393f;
+--background-mobile-secondary:
+#2f3136;
+--background-modifier-hover:
+rgba(79,84,92,0.16);
+--background-modifier-active:
+rgba(79,84,92,0.24);
+--background-modifier-selected:
+rgba(79,84,92,0.32);
+--background-modifier-accent:
+hsla(0,0%,100%,0.06);
+--elevation-low: 0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05);
+--elevation-high: 0 8px 16px rgba(0,0,0,0.24);
+--logo-primary:
+#fff;
+--guild-header-text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+--channeltextarea-background:
+#40444b;
+--activity-card-background:
+#202225;
+--textbox-markdown-syntax:
+#8e9297;
+--deprecated-panel-background:
+#292b2f;
+--deprecated-card-bg:
+rgba(32,34,37,0.6);
+--deprecated-card-editable-bg:
+rgba(32,34,37,0.3);
+--deprecated-store-bg:
+#36393f;
+--deprecated-quickswitcher-input-background:
+#72767d;
+--deprecated-quickswitcher-input-placeholder:
+hsla(0,0%,100%,0.3);
+--deprecated-text-input-bg:
+rgba(0,0,0,0.1);
+--deprecated-text-input-border:
+rgba(0,0,0,0.3);
+--deprecated-text-input-border-hover:
+#040405;
+--deprecated-text-input-border-disabled:
+#202225;
+--deprecated-text-input-prefix:
+    #dcddde;
+}

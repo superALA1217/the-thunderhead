@@ -1,4 +1,4 @@
-  
+
 const express = require("express");
 const fetch = require("node-fetch");
 var eco = require("discord-economy");  // For balance req.
