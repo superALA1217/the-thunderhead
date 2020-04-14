@@ -65,6 +65,12 @@
       "state": "delta",
       "use": "ugs [@User]",
       "desc": "`removeRole` 'Grandslayer' from user"
+    },
+    "additem": {
+      "name": "additem",
+      "state": "delta",
+      "use": "additem [@User] [Type] [id] [:emoji] [cost] {imageURL} [description]",
+      "desc": "add item to database"
     }
   },
   "general": {
@@ -186,6 +192,38 @@
       "state": "gamma",
       "use": "coinflip [@User] [Amount] [Heads or Tails]",
       "desc": "Coinflip a user and see who wins. They must accept it with `[PREFIX]cfaccept`"
+    },
+
+    "market": {
+      "name": "market",
+      "state": "beta",
+      "use": "market",
+      "desc": "See the market of items"
+    },
+    "inv": {
+      "name": "inv",
+      "state": "beta",
+      "use": "inv [@User]",
+      "desc": "See the inventory of youself or another person"
+    },
+
+    "buy": {
+      "name": "buy",
+      "state": "beta",
+      "use": "buy [item]",
+      "desc": "Buy an item from the market"
+    },
+    "sell": {
+      "name": "sell",
+      "state": "beta",
+      "use": "sell [item]",
+      "desc": "Sell an item from you inventory"
+    },
+    "reap": {
+      "name": "reap",
+      "state": "beta",
+      "use": "reap",
+      "desc": "Collect money if anyone has bought anything you sold"
     }
   },
   "music": {
