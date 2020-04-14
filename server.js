@@ -70,6 +70,7 @@ const reminds = require("./dynamic/reminds.json"); //WRITE
 const events = require("./dynamic/events.json"); //WRITE 
 const items = require("./dynamic/items.json"); //WRITE
 const vault = require("./dynamic/vault.json"); //WRITE
+const altlist = require("./dynamic/altlist.json"); //WRITE
 
 
 //Definitions
@@ -84,8 +85,8 @@ const youtube = new YouTube(process.env.APITOKEN);
 const queue = new Map();
 const workedRecently = new Set(); //This should be around five minutes
 
-const botception = false;
-const botSuspend = false;
+var botception = false;
+var botSuspend = false;
 
 //Objects(s) too short to warrant separate file (4)
 const itemTypeKey = {
@@ -225,7 +226,6 @@ client.on("ready", () => {
 //Command System
 client.on("message", async message => {
 	if (message.author.bot && !botception) return; //if botception is on
-	if (botSuspend == true && message.author.id !== developerId) return message.channel.send(msg.maintenance); // if suspend is on
 	try {
 		if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete();
 	}
@@ -254,6 +254,7 @@ client.on("message", async message => {
 	if (message.content.indexOf(prefix) !== 0) return;
 	const args = message.content.slice(prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
+	if (botSuspend == true && message.author.id !== developerId) return message.channel.send(msg.maintenance); // if suspend is on
 
 	// Music Search and Whatnot
 	const searchString = args.slice(0).join(" ");
@@ -626,18 +627,17 @@ client.on("message", async message => {
 			.addField(userToCheck.username, balText)
 			.setColor(colors.gamble_green);
 		message.channel.send(balembed);
+
 	}
 
 	if (command === "roll") {
 		var output = await eco.FetchBalance(message.author.id)
 		var balance = output.balance;
 
-		if (!args[0]) message.channel.send(msg.roll_amt);
+		if (!args[0]) return message.channel.send(msg.roll_amt);
 		var stake = args[0];
 
-		if (isNaN(stake) && (function(x) {
-				return (x | 0) === x;
-			})(parseFloat(stake))) return message.channel.send(msg.roll_validint);
+		if (isNaN(stake)) return message.channel.send(msg.roll_validint);
 		if (stake < 1 || stake > balance) return message.channel.send(msg.roll_namt);
 		var staticStake = stake;
 
@@ -669,27 +669,35 @@ client.on("message", async message => {
 			.setColor(gambleEndColor);
 
 		message.channel.send(rollEmbed)
+		const channel = client.channels.get(msg.ecologid);
+		channel.send(rollEmbed)
 		output = await eco.AddToBalance(message.author.id, stake)
 	}
 
 	if (command === "pay") {
-		var user = message.mentions.users.first()
-		var amount = args[1]
+		var user = message.mentions.users.first();
+		var amount = args[1];
 
-		if (!user) return message.reply(msg.pay_nouser)
-		if (!amount) return message.reply(msg.pay_amt)
+		if (!user) return message.reply(msg.pay_nouser);
+		if (!amount) return message.reply(msg.pay_amt);
 
-		var output = await eco.FetchBalance(message.author.id)
-		if (output.balance < amount) return message.reply(msg.pay_namt)
+		var output = await eco.FetchBalance(message.author.id);
+
+		if (output.balance < amount || amount != amount || amount < 1) return message.reply(msg.pay_namt);
+		if (user.id === message.author.id) return message.channel.send(msg.pay_noself)
 
 		var transfer = await eco.Transfer(message.author.id, user.id, amount)
 
 
-		var balText = `${user.username} has been paid **${amount}** ${currency}.`
+		var balText = `${user.username} has been paid **${amount}** ${currency} by ${message.author.username}.`
 		var balembed = new Discord.RichEmbed()
 			.addField(user.username, balText)
 			.setColor(colors.gamble_green);
 		message.channel.send(balembed);
+
+		const channel = client.channels.get(msg.ecologid);
+		channel.send(balembed)
+		channel.send(`(${message.author.id}) => (${user.id})`)
 	}
 
 	if (command === "cf" || command === "coinflip") {
@@ -702,12 +710,16 @@ client.on("message", async message => {
 		if (!side) return message.reply(msg.coinflip_side)
 		if (side.toLowerCase() !== "heads" && side.toLowerCase() !== "tails") return message.reply(msg.coinflip_side)
 
+
 		side = side.toLowerCase()
 		var output = await eco.FetchBalance(message.author.id)
-		if (output.balance < amount) return message.reply(msg.coinflip_namt)
+		if (output.balance < amount || isNaN(amount) || amount < 1) return message.reply(msg.coinflip_namt)
 
 		var _output = await eco.FetchBalance(user.id)
 		if (_output.balance < amount) return message.reply(user.username + msg.coinflipnfund)
+
+
+		if (message.author.id === user.id) return message.channel.send(msg.coinflip_noself)
 
 		message.channel.send("<@!" + user.id + ">, accept the coinflip with " + prefix + "acceptcf ")
 		try {
@@ -742,28 +754,102 @@ client.on("message", async message => {
 				item.charAt(0).toUpperCase()
 				message.channel.send("The coin landed on " + item + ". <@!" + message.author.id + "> won " + amount + " " + currency)
 				var transfer = await eco.Transfer(user.id, message.author.id, amount)
-				var balText = `${message.author.username} won **${amount}** ${currency}.`
+				var balText = `${message.author.username} won **${amount}** ${currency} from  ${user.username}.`
 				var balembed = new Discord.RichEmbed()
 					.addField(message.author.username, balText)
 					.setColor(colors.gamble_green);
 				message.channel.send(balembed);
+
+				const channel = client.channels.get(msg.ecologid);
+				channel.send(balembed)
+				channel.send(`(${user.id}) => (${message.author.id})`)
 
 			}
 			else {
 				item.charAt(0).toUpperCase()
 				message.channel.send("The coin landed on " + item + ". <@!" + user.id + "> won " + amount + " " + currency)
 				var transfer = await eco.Transfer(message.author.id, user.id, amount)
-				var balText = `${user.username} won **${amount}** ${currency}.`
+				var balText = `${user.username} won **${amount}** ${currency} from ${message.author.username}.`
 				var balembed = new Discord.RichEmbed()
 					.addField(user.username, balText)
 					.setColor(colors.gamble_green);
 				message.channel.send(balembed);
-
+				const channel = client.channels.get(msg.ecologid);
+				channel.send(balembed)
+				channel.send(`(${message.author.id}) => (${user.id})`)
 			}
 
 		}
 
 
+
+	}
+
+	if (command === "steal" || command === "theft" || command === "rob" || command === "pickpocket" || command === "liberateofvibes") {
+		var user = message.mentions.users.first()
+		let robState = false;
+		if (!user) return message.reply(msg.rob_who)
+
+		var output = await eco.FetchBalance(message.author.id)
+		if (output.balance < 50) return message.reply(msg.rob_moneyyoufail)
+
+		var _output = await eco.FetchBalance(user.id)
+		if (_output.balance < 50) return message.reply(msg.rob_moneythemfail)
+
+
+
+		var output = await eco.Daily(message.author.id)
+		let isAlt = 0;
+		if (altlist.alts.indexOf(message.author.id) >= 0) isAlt = 32767;
+		if (output.updated) {
+			message.channel.send("<@!" + user.id + ">, you are being robbed by some unsavory. Stop the theif with " + prefix + "deny")
+			try {
+				var response = await message.channel.awaitMessages(
+					message2 => message2.author.id === user.id && (message2.content === prefix + "deny" || message2.content === prefix + "s" || message2.content === prefix + "no" || message2.content ===
+						prefix + "x" || message2.content === prefix + "stoptheif"), {
+						maxMatches: 1,
+						time: 7000,
+						errors: ["time"]
+					}
+				);
+			}
+			catch (err) {
+				message.channel.send(msg.rob_stopfail);
+				let stealthCheck = Math.floor((Math.random() * 10) + 1);
+				if (!(stealthCheck > isAlt + 100 - (msg.rob_win_chance / 100))) return;
+				var transfer = await eco.Transfer(user.id, message.author.id, 3 * stealthCheck - 2)
+				var balText = `${message.author.username} stole **${3*stealthCheck-2}** ${currency} from  ${user.username}.`
+				var balembed = new Discord.RichEmbed()
+					.addField(message.author.username, balText)
+					.setColor(colors.gamble_green);
+				message.channel.send(balembed);
+
+				const channel = client.channels.get(msg.ecologid);
+				channel.send(balembed)
+				channel.send(`(${user.id}) => (${message.author.id})`)
+				robState = true;
+			}
+
+
+			//punishment
+			if (robState) return;
+
+			var transfer = await eco.Transfer(message.author.id, user.id, msg.rob_penalty)
+			var balText = `${user.username} was awarded **${msg.rob_penalty}** ${currency} because ${message.author.username} tried to rob them.`
+			var balembed = new Discord.RichEmbed()
+				.addField(user.username, balText)
+				.setColor(colors.gamble_green);
+			message.channel.send(balembed);
+
+			const channel = client.channels.get(msg.ecologid);
+			channel.send(balembed)
+			channel.send(`(${message.author.id}) => (${user.id})`)
+
+
+		}
+		else {
+			message.channel.send(msg.rob_nodaily);
+		}
 
 	}
 
@@ -773,6 +859,9 @@ client.on("message", async message => {
 		if (currencyCount < 0) {
 			await eco.AddToBalance(message.author.id, currencyCount * -1)
 			message.channel.send(msg.undebt_reset)
+
+			const channel = client.channels.get(msg.ecologid);
+			channel.send(`${message.author.username} (${message.author.id})  eset their balance`)
 		}
 		else {
 			message.channel.send(msg.undebt_notbelowzero)
@@ -781,14 +870,22 @@ client.on("message", async message => {
 
 	}
 
-	if (command === 'daily') {
+	if (command === "daily") {
+		let dailyAmount = Math.floor(Math.random() * msg.daily_high) + msg.daily_low;
+		if (altlist.alts.indexOf(message.author.id) >= 0) dailyAmount = 3;
+
 
 		var output = await eco.Daily(message.author.id)
 		//output.updated will tell you if the user already claimed his/her daily yes or no.
 
 		if (output.updated) {
-			var profile = await eco.AddToBalance(message.author.id, 15)
-			message.channel.send(((msg.daily_confirm).replace("[DAILYAMOUNT]", msg.daily_amount).replace("[CUR]", currency)).replace("[NEWBALANCE]", profile.newbalance).replace("[CUR]", currency));
+			var profile = await eco.AddToBalance(message.author.id, dailyAmount)
+			message.channel.send(((msg.daily_confirm).replace("[DAILYAMOUNT]", dailyAmount).replace("[CUR]", currency)).replace("[NEWBALANCE]", profile.newbalance).replace("[CUR]", currency));
+
+			const channel = client.channels.get(msg.ecologid);
+			channel.send(`${message.author.username} (${message.author.id}) did their daily and got ${dailyAmount} leaving them with ${profile.newbalance} ${currency}`);
+
+
 
 		}
 		else {
@@ -842,6 +939,9 @@ client.on("message", async message => {
 
 	if (command === "work") {
 
+		let failurerate = 40;
+		if (altlist.alts.indexOf(message.author.id) >= 0) failurerate = 100;
+
 		//10% chance to fail and earn nothing. You earn between 1-500 coins. And you get one of those 3 random jobs.
 		if (workedRecently.has(message.author.id)) {
 			message.channel.send(msg.work_wait);
@@ -856,7 +956,7 @@ client.on("message", async message => {
 			}, 300000);
 
 			var output = await eco.Work(message.author.id, {
-				failurerate: 40,
+				failurerate: failurerate,
 				money: Math.floor((Math.random() * 9) + 1),
 				jobs: msg.work_jobs
 			})
@@ -864,6 +964,9 @@ client.on("message", async message => {
 
 			if (output.earned == 0) return message.reply(msg.work_fail)
 			message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${currency}. You now own ${output.balance} ${currency}.`)
+
+			const channel = client.channels.get(msg.ecologid);
+			channel.send(`${message.author.username} (${message.author.id}) worked and earned ${output.earned} ${currency}. They now own ${output.balance} ${currency}.`)
 
 
 		}
@@ -887,6 +990,11 @@ client.on("message", async message => {
 		}).catch(console.error)
 		message.channel.send(gamble.grid) //Grid checks for a 100% match vertical or horizontal.
 		message.channel.send(`You ${gamble.output}. New balance: ${gamble.newbalance} ${currency}`)
+
+
+		const channel = client.channels.get(msg.ecologid);
+		channel.send(`${message.author.username} (${message.author.id}) ${gamble.output}. New balance: ${gamble.newbalance} ${currency}`)
+
 
 	}
 
@@ -970,7 +1078,7 @@ client.on("message", async message => {
 				count++;
 				var footer = item;
 				item = myItems[item];
-				var title = item.name + " :" + item.emoji + ":";
+				var title = `${item.name} ${item.emoji}`;
 				var description = item.description;
 				var image = item.image;
 				var type = item.type;
@@ -1067,7 +1175,7 @@ client.on("message", async message => {
 				count++;
 				var footer = item;
 				item = myItems[item];
-				var title = item.name + " :" + item.emoji + ":";
+				var title = `${item.name} ${item.emoji}`;
 				var description = item.description;
 				var image = item.image;
 				var type = item.type;
@@ -1628,6 +1736,12 @@ client.on("message", async message => {
 		message.channel.send("Suspend = " + botSuspend)
 	}
 
+	if (command === "suspend") {
+		if (!isDevExclusive) return;
+		botSuspend = true;
+		message.channel.send("Suspend = " + botSuspend)
+	}
+
 	if (command === "eval") {
 		if (!isDevExclusive) return;
 		try {
@@ -1662,6 +1776,7 @@ client.on("message", async message => {
 
 	if (command === 'resetdaily') {
 		if (!isDevExclusive) return;
+		args[0] = args[0].replace(/[@!<>]/g, "");
 		var output = await eco.ResetDaily(args[0])
 
 		message.channel.send("<@!" + args[0] + "> had their " + output) //It will send 'Daily Reset.'
@@ -1695,14 +1810,15 @@ client.on("message", async message => {
 		owner = owner.replace(/[@!<>]/g, "");
 		if (!items[owner]) items[owner] = {};
 
-		let type = args[1];
-		let id = args[2];
-		let emoji = args[3].replace(":", "");
-		let cost = args[4];
-		let imageURL = args[5];
-		let description = args.slice(6).join(" ");
+		let name = args[1];
+		let type = args[2];
+		let id = args[3];
+		let emoji = args[4].replace(":", "");
+		let cost = args[5];
+		let imageURL = args[6];
+		let description = args.slice(7).join(" ");
 
-		if (!type || !id || !emoji || !cost || !imageURL || !description) return message.channel.send("Missing Field");
+		if (!type || !name || !id || !emoji || !cost || !imageURL || !description) return message.channel.send("Missing Field");
 		items[owner][id] = {
 			name: name,
 			type: type,
@@ -1712,6 +1828,14 @@ client.on("message", async message => {
 			cost: cost,
 			sellerid: "market"
 		};
+	}
+
+	if (command === "markalt") {
+		if (!isDevExclusive) return;
+		if (!args[0]) return;
+		altlist.alts.push(args[0])
+		let user = client.users.get(args[0])
+		message.channel.send(`${user.username} of (${user.id}) was marked as an alt to farm vibes.`)
 	}
 
 });
