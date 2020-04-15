@@ -6,6 +6,9 @@ const fs = require("graceful-fs");
 const msmute = require("ms");
 const request = require("request");
 
+const mexp = require('math-expression-evaluator');
+const Canvas = require('canvas');
+
 var eco = require("discord-economy");
 const catFacts = require("cat-facts");
 var cats = require("cat-ascii-faces");
@@ -460,7 +463,7 @@ client.on("message", async message => {
 			embed
 		});
 	}
-
+  
 	if (command === "weather") {
 		if (!args[0]) return message.channel.send(msg.weather_nolocation);
 		weather.find({
@@ -598,16 +601,29 @@ client.on("message", async message => {
 	}
 
 	if (command === "ask") {
-		var maybeViolate = message.content;
-		if (maybeViolate.toLowerCase().indexOf("scythe") >= 0 || maybeViolate.toLowerCase().indexOf("$cythe") >= 0) {
+      let expVal;
+      try {expVal = (mexp.eval(args.slice(2).join(" ").replace("sqrt", "root"))).toString();} catch(err) {}
+    var maybeViolate = message.content;
+    if (maybeViolate.toLowerCase().indexOf("scythe") >= 0 || maybeViolate.toLowerCase().indexOf("$cythe") >= 0) {
 			message.channel.send("You asked: *" + args.join(" ") + "*", {
 				files: [msg.ask_warn]
 			});
 		}
-		else if (maybeViolate.toLowerCase().indexOf("hate") >= 0 && maybeViolate.toLowerCase().indexOf("you") >= 0) {
-			message.channel.send("You asked: *" + args.join(" ") + "*", {
-				files: ["https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fhatred.png"]
-			});
+    
+    else if (expVal && ((maybeViolate.toLowerCase().indexOf("run") >= 0 && maybeViolate.toLowerCase().indexOf("math") >= 0) || (maybeViolate.toLowerCase().indexOf("what") >= 0 && maybeViolate.toLowerCase().indexOf("is") >= 0))) {
+			
+
+      const canvas = Canvas.createCanvas(1800, 1800);
+      const ctx = canvas.getContext('2d');
+      const background = await Canvas.loadImage('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fyes.png?v=1586981689570');
+      await ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+   // Pass the entire Canvas object because you'll need to access its width, as well its context
+
+      ctx.font = '250px sans-serif';
+      ctx.fillStyle = '#f3f0cd';
+      ctx.fillText(expVal, canvas.width / 2.5, canvas.height / 2.15);
+      
+      message.channel.send("Expression: *" + args.slice(2).join(" ")+ "*", {files: [canvas.toBuffer()]});
 		}
 		else {
 			var scytheRandom = Math.floor(Math.random() * msg.ask_answers.length);
