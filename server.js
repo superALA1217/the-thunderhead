@@ -1053,6 +1053,7 @@ client.on("message", async message => {
     var robeColor = item.robecolor;
 	
     item.sellerid = message.author.id;
+    item.ownerid = "marketplace";
 		var itemName = item.name;
 
 
@@ -1096,6 +1097,7 @@ client.on("message", async message => {
 			vault[vendor].amount = (parseInt(vault[vendor].amount) + parseInt(cost))
 		}
 		delete items["marketplace"][toBuy];
+    item.ownerid = message.author.id;
 		message.channel.send(`You bought ${itemName} for ${cost} ${currency}.`)
     const channel = client.channels.get(msg.ecologid);
     channel.send(`${message.author.username} bought ${itemName} for ${cost} ${currency} from (${vendor}).`)
@@ -1208,7 +1210,88 @@ client.on("message", async message => {
 				.on("end", collected => {});
 		
 	}
+  if (command === "searchinv") {
+	  let field = args[0];
+	  let value = args[1].toLowerCase();
+	  var matchingItems = [];
 
+	  if (!field || !value) return message.channel.send("Missing field.")
+
+	  for (var owner in items) {
+		  for (var item in owner) {
+			  if (field in item && item[field].toLowerCase() === value) matchingItems.push(item);
+		  }
+	  }
+
+	  if (matchingItems === []) return message.channel.send("There are no matching items.");
+
+	  var embeds = [];
+      var count = -1;
+      for (var item in matchingItems) {
+        count++;
+        var footer = item;
+        var title = `${item.name} ${item.emoji}`;
+        var description = item.description;
+        var image = item.image;
+        var type = item.type;
+        var cost = item.cost
+		var owner = (client.users.get(item.ownerid).username).toString() + "#" + (client.users.get(item.ownerid).tag).toString();
+        embeds.push({
+          title: title,
+          description: description,
+          color: 4439665,
+          footer: {
+            text: `Cost: ${cost}      Owner: ${owner}`
+          },
+          thumbnail: {
+            url: image
+          },
+          author: {
+            name: type,
+            icon_url: "https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2FThunder.png?v=1574998975490"
+          }
+        });
+      }
+      message.channel.send("There are " + (count + 1) + " matching items.")
+      var b = "◀";
+      var f = "▶";
+      var page = 0;
+      var embed = embeds[page];
+      const m = await message.channel.send({
+        embed
+      });
+      m.react(b).then(() => m.react(f));
+      const filter = (reaction, user) => {
+        return (
+          [b, f].includes(reaction.emoji.name) && user.id === message.author.id);
+      };
+      m.createReactionCollector(filter, {
+        time: 60000,
+        errors: ["time"]
+      }).on("collect", reaction => {
+        if (reaction.emoji.name === f) {
+          if (page == count) return;
+          reaction.users.filter(u => !u.bot).forEach(user => {
+            reaction.remove(user.id);
+          });
+          page++;
+          var embed = embeds[page];
+          m.edit({
+            embed
+          });
+        } else if (reaction.emoji.name === b) {
+          if (page == 0) return;
+          reaction.users.filter(u => !u.bot).forEach(user => {
+            reaction.remove(user.id);
+          });
+          page--;
+          var embed = embeds[page];
+          m.edit({
+            embed
+          });
+        }
+      }).on("end", collected => {});
+  }
 	if (command === "market" || command === "marketplace") {
 		if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		if (!message.guild.member(client.user).hasPermission("ADD_REACTIONS")) return message.channel.send(msg.permdeny_addreactions);
