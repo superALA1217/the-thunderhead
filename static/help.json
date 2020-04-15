@@ -78,6 +78,12 @@
       "use": "additem [@User] [Name] [Type] [id] [:emoji] [cost] {imageURL} [description]",
       "desc": "add item to database"
     },
+    "addweapon": {
+      "name": "addweapon",
+      "state": "delta",
+      "use": "addweapon [@User] [Name] [%Success] [%Defense] [id] [cost] [description]",
+      "desc": "add weapon to database"
+    },
     "markalt": {
       "name": "markalt",
       "state": "delta",
