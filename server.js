@@ -637,13 +637,13 @@ client.on("message", async message => {
 
 				var stealthIncrease = 0;
 				for (var item in items[message.author.id]) {
-					if (item["type"] === "weapon") {
+					if (item["type"] === "Weapon") {
 					  stealthIncrease += item["theftSuccess"];
 					}
 				}
 
 				for (var item in items[user.id]) {
-					if (item["type"] === "weapon") {
+					if (item["type"] === "Weapon") {
 						stealthIncrease += item["noTheftSuccess"];
 					}
 				}
