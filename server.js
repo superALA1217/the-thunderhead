@@ -130,8 +130,6 @@ const activities_type = [
 ];
 
 
-
-
 //Reminds & Activities
 
 client.on("ready", () => {
@@ -226,10 +224,24 @@ client.on("ready", () => {
 //Command System
 client.on("message", async message => {
 	if (message.author.bot && !botception) return; //if botception is on
-	try {
-		if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete();
-	}
-	catch (e) {} // Try Catch? Yep.
+	if (message.guild.id === "625021277295345667") {
+    var myItems = items[message.author.id];
+    var count = -1;
+    for (var item in myItems) {
+      count++;
+      item = myItems[item];
+      if (item.type === "Robe") {
+        if (!item.robecolor) return;
+        let roleName = item.robecolor.charAt(0).toUpperCase() + item.robecolor.slice(1).toLowerCase() + " Robe"
+        var rl = message.guild.roles.find(role => role.name === roleName);
+        if (!rl) rl = message.guild.roles.find(role => role.name === roleName.replace("Robe", "Frock"));
+        message.member.addRole(rl);
+      }
+    }
+    
+    
+  }
+  try {if ((message.member.roles.find(r => r.name === "Unsavory"))) return message.delete();}catch(e){} // Try Catch? Yep.
 	// Before Prefix Check
 
 	if (message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") >= 0) {
@@ -1005,8 +1017,9 @@ client.on("message", async message => {
 		if (!items[message.author.id][toSell]) return message.channel.send(msg.sell_lackitem);
 		var item = items[message.author.id][toSell];
 		var cost = item.cost;
-
-		item.sellerid = message.author.id;
+    var robeColor = item.robecolor;
+	
+    item.sellerid = message.author.id;
 		var itemName = item.name;
 
 
@@ -1014,8 +1027,16 @@ client.on("message", async message => {
 		items["marketplace"][toSell] = (items[message.author.id][toSell])
 
 		delete items[message.author.id][toSell];
-
-		message.channel.send(`You sold ${itemName} for ${cost} ${currency}.`)
+    message.channel.send(`You sold ${itemName} for ${cost} ${currency}.`)
+    
+    if (!robeColor) return;
+    let robeRole = client.guilds.get(`625021277295345667`).roles.find(r => r.name ===  (robeColor.charAt(0).toUpperCase() + robeColor.slice(1).toLowerCase() + " Robe").replace("Tonist Robe", "Tonist Frock"));
+   
+    if (robeRole) { //robe role and thunder nonsense
+      client.guilds.get(`625021277295345667`).member(message.author.id).removeRole(robeRole)
+      message.channel.send(`The ${robeRole.name} role was unassigned.`);
+    }
+		
 
 	}
 
@@ -1028,8 +1049,6 @@ client.on("message", async message => {
 		var itemName = item.name;
 		var balance = await eco.FetchBalance(message.author.id);
 		if (balance.balance < cost) return message.channel.send(`${msg.buy_nofunds} ${(cost - balance.balance)} more ${currency}.`);
-		console.log(cost)
-		console.log(balance.balance)
 		await eco.AddToBalance(message.author.id, cost * -1)
 		if (!items[message.author.id]) {
 			items[message.author.id] = {};
@@ -1041,11 +1060,12 @@ client.on("message", async message => {
 			};
 		}
 		else {
-			vault[vendor].amount = (vault[vendor].amount + cost)
+			vault[vendor].amount = (parseInt(vault[vendor].amount) + parseInt(cost))
 		}
 		delete items["marketplace"][toBuy];
 		message.channel.send(`You bought ${itemName} for ${cost} ${currency}.`)
-
+    const channel = client.channels.get(msg.ecologid);
+    channel.send(`${message.author.username} bought ${itemName} for ${cost} ${currency} from (${vendor}).`)
 	}
 
 	if (command === "reap") {
@@ -1065,10 +1085,8 @@ client.on("message", async message => {
 		if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		if (!message.guild.member(client.user).hasPermission("ADD_REACTIONS")) return message.channel.send(msg.permdeny_addreactions);
 
-		if (!items[user]) {
-			message.channel.send(msg.inv_noresults);
-		}
-		else {
+		if (!items[user]) return message.channel.send(msg.inv_noresults);
+		
 			var embeds = [];
 
 			var myItems = items[user];
@@ -1108,8 +1126,8 @@ client.on("message", async message => {
 			message.channel.send("Itemcount for " + username_message + ":  " + (count + 1))
 			var b = "◀";
 			var f = "▶";
-			var page = 0;
-
+			var page = args[1]-1;
+      if (!embeds[page-1]) page = 0;
 			var embed = embeds[page];
 			const m = await message.channel.send({
 				embed
@@ -1155,10 +1173,10 @@ client.on("message", async message => {
 					}
 				})
 				.on("end", collected => {});
-		}
+		
 	}
 
-	if (command === "market") {
+	if (command === "market" || command === "marketplace") {
 		if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		if (!message.guild.member(client.user).hasPermission("ADD_REACTIONS")) return message.channel.send(msg.permdeny_addreactions);
 
@@ -1200,8 +1218,8 @@ client.on("message", async message => {
 			message.channel.send("The market has " + (count + 1) + " items.")
 			var b = "◀";
 			var f = "▶";
-			var page = 0;
-
+			var page = args[0]-1;
+      if (!embeds[page-1]) page = 0; // -1 because computers start at 0 :eye_roll_emoji_keanu_chungus_wholsome:
 			var embed = embeds[page];
 			const m = await message.channel.send({
 				embed
@@ -1805,7 +1823,7 @@ client.on("message", async message => {
 	if (command === "additem") {
 		if (!isDevExclusive) return;
 		let owner = args[0];
-		if (!owner) owner = "market";
+		if (!owner) owner = "marketplace";
 
 		owner = owner.replace(/[@!<>]/g, "");
 		if (!items[owner]) items[owner] = {};
@@ -1826,8 +1844,33 @@ client.on("message", async message => {
 			description: description,
 			image: imageURL,
 			cost: cost,
-			sellerid: "market"
+			sellerid: "marketplace"
 		};
+	}
+  
+  	if (command === "addrobe") {
+		if (!isDevExclusive) return;
+		let owner = "marketplace";
+		if (!items[owner]) items[owner] = {};
+
+		let color = args[0];
+    let id = args[1]
+    let cost = args[2]
+		let description = args.slice(3).join(" ");
+    
+    
+		if (!id || !cost || !color || !description) return message.channel.send("Missing Field");
+		items[owner][id] = {
+			name: (color.charAt(0).toUpperCase() + color.toLowerCase().slice(1) + " Robe").replace("Tonist Robe", "Tonist Frock"),
+			type: "Robe",
+			emoji: "👗",
+			description: description,
+			image: `https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${color.toLowerCase()}.png`,
+			cost: cost,
+      robecolor: color.toLowerCase(), 
+			sellerid: "marketplace"
+		};
+      message.channel.send(items[owner][id].name + " was added.")
 	}
 
 	if (command === "markalt") {
