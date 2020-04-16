@@ -6,8 +6,6 @@
 	<meta content="IE=edge" http-equiv="X-UA-Compatible">
 	<meta content="width=device-width, initial-scale=1" name="viewport">
 	
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-163403899-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -64,8 +62,17 @@
 	   transition: 0.3s;
 	   font-size: 100%;
 	}
+    .vibes { background-image: url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F32x32vibes.png');
+    background-position: center center;
+background-repeat: no-repeat;
+background-size: 1em 1em;
+display: inline-block;
+height: 1em;
+margin: 0 .05em 0 .1em;
+vertical-align: -.1em;
+width: 1em;}
 	</style>
-	<script defer src="/script.js">
+	<script defer src="/client.js">
 	</script>  
 </head>
 <body>
@@ -73,9 +80,18 @@
 		<h1 class="background-text">The Leaderboard</h1>
 	
 <p id="top">
-  Coming soon... Just bully Skrub#2280 about it until he finishes it up
+  Loading...
     </p>
-   
+    <script>
+      fetch(`https://the-thunderhead.glitch.me/leaderboard.raw`)
+		                           
+          .then(res => res.json()).then((out) => {
+		                               document.getElementById("top").innerHTML = out.leaderboard
+		                                    }  
+		                                );
+                                    
+    </script>
+    
 		<div class="background" id="image"></div>
 		<script>
 		  document.getElementById("image").style.backgroundImage = "url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fselfie.png?v=1586741635704')";
