@@ -1042,16 +1042,79 @@ client.on("message", async message => {
             if (!target) target = message.author; 
             if (args[0]) args[0] = args[0].toUpperCase()
             if (target && (!msg.stocks[args[0]])) {
-                let stockMessage = `**${target.username}'s Portfolio**`;
+				var sharesHeld = {};
                 for (var i in msg.stocks) {
                     let sharesOf = 0;
                     if (!shares[message.author.id]) shares[message.author.id] = {}
                     if (shares[message.author.id][Object.keys(msg.stocks)[index]]) sharesOf = shares[message.author.id][Object.keys(msg.stocks)[index]];
-                    
-                    stockMessage += `\n${msg.stocks[i][0]}: ${Object.keys(msg.stocks)[index]} | Owned: ${sharesOf} shares`;
+					
+					sharesHeld[msg.stocks[i][1]] = sharesOf;
                     index++
                 }
-                message.channel.send(stockMessage);
+                var embeds = [];
+				var stocks = msg.stocks;
+				for (var stock in stocks) {
+					var symbol = stock[1];
+					var name = stock[0];
+					var owned = shareHeld[symbol];
+					var image = 'https://melmagazine.com/wp-content/uploads/2019/07/Screen-Shot-2019-07-31-at-5.47.12-PM.png';
+					embeds.push({
+						title: `${name}`,
+						description: `Symbol: ${symbol}`,
+						color: 4439665,
+						footer: {
+							text: `Owned: ${owned}      Invest in with ${prefix}invest ${symbol}`
+						},
+						thumbnail: {
+							url: image
+						},
+						author: {
+							name: type,
+							icon_url: "https://cdn.glitch.com/a09f5b5e-9054-4afc-8dcc-67ede76ea11c%2FThunder.png?v=1574998975490"
+						}
+					});
+				}
+				message.channel.send(`**${target.username}'s Portfolio**`)
+				var b = "◀";
+				var f = "▶";
+				var page = 0;
+				if (!embeds[page - 1]) page = 0; // -1 because computers start at 0 :eye_roll_emoji_keanu_chungus_wholsome:
+				var embed = embeds[page];
+				const m = await message.channel.send({
+					embed
+				});
+				m.react(b).then(() => m.react(f));
+				const filter = (reaction, user) => {
+					return (
+						[b, f].includes(reaction.emoji.name) && user.id === message.author.id);
+				};
+				m.createReactionCollector(filter, {
+					time: 60000,
+					errors: ["time"]
+				}).on("collect", reaction => {
+					if (reaction.emoji.name === f) {
+						if (page == count) return;
+						reaction.users.filter(u => !u.bot).forEach(user => {
+							reaction.remove(user.id);
+						});
+						page++;
+						var embed = embeds[page];
+						m.edit({
+							embed
+						});
+					}
+					else if (reaction.emoji.name === b) {
+						if (page == 0) return;
+						reaction.users.filter(u => !u.bot).forEach(user => {
+							reaction.remove(user.id);
+						});
+						page--;
+						var embed = embeds[page];
+						m.edit({
+							embed
+						});
+					}
+				}).on("end", collected => { });
             } else {
                 if (!msg.stocks[args[0]]) return message.channel.send(msg.stocks_invalid);
                 alpha.data.intraday(msg.stocks[args[0]][1]).then(data => { // [1] because thats the name of the irl company its mirroring :0
