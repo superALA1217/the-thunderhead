@@ -1037,18 +1037,26 @@ client.on("message", async message => {
     if (command === "stocks" || command === "stonks" || command === "stock") {
         try {
             let index = 0;
-            if (!args[0]) {
-                let stockMessage = "**Stocks**";
+            var target;  
+            if (args[0]) target = client.users.get(args[0].replace(/@/g, "").replace(/!/g, "").replace(/>/g, "").replace(/</g, ""));
+            if (!target) target = message.author; 
+            if (args[0]) args[0] = args[0].toUpperCase()
+            if (target && (!msg.stocks[args[0]])) {
+                let stockMessage = `**${target.username}'s Portfolio**`;
                 for (var i in msg.stocks) {
-                    stockMessage += `\n${msg.stocks[i][0]}: ${Object.keys(msg.stocks)[index]}`;
+                    let sharesOf = 0;
+                    if (!shares[message.author.id]) shares[message.author.id] = {}
+                    if (shares[message.author.id][Object.keys(msg.stocks)[index]]) sharesOf = shares[message.author.id][Object.keys(msg.stocks)[index]];
+                    
+                    stockMessage += `\n${msg.stocks[i][0]}: ${Object.keys(msg.stocks)[index]} | Owned: ${sharesOf} shares`;
                     index++
                 }
                 message.channel.send(stockMessage);
             } else {
-                if (!msg.stocks[args[0].toUpperCase()]) return message.channel.send(msg.stocks_invalid);
-                alpha.data.intraday(msg.stocks[args[0].toUpperCase()][1]).then(data => { // [1] because thats the name of the irl company its mirroring :0
+                if (!msg.stocks[args[0]]) return message.channel.send(msg.stocks_invalid);
+                alpha.data.intraday(msg.stocks[args[0]][1]).then(data => { // [1] because thats the name of the irl company its mirroring :0
                     let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
-                    message.channel.send(`${msg.stocks[args[0].toUpperCase()][0]} (${args[0].toUpperCase()}) valued at: ${stockPrice} ${currency}`);
+                    message.channel.send(`${msg.stocks[args[0]][0]} (${args[0]}) valued at: ${stockPrice} ${currency}`);
 
                 });
             }
