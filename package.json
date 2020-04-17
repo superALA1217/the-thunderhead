@@ -1,6 +1,6 @@
 {
   "name": "Thunderhead",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "The Thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.",
   "main": "node server.js",
   "author": "Skrub#2280",
