@@ -78,7 +78,13 @@
       "use": "additem [@User] [Name] [Type] [id] [:emoji] [cost] {imageURL} [description]",
       "desc": "add item to database"
     },
-    "addweapon": {
+        "addrobe": {
+      "name": "addrobe",
+      "state": "delta",
+      "use": "addrobe [Color] [id] [cost] [description]",
+      "desc": "add robe to database"
+    },
+      "addweapon": {
       "name": "addweapon",
       "state": "delta",
       "use": "addweapon [@User] [Name] [%Success] [%Defense] [id] [cost] [description]",
@@ -108,7 +114,7 @@
     "ask": {
       "name": "ask",
       "state": "gamma",
-      "use": "ask [Question]",
+      "use": "ask [Question/Math]",
       "desc": "Ask me a question."
     },
     "roleme": {
@@ -248,6 +254,24 @@
       "state": "beta",
       "use": "rob [@User]",
       "desc": "Rob a user, but be careful. It won't let you use your daily for the rest of the day."
+    },
+        "stocks": {
+      "name": "stocks",
+      "state": "beta",
+      "use": "stocks [Company]",
+      "desc": "See a companies stocks, or view traded companies."
+    },
+        "invest": {
+      "name": "invest",
+      "state": "beta",
+      "use": "invest [Company]",
+      "desc": "Invest in a company and hope their stock price goes up."
+    },
+        "cashout": {
+      "name": "cashout",
+      "state": "beta",
+      "use": "cashout [Company]",
+      "desc": "Sell your shares of a company"
     }
   },
   "music": {
