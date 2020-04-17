@@ -1,5 +1,5 @@
 # The Thunderhead
-Current Ver. 📊💸1.9.1 Market Hotpatch
+Current Ver. 📊💸1.9.2 Market Hotpatch
 -----------------------------
 
 The thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.
