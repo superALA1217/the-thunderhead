@@ -1,7 +1,7 @@
 {
   "maintenance": "Bot going through maintenance, please check back later.",
   "ping_ping": "Pinging local Thunderhead server.",
-  "ping_pong": "Pong! 🏓 - AI INTERFACE",
+  "ping_pong": "Pong! 🏓",
   "goddardMoments": [
     "taking pennies from the donation box",
     "not coughing into his elbow",
@@ -51,6 +51,21 @@
     "https://askthethunderhead.com/sharing/non-especially.jpg",
     "https://askthethunderhead.com/sharing/non-belies.jpg"
   ],
+  "stocks": {
+    "BSA": ["BigSky Airlines", "DAL"],
+    "ABC": ["Alphabet Backbrain Query", "GOOGL"],
+    "NHA": ["New Hope Aerospace Labs", "BA"],
+    "SFS": ["Sea Steak Food Synthesis", "WMT"],
+    "ELA": ["Misso Soup and Ramen", "QSR"],
+    "POO": ["Prager University", "FOX"]
+  },
+  "stocks_invalid": "That is not a valid stock.",
+  "invest_invalid": "That is not a valid stock.",
+  "invest_nshares": "Please provide a valid amount of shares.",
+  "invest_amt": "You cannot purchase that many shares.",
+  "cashout_invalid": "That is not a valid stock you own.",
+  "cashout_amt": "You do not have that many shares.",
+  "cashout_nshares": "Please provide a valid amount of shares.",
   "ask_warn": "https://askthethunderhead.com/sharing/warning.jpg",
   "remind_notime": "What time do you want to be reminded.",
   "remind_novalidtime": "Please specify a valid time like 5m for five minutes 1h for one hour or 3d for three days.",
@@ -58,7 +73,7 @@
   "remind_success": "I will be sure to remind you of that.",
   "userinfo_nomention": "Please mention a valid user.",
   "weather_nolocation": "Provide a valid location",
-  "role_blurb": "__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your instead of boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...",
+  "role_blurb": "__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your name instead of having it boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...",
   "roll_amt": "How much do you want to roll.",
   "roll_validint": "Would you like to me roll *you* into the negatives.",
   "roll_namt": "You cannot incur gambling debts.",
@@ -70,7 +85,7 @@
   "coinflip_amt": "Please proivde an amount to coinflip?",
   "coinflip_side": "Please choose a side. Heads or Tails?",
   "coinflip_namt": "You cannot coinflip that amount",
-   "coinflip_noself": "You cannot coinflip youself",
+  "coinflip_noself": "You cannot coinflip youself",
   "coinflip_nfund": " does not have sufficient funds.",
   "undebt_reset": "YYou are no longer in debt thanks to the obstruction of poverty.",
   "undebt_notbelowzero": "You are not below zero.",
