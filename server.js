@@ -1037,9 +1037,9 @@ client.on("message", async message => {
     if (command === "stocks" || command === "stonks" || command === "stock") {
         try {
             let index = 0;
-            var target;  
+            var target;
             if (args[0]) target = client.users.get(args[0].replace(/@/g, "").replace(/!/g, "").replace(/>/g, "").replace(/</g, ""));
-            if (!target) target = message.author; 
+            if (!target) target = message.author;
             if (args[0]) args[0] = args[0].toUpperCase()
             if (target && (!msg.stocks[args[0]])) {
                 let stockMessage = `**${target.username}'s Portfolio**`;
@@ -1047,7 +1047,7 @@ client.on("message", async message => {
                     let sharesOf = 0;
                     if (!shares[message.author.id]) shares[message.author.id] = {}
                     if (shares[message.author.id][Object.keys(msg.stocks)[index]]) sharesOf = shares[message.author.id][Object.keys(msg.stocks)[index]];
-                    
+
                     stockMessage += `\n${msg.stocks[i][0]}: ${Object.keys(msg.stocks)[index]} | Owned: ${sharesOf} shares`;
                     index++
                 }
@@ -1067,8 +1067,9 @@ client.on("message", async message => {
     if (command === "invest") {
         if (!shares[message.author.id]) shares[message.author.id] = {};
         if (!args[0]) return message.channel.send(msg.invest_invalid);
+        if (args[0] < 1) return message.channel.send(msg.invest_invalid);
         if (!args[1]) return message.channel.send(msg.invest_nshares);
-      if (!msg.stocks[args[0].toUpperCase()]) return message.channel.send(msg.invest_invalid);
+        if (!msg.stocks[args[0].toUpperCase()]) return message.channel.send(msg.invest_invalid);
         var output = await eco.FetchBalance(message.author.id)
         alpha.data.intraday(msg.stocks[args[0].toUpperCase()][1]).then(data => {
             let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
@@ -1076,20 +1077,23 @@ client.on("message", async message => {
             if (!shares[message.author.id][args[0].toUpperCase()]) shares[message.author.id][args[0].toUpperCase()] = 0;
             shares[message.author.id][args[0].toUpperCase()] += parseInt(args[1])
             eco.AddToBalance(message.author.id, stockPrice * args[1] * -1)
-            message.channel.send(`Shares purchased for ${stockPrice * args[1]} ${currency}. You have now ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
-         });
+            message.channel.send(`Shares purchased for ${stockPrice * args[1]} ${currency}. You now have ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
+            channel.send(`${message.author.username} (${message.author.id})  purchased shares for ${stockPrice * args[1]} ${currency}. they now have ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
+
+        });
     }
 
     if (command === "cashout") {
         if (!args[0].toUpperCase()) return message.channel.send(msg.cashout_invalid);
+        if (args[0] < 1) return message.channel.send(msg.cashout_invalid);
         if (!shares[message.author.id][args[0].toUpperCase()]) return message.channel.send(msg.cashout_invalid); // If no shares then just end the check o_0
         if (!args[1]) return message.channel.send(msg.cashout_nshares);
         if (shares[message.author.id][args[0].toUpperCase()] < args[1]) return message.channel.send(msg.cashout_nshares);
         alpha.data.intraday(msg.stocks[args[0].toUpperCase()][1]).then(data => {
-            let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));  
+            let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
             shares[message.author.id][args[0].toUpperCase()] -= parseInt(args[1])
             eco.AddToBalance(message.author.id, stockPrice * args[1])
-            message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. You have now ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
+            message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
         })
 
     }
