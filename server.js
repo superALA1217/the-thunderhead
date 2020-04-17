@@ -464,7 +464,14 @@ client.on("message", async message => {
                 message.channel.send(`The ${_r} role was assigned.`)
             }
         }
-        if (_r === "Unsavory") message.channel.send("No.")
+        if (_r === "Unsavory") {
+          if (Math.random > .999) {
+            message.member.addRole(message.guild.roles.find('name', "Unsavory"));
+            message.channel.send("Yes.")
+          } else {
+            message.channel.send("No")
+          }
+        }
     }
 
     if (command === "time") {
