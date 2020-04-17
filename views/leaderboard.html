@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>The Thunderhead</title>
+	 <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Thunderhead</title>
 	<meta content="IE=edge" http-equiv="X-UA-Compatible">
 	<meta content="width=device-width, initial-scale=1" name="viewport">
 	
@@ -41,28 +42,28 @@
 	 /*Custom Stylin' I want smaller buttons for a sharper look and feel*/
 	 body {
 	   background: #101029;
-	   color: #fff;
+	   color: #f3f0cd;
 	   font-weight: 300;
 	   margin: 0;
 	   font-family: 'Inria Sans', sans-serif;
 	}
 	   
 	   button, .button {
-	   border: none;
-	   font: inherit;
-	   padding: .4rem 1rem;
-	   border-radius: 0;
-	   color: #fff;
-	   box-shadow: 0.35rem 0.35rem rgba(var(--btn-color-1), 30%);
-	   background: rgb(var(--btn-color-1));
-	   filter: drop-shadow(0 0 3px #fff5);
-	   cursor: pointer;
-	   display: inline-block;
-	   position: relative;
-	   transition: 0.3s;
+	border: none;
+	font: inherit;
+	padding: .72vw 1.2vh;
+	border-radius: 0;
+	color: #fff;
+	box-shadow: 0.35vw 0.35vh rgba(var(--btn-color-1), 30%);
+	background: rgb(var(--btn-color-1));
+	filter: drop-shadow(0 0 3px #fff5);
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.3s;
 	   font-size: 100%;
 	}
-    .vibes { background-image: url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F32x32vibes.png');
+    .vibes { background-image: url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F128x128vibes.png');
     background-position: center center;
 background-repeat: no-repeat;
 background-size: 1em 1em;
@@ -71,6 +72,9 @@ height: 1em;
 margin: 0 .05em 0 .1em;
 vertical-align: -.1em;
 width: 1em;}
+    h5 {
+      font-size: 130%;
+    }
 	</style>
 	<script defer src="/client.js">
 	</script>  
@@ -79,22 +83,16 @@ width: 1em;}
 	<div class="fullscreen">
 		<h1 class="background-text">The Leaderboard</h1>
 	
-<p id="top">
+<h5 id="top">
   Loading...
-    </p>
+    </h5>
     <script>
-      fetch(`https://the-thunderhead.glitch.me/leaderboard.raw`)
-		                           
-          .then(res => res.json()).then((out) => {
-		                               document.getElementById("top").innerHTML = out.leaderboard
-		                                    }  
-		                                );
-                                    
+    fetch(`https://the-thunderhead.glitch.me/leaderboard.json`).then(a=>a.json()).then(a=>{document.getElementById("top").innerHTML=a.leaderboard});
     </script>
     
 		<div class="background" id="image"></div>
 		<script>
-		  document.getElementById("image").style.backgroundImage = "url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fselfie.png?v=1586741635704')";
+		  document.getElementById("image").style.backgroundImage = "url('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fleaderboardbg.png')";
 		</script>
 	</div>
 </body>
