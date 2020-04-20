@@ -1,6 +1,6 @@
 {
   "name": "Thunderhead",
-  "version": "1.9.2",
+  "version": "1.10.0",
   "description": "The Thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.",
   "main": "node server.js",
   "author": "Skrub#2280",
@@ -8,29 +8,23 @@
   "scripts": {
     "start": "node server.js"
   },
-  "engines": {
-    "node": "8.4.0"
-  },
   "dependencies": {
-    "express": "^4.17.1",
     "discord.js": "^11.5.1",
-    "graceful-fs": "^4.2.3",
-    "weather-js": "^2.0.0",
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
-    "express-fileupload": "^1.1.6",
-    "node-opus": "^0.3.2",
-    "simple-youtube-api": "^5.2.1",
-    "ytdl-core": "^2.0.0",
-    "es6-map": "0.1.5",
-    "cat-facts": "1.0.2",
-    "cat-ascii-faces": "2.0.0",
+    "ms": "^2.1.2",
     "request": "^2.88.2",
-    "sqlite": "^3.0.3",
-    "discord-economy": "^1.2.2",
-    "node": "^13.12.0",
-    "btoa": "^1.2.1",
     "math-expression-evaluator": "^1.2.22",
-    "canvas": "^2.6.1",
-    "alphavantage": "^2.0.1"
+    "discord-economy": "^1.2.2",
+    "cat-facts": "^1.0.2",
+    "alphavantage": "^2.0.1",
+    "cat-ascii-faces": "^2.0.0",
+    "weather-js": "^2.0.0",
+    "ytdl-core": "^2.1.0",
+    "ytpl": "^0.1.20",
+    "yt-search": "^1.1.2",
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "node-opus": "^0.3.2",
+    "express": "^4.17.1",
+    "btoa": "^1.2.1",
+    "canvas": "^2.6.1"
   }
 }
