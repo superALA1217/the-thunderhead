@@ -8,6 +8,10 @@ The thunderhead cannot intervene in affairs of the Scythedom. All it can do is w
 
 ## Written by: `Skrub#2280`
 
+## What's New?
+  - Fixed `shares.json` memory leak (hopefully)
+  - Fixed music commands after YouTube decided that my API token wasn't cool enough (`>:(`)
+  - Made Volume From 0-100 rather than 0-5
 **Hey**;
 
 - if you plan on contributing [here](https://trello.com/b/wtAYO1cr/thunderhead) is a master list of what we need done;
