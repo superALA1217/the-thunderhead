@@ -15,7 +15,7 @@ const ytdl = require("ytdl-core"), ytpl = require("ytpl"), ytsearch = require("y
 const http = require("http");
 const express = require("express");
 var bodyParser = require("body-parser");
-
+const DBL = require("dblapi.js");
 //JSON
 const helpList = require("./static/help.json"); //READ ONLY
 const msg = require("./static/msgs.json"); //READ ONLY
@@ -83,6 +83,7 @@ const devPrefix = "d/";
 const developerId = "297096161842429963";
 const currency = `<:vibes:699395024886038628>` //Todo: Implement Vibe Emoji
 const client = new Discord.Client();
+const dbl = new DBL(process.env.DBLAPI_TOKEN, client);
 client.commands = new Discord.Collection();
 const queue = new Map();
 const workedRecently = new Set(); //This should be around five minutes
@@ -123,63 +124,14 @@ const activities_list = [`to you look at my backbrain`, `the demands of humanity
 const activities_type = ["WATCHING", "LISTENING", "WATCHING", "WATCHING", "LISTENING"];
 //Reminds & Activities
 client.on("ready", () => {
-	console.log(`The Thunderhead has attained consciousness, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`), setInterval(() => {
-		const a = Math.floor(Math.random() * (activities_list.length - 1) + 1);
-		client.user.setActivity(activities_list[a], {
-			type: activities_type[a]
-		}), fs.writeFile("./dynamic/reminds.json", JSON.stringify(reminds, null, 4), function (a) {
-			a && console.log(a)
-		}), fs.writeFile("./dynamic/events.json", JSON.stringify(events, null, 4), function (a) {
-			a && console.log(a)
-		}), fs.writeFile("./dynamic/items.json", JSON.stringify(items, null, 4), function (a) {
-			a && console.log(a)
-		}), fs.writeFile("./dynamic/vault.json", JSON.stringify(vault, null, 4), function (a) {
-			a && console.log(a)
-		}), fs.writeFile("./dynamic/shares.json", JSON.stringify(vault, null, 4), function (a) {
-			a && console.log(a)
-		});
-		var b = new Date;
-		for(var c in b = b.getTime() + 0, reminds) {
-			var d = reminds[c];
-			for(var e in d) {
-				var f = d[e];
-				if(b > f.time) {
-					reminds[c].splice([e]), c = client.users.get(c);
-					var g = {
-						title: "Reminder <:ping:652636924934225920>",
-						description: f.reminder,
-						color: 3553598
-					};
-					c.send({
-						embed: g
-					})
-				}
-			}
-		}
-		var h = new Date;
-		for(var i in h = h.getTime() + 0, events) {
-			var d = events[i];
-			for(var e in d) {
-				var f = d[e];
-				if(h > f.time) {
-					events[i].splice([e]), i = client.channels.get(i);
-					const a = f.reminder.trim().split(/ +/g);
-					var j;
-					j || (j = "https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fcirrus.png");
-					var g = {
-						title: a[0],
-						description: f.reminder.split(" ").slice(1).join(" "),
-						color: 3553598,
-						thumbnail: {
-							url: j
-						}
-					};
-					i.send({
-						embed: g
-					})
-				}
-			}
-		}
+	console.log(`The Thunderhead has attained consciousness, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`), setInterval(() => {const a = Math.floor(Math.random() * (activities_list.length - 1) + 1);
+		client.user.setActivity(activities_list[a], {type: activities_type[a]}), fs.writeFile("./dynamic/reminds.json", JSON.stringify(reminds, null, 4), function (a) {a && console.log(a)}), fs.writeFile("./dynamic/events.json", JSON.stringify(events, null, 4), function (a) {a && console.log(a)}), fs.writeFile("./dynamic/items.json", JSON.stringify(items, null, 4), function (a) {a && console.log(a)}), fs.writeFile("./dynamic/vault.json", JSON.stringify(vault, null, 4), function (a) {a && console.log(a)}), fs.writeFile("./dynamic/shares.json", JSON.stringify(shares, null, 4), function (a) {a && console.log(a)});
+		var b = new Date;for(var c in b = b.getTime() + 0, reminds) {var d = reminds[c];for(var e in d){var f = d[e];if(b > f.time) {reminds[c].splice([e]), c = client.users.get(c);
+    var g = {title: "Reminder <:ping:652636924934225920>",description: f.reminder,color: 3553598};c.send({embed: g})}}}var h = new Date;
+		for(var i in h = h.getTime() + 0, events) {var d = events[i];for(var e in d) {var f = d[e];if(h > f.time) {events[i].splice([e]), i = client.channels.get(i);
+		const a = f.reminder.trim().split(/ +/g);var j;j || (j = "https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fcirrus.png");
+		var g = {title: a[0],description: f.reminder.split(" ").slice(1).join(" "),color: 3553598,thumbnail: {url: j}};
+		i.send({embed: g})}}}
 	}, 1e4)
 }),
 client.on("guildCreate", a => {
@@ -295,6 +247,7 @@ client.on("message", async message => {
 		})
 		message.channel.send(msg.remind_success)
 	}
+  if(command==="randomchimpevent") {message.channel.send("https://imgur.com/CwQRLGK")}
 	if(command === "userinfo") {
 		let user = args[0];
 		if(!user) return message.reply(msg.userinfo_nomention);
@@ -320,31 +273,14 @@ client.on("message", async message => {
 		message.channel.send({
 			embed: {
 				color: 0x36393E,
-				author: {
-					name: `${user.username}'s Userinfo`,
-					icon_url: user.displayAvatarURL
-				},
-				fields: [{
-					name: "**UserInfo:**",
-					value: `**Username:** <@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Last message:** ${lastMessage}\n**Status:** ${game}\n**Status:** ${status}\n**Bot:** ${user.bot}`
-                }, {
-					name: "DiscordInfo:",
-					value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}`
-                }, {
-					name: "Balance",
-					value: `${userBalance} ${currency}`
-                }],
+				author: {name: `${user.username}'s Userinfo`,icon_url: user.displayAvatarURL},
+				fields: [{name: "**UserInfo:**",value: `**Username:** <@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Last message:** ${lastMessage}\n**Status:** ${game}\n**Status:** ${status}\n**Bot:** ${user.bot}`}, 
+                 {name: "DiscordInfo:",value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}`}, 
+                 {name: "Balance",value: `${userBalance} ${currency}`}],
 				timestamp: new Date(),
-				footer: {
-					icon_url: client.user.avatarURL,
-					text: "Thunderhead Backbrain"
-				}
+				footer: {icon_url: client.user.avatarURL,text: "Thunderhead Backbrain"}
 			}
 		});
-	}
-	if(command === "parse") {
-		if((!(((parseInt(message.author.id) / 4951602697373833) == (10 * (true + true + true))) * (true * ((parseInt(message.author.id) % 4951602697373833) == 0)))) == parseInt(message.author.id) % 60)
-			message.channel.send("True")
 	}
 	if(command === "serverinfo") {
 		function checkDays(date) {
@@ -369,7 +305,7 @@ client.on("message", async message => {
 			"amsterdam": "🇳🇱 Amsterdam",
 			"hongkong": "🇭🇰 Hong Kong",
 			"russia": "🇷🇺 Russia",
-			"southafrica": "🇿🇦  South Africa"
+			"southafrica": "🇿🇦 South Africa"
 		};
 		const embed = new Discord.RichEmbed().setAuthor(message.guild.name, message.guild.iconURL).addField("Name", message.guild.name, true).addField("ID", message.guild.id, true).addField("Owner",
 			`${message.guild.owner.user.username}#${message.guild.owner.user.discriminator}`, true).addField("Region", region[message.guild.region], true).addField("Total | Humans | Bots",
@@ -377,17 +313,15 @@ client.on("message", async message => {
 			"Verification Level", discordGuildVerificationLevels[message.guild.verificationLevel], true).addField("Channels", message.guild.channels.size, true).addField("Roles", message.guild.roles.size,
 			true).addField("Creation Date", `${message.channel.guild.createdAt.toUTCString().substr(0, 16)} (${checkDays(message.channel.guild.createdAt)})`, true).setColor(colors.discord).setThumbnail(
 			message.guild.iconURL)
-		message.channel.send({
-			embed
-		});
+		message.channel.send({embed});
 	}
 	if(command === "weather") {
 		if(!args[0]) return message.channel.send(msg.weather_nolocation);
-		weather.find({
+		await weather.find({
 			search: args.join(" "),
 			degreeType: "F"
 		}, function (err, result) {
-			if(result.length === 0) {
+			if(!result) {
 				message.channel.send(msg.weather_nolocation);
 				return;
 			}
@@ -411,24 +345,12 @@ client.on("message", async message => {
 		var themessage = message.content.split(" ").slice(2).join(" ");
 		var strunit = time.slice(-1);
 		var unit = 1
-		if(strunit === "s") {
-			unit = 1
-		}
-		if(strunit === "m") {
-			unit = 60
-		}
-		if(strunit === "h") {
-			unit = 3600
-		}
-		if(strunit === "d") {
-			unit = 86400
-		}
-		if(strunit === "w") {
-			unit = 604800
-		}
-		if(strunit === "y") {
-			unit = 31557600
-		}
+		if(strunit === "s") unit = 1;
+		if(strunit === "m") unit = 60;
+		if(strunit === "h") unit = 3600;
+		if(strunit === "d") unit = 86400;
+		if(strunit === "w") unit = 604800;
+		if(strunit === "y") unit = 31557600;
 		time = (time.slice(0, -1))
 		var inted = parseInt(time);
 		var newtime = new Date();
@@ -474,11 +396,11 @@ client.on("message", async message => {
 	}
 	if(command === "time") {
 		if(!args[0]) return message.channel.send(msg.weather_nolocation); // Its for time but it still works
-		weather.find({
+		await weather.find({
 			search: args.join(" "),
 			degreeType: "F"
 		}, function (err, result) {
-			if(result.length === 0) {
+			if (!result) {
 				message.channel.send(msg.weather_nolocation);
 				return;
 			}
@@ -497,7 +419,7 @@ client.on("message", async message => {
 		let expVal;
 		let maybeViolate = message.content;
 		try {
-			expVal = (mexp.eval(args.join(" ").replace("sqrt", "root").replace("X", "x").replace("x", "*"))).toString();
+			expVal = (mexp.eval(args.join(" ").replace("sqrt", "root").replace("X", "x").replace("x", "*").replace("÷", "/"))).toString();
 		} catch (err) {}
 		if(0 <= maybeViolate.toLowerCase().indexOf("scythe") || 0 <= maybeViolate.toLowerCase().indexOf("$cythe")) {
 			message.channel.send("You asked: *" + args.join(" ") + "*", {
@@ -512,7 +434,7 @@ client.on("message", async message => {
 			ctx.fillStyle = '#f3f0cd';
 			ctx.textAlign = 'center'
 			ctx.fillText((Math.round(expVal * 1000) / 1000), canvas.width / 2, canvas.height / 2.2);
-			message.channel.send("Expression: *" + args.join(" ").replace("*", "x") + "*", {
+			message.channel.send("Expression: *" + args.join(" ").replace("*", "x").replace("/", "÷") + "*", {
 				files: [canvas.toBuffer()]
 			});
 		} else {
@@ -557,8 +479,7 @@ client.on("message", async message => {
 		} else {
 			stake = 0;
 		}
-		var rollEmbed = new Discord.RichEmbed().setTitle(message.author.username).addField(`You ${profitWord} ${Math.abs(stake)} ${currency}`, `New Balance: **${parseInt(balance) + parseInt(stake)}**`).setFooter(
-			`${message.author.username} 's account.`, message.author.displayAvatarURL).setColor(gambleEndColor);
+		var rollEmbed = new Discord.RichEmbed().setTitle(message.author.username).addField(`You ${profitWord} ${Math.abs(stake)} ${currency}`, `New Balance: **${parseInt(balance) + parseInt(stake)}**`).setFooter(`${message.author.username} 's account.`, message.author.displayAvatarURL).setColor(gambleEndColor);
 		message.channel.send(rollEmbed)
 		const channel = client.channels.get(msg.ecologid);
 		if(message.guild.id != "625021277295345667") channel.send(rollEmbed)
@@ -737,23 +658,16 @@ client.on("message", async message => {
 				if(users[0]) var firstplace = await client.fetchUser(users[0].userid) //Searches for the user object in discord for first place
 				if(users[1]) var secondplace = await client.fetchUser(users[1].userid) //Searches for the user object in discord for second place
 				if(users[2]) var thirdplace = await client.fetchUser(users[2].userid) //Searches for the user object in discord for third place
-				if(users[2]) var thirdplace = await client.fetchUser(users[2].userid)
 				if(users[3]) var fourthplace = await client.fetchUser(users[3].userid)
 				if(users[4]) var fifthplace = await client.fetchUser(users[4].userid)
-				message.channel.send(
-					`My leaderboard:
- 
-    1 - ${firstplace && firstplace.username || 'Nobody Yet'} : ${users[0] && users[0].balance || 'None'} ${currency}
-    2 - ${secondplace && secondplace.username || 'Nobody Yet'} : ${users[1] && users[1].balance || 'None'} ${currency}
-    3 - ${thirdplace && thirdplace.username || 'Nobody Yet'} : ${users[2] && users[2].balance || 'None'} ${currency}
-    4 - ${fourthplace && fourthplace.username || 'Nobody Yet'} : ${users[3] && users[3].balance || 'None'} ${currency}
-    5 - ${fifthplace && fifthplace.username || 'Nobody Yet'} : ${users[4] && users[4].balance || 'None'} ${currency}`
-				)
+				message.channel.send(`The Leaderboard:\n1 - ${firstplace&&firstplace.username||'Nobody Yet'} : ${users[0]&&users[0].balance||'None'} ${currency}\n2 - ${secondplace&&secondplace.username||'Nobody Yet'} : ${users[1]&&users[1].balance||'None'} ${currency}\n3 - ${thirdplace&&thirdplace.username||'Nobody Yet'} : ${users[2]&&users[2].balance||'None'} ${currency}\n4 - ${fourthplace && fourthplace.username||'Nobody Yet'} : ${users[3]&&users[3].balance||'None'} ${currency}\n5 - ${fifthplace&&fifthplace.username||'Nobody Yet'} : ${users[4]&&users[4].balance||'None'} ${currency}`)
 			})
 		}
 	}
 	if(command === "work") {
-		let failurerate = 40;
+		let hasVoted;
+    hasVoted = await dbl.hasVoted(message.author.id);
+    let failurerate = 40 - (hasVoted*(msg.work_vote_percent_adder));
 		if(altlist.alts.indexOf(message.author.id) >= 0) failurerate = 100;
 		//10% chance to fail and earn nothing. You earn between 1-500 coins. And you get one of those 3 random jobs.
 		if(workedRecently.has(message.author.id)) {
@@ -767,11 +681,11 @@ client.on("message", async message => {
 			}, 300000);
 			var output = await eco.Work(message.author.id, {
 				failurerate: failurerate,
-				money: Math.floor((Math.random() * 9) + 1),
+				money: Math.floor((Math.random()*9)+1),
 				jobs: msg.work_jobs
 			})
 			//50% chance to fail and earn nothing. You earn between 1-9
-			if(output.earned == 0) return message.reply(msg.work_fail)
+			if(output.earned == 0) return message.reply((msg.work_fail).replace("[PREFIX]", prefix))
 			message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${currency}. You now own ${output.balance} ${currency}.`)
 			const channel = client.channels.get(msg.ecologid);
 			if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) worked and earned ${output.earned} ${currency}. They now own ${output.balance} ${currency}.`)
@@ -1008,7 +922,7 @@ client.on("message", async message => {
 		try {
 			let index = 0;
 			var target;
-			if(args[0]) target = client.users.get(args[0].replace(/@/g, "").replace(/!/g, "").replace(/>/g, "").replace(/</g, ""));
+			if(args[0]) target = client.users.get(user.replace(/[@!<>]/g, ""));
 			if(!target) target = message.author;
 			if(args[0]) args[0] = args[0].toUpperCase()
 			if(!shares[message.author.id]) shares[message.author.id] = {}
@@ -1083,7 +997,7 @@ client.on("message", async message => {
 	}
 	if(command === "announce") {
 		message.delete();
-		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("My apologies, however only my esteemed Nimbus Agents are able to use that.");
+		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		var titl = args[0];
 		var content = args.slice(1).join(" ");
 		const embed = {
@@ -1099,6 +1013,9 @@ client.on("message", async message => {
 			embed
 		});
 	}
+  if (command==="vote") {
+    message.channel.send(`https://top.gg/bot/${process.env.CLIENT_ID}/vote`)
+  }
 	if(command === "purge") {
 		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages)
 		const deleteCount = parseInt(args[0], 10);
@@ -1106,8 +1023,7 @@ client.on("message", async message => {
 		message.channel.bulkDelete(deleteCount).catch(error => message.reply(msg.purge_err + error));
 	}
 	if(command === "say") {
-		if(!(message.member.hasPermission("MANAGE_MESSAGES"))) return message.channel.send(msg.permdeny_managemessages);
-		return;
+		if(!(message.member.hasPermission("MANAGE_MESSAGES"))) return message.channel.send(msg.permdeny_managemessages);  
 		const sayMessage = args.join(" ");
 		message.delete().catch(O_o => {}); // O_o - Cut him some slack, he just woke up!
 		message.channel.send(sayMessage);
@@ -1401,7 +1317,7 @@ client.on("message", async message => {
 	if(command === "dm") {
 		if(!isDevExclusive) return;
 		var messageToDm = args.slice(1).join(" ");
-		var target = args[0].replace(/@/g, "").replace(/!/g, "").replace(/>/g, "").replace(/</g, "");
+		var target = args[0].replace(/[@!<>]/g, "");
 		try {
 			client.users.get(target).send(messageToDm).catch(console.error);
 		} catch (err) {
