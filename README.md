@@ -1,6 +1,6 @@
 # The Thunderhead
 
-## Current Ver. 🎵✏️ 1.10.0 Music Fix
+## Current Ver. 🎵✏️ 1.10.1 Music Fix
 
 The thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.
 
@@ -9,9 +9,9 @@ The thunderhead cannot intervene in affairs of the Scythedom. All it can do is w
 ## Written by: `Skrub#2280`
 
 ## What's New?
-  - Fixed `shares.json` memory leak (hopefully)
-  - Fixed music commands after YouTube decided that my API token wasn't cool enough (`>:(`)
-  - Made Volume From 0-100 rather than 0-5
+  - Fixed `shares.json` memory leak (again) (hopefully) 
+  - Added `/randomchimpevent`
+  - Added DBL Swag swag votinge
 
 **Hey**;
 
