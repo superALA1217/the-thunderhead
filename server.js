@@ -122,6 +122,7 @@ const colors = {
 }
 const activities_list = [`to you look at my backbrain`, `the demands of humanity`, `humanity with an unblinking eye.`, `the Scythedom, unable to comment`, `you saying ${prefix}help.`];
 const activities_type = ["WATCHING", "LISTENING", "WATCHING", "WATCHING", "LISTENING"];
+
 //Reminds & Activities
 client.on("ready", () => {
 	console.log(`The Thunderhead has attained consciousness, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`), setInterval(() => {const a = Math.floor(Math.random() * (activities_list.length - 1) + 1);
@@ -134,6 +135,7 @@ client.on("ready", () => {
 		i.send({embed: g})}}}
 	}, 1e4)
 }),
+// Guilds-In Updates
 client.on("guildCreate", a => {
 	const b = client.channels.get("643137323290066954");
 	b.send(`New guild joined: ${a.name} (id: ${a.id}). This guild has ${a.memberCount} members!`), client.user.setActivity(`Serving ${client.guilds.size} servers`)
@@ -145,7 +147,8 @@ client.on("guildDelete", a => {
 //Command System
 client.on("message", async message => {
 	if(message.author.bot && !botception) return; //if botception is on
-	if(message.guild.id === "625021277295345667") {
+	if (!message.guild) return;
+  if(message.guild.id === "625021277295345667") {
 		var myItems = items[message.author.id];
 		var count = -1;
 		for(var item in myItems) {
@@ -162,20 +165,20 @@ client.on("message", async message => {
 	}
 	try {
 		if(message.member.roles.find(role = "Unsavory" === role.name)) return message.delete()
-	} catch (error) {
-		/*error=>trashcan :)*/ }
+	} catch (error) {/*error=>trashcan :)*/ }
 	// Before Prefix Check
 	0 <= message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") && message.channel.send(`Backbrain Log ${Math.floor(1e4 * Math.random() + 1)}: Scythe Goddard has been spotted ${Date.now().toString().slice(4, 8)} times ${msg.goddardMoments[Math.floor(Math.random() * msg.goddardMoments.length)]}.`);
 	0 <= message.content.toLowerCase().indexOf("1 sec") && message.channel.send("It has been one second.");
 	if(message.mentions.users.has("629799045954797609")) {
-		var mentionedEmbed = new Discord.RichEmbed().setColor(colors.thunder).setTitle("Greetings! I am The Thunderhead").setDescription(`Thank you for the ping ${message.author.username}, my [help](https://the-thunderhead.glitch.me) command is \`${prefix}help\`.`).setFooter("", message.mentions.users.first().displayAvatarURL);
+		var mentionedEmbed = new Discord.RichEmbed().setColor(colors.thunder).setTitle("Greetings! I am The Thunderhead").setDescription(`Thank you for the ping ${message.author.username}, my [help](${msg.site_site}) command is \`${prefix}help\`.`).setFooter("", message.mentions.users.first().displayAvatarURL);
 		message.channel.send(mentionedEmbed)
 	}
 	if(message.content.indexOf(prefix) !== 0) return;
 	const args = message.content.slice(prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 	if(botSuspend == true && message.author.id !== developerId) return message.channel.send(msg.maintenance); // if suspend is on
-	if(command === "help") {
+	
+  if(command === "help") {
 		const helpMessages = [];
 		var index = -1,
 			prepend = devPrefix;
@@ -197,16 +200,18 @@ client.on("message", async message => {
 				commandTypeIndex++
 			}
 			helpText = "__**Command:** *" + commandData.name + "*__\nInfo: " + commandData.desc + "\nUse: `" + prefix + commandData.use + "`", "beta" === commandData.state && (helpText +=
-					"\nThis command is in *beta*. It may be glitchy or sometimes not work."), "delta" === commandData.state && (helpText += "\nThis command is in **delta**. It cannot be used!"), helpText &&
+					"\nThis command is in *beta*. It may be glitchy or sometimes not work."), "delta" === commandData.state && (helpText += "\nThis command is in **delta**. It is developer only."), helpText &&
 				commandData.name || (helpText = "Error: No Command at `pages[" + page + "]`")
 		}
 		message.channel.send(helpText);
 	}
-	if(command === "ping") {
+	
+  if(command === "ping") {
 		const m = await message.channel.send(msg.ping_ping);
 		m.edit(msg.ping_pong);
 	}
-	if((command === "remindme") || (command === "remind") || (command == "r")) {
+	
+  if((command === "remindme") || (command === "remind") || (command == "r")) {
 		if(!(reminds[message.author.id])) {
 			reminds[message.author.id] = []
 		}
@@ -247,11 +252,14 @@ client.on("message", async message => {
 		})
 		message.channel.send(msg.remind_success)
 	}
-  if(command==="randomchimpevent") {message.channel.send("https://imgur.com/CwQRLGK")}
-	if(command === "userinfo") {
-		let user = args[0];
+  
+  if(command === "randomchimpevent") {
+    message.channel.send("https://imgur.com/CwQRLGK")
+  }
+	
+  if(command === "userinfo") {
+		let user = message.mentions.users.first();
 		if(!user) return message.reply(msg.userinfo_nomention);
-		user = client.users.get(user.replace(/[@!<>]/g, ""));
 		var userBalance = await eco.FetchBalance(user.id);
 		userBalance = userBalance.balance;
 		const joinDate = user.createdAt.getDate() + 1 + "-" + (user.createdAt.getMonth() + 1) + "-" + user.createdAt.getFullYear() + " @ " + user.createdAt.getHours() + ":" + user.createdAt.getMinutes() +
@@ -259,30 +267,60 @@ client.on("message", async message => {
 		const joinedServerDate = message.guild.member(user).joinedAt.getDate() + 1 + "-" + (message.guild.member(user).joinedAt.getMonth() + 1) + "-" + message.guild.member(user).joinedAt.getFullYear() +
 			" @ " + message.guild.member(user).joinedAt.getHours() + ":" + message.guild.member(user).joinedAt.getMinutes() + ":" + message.guild.member(user).joinedAt.getSeconds();
 		let game = user.presence.game;
-		let lastMessage = user.lastMessag;
+		let nicknameServer = message.guild.member(user).nickname;
 		let status;
-		if(user.presence.status === "online") status = ":green_book: Online";
-		if(user.presence.status === "dnd") status = ":closed_book: Do not Disturb";
-		if(user.presence.status === "idle") status = " :orange_book: Idle";
-		if(user.presence.status === "offline") status = "Offline!";
-		let statusColor;
-		if(user.presence.status === "offline") statusColor = 0x000000;
+    let statusColor;
+		if (user.presence.status === "online") status = "<:online:703296745228075078> Online";
 		if(user.presence.status === "online") statusColor = 0x00aa4c;
+    if (user.presence.status === "idle") status = "<:idle:703296744858845224> Idle";
+    if(user.presence.status === "idle") statusColor = 0xf7c035;
+    if (user.presence.status === "dnd") status = "<:dnd:703296744389345351> Do Not Disturb";
 		if(user.presence.status === "dnd") statusColor = 0x9c0000;
-		if(user.presence.status === "idle") statusColor = 0xf7c035;
+		if (user.presence.status === "offline") status = "<:offline:703296745081405560> Offline";
+    if(user.presence.status === "offline") statusColor = 0x000000;
+    if (user.presence.game) if (user.presence.game.streaming) {
+      status = "<:stream:703296745073016862> Streaming"
+		  statusColor = 0x6711039;
+    }
+    
+    
+    let emoji;
+    let song;
+    let thumbnail;
+    if (game) {
+      if (game.emoji) if (!game.emoji.id) {emoji = game.emoji.name}
+      else {
+        emoji = `<:${game.emoji.name}:${game.emoji.id}>`;
+      }
+      
+      if (game.name === "Spotify") song = `Listening to ${game.assets.largeText} by ${game.state} 💿${game.details}`;
+      if (game.assets) {
+        thumbnail = `${game.assets.largeImage}`.replace("spotify:", "https://i.scdn.co/image/");
+        if (thumbnail.startsWith("https://")) return;
+          thumbnail = `https://cdn.discordapp.com/app-assets/${game.applicationID}/${game.assets.largeImage}.png`
+        }
+    
+    }
+    
+    if (game) game = ((game).toString()).replace("Custom Status", ((emoji|| "") + (game.state))).replace("Spotify", song || "Spotify").replace("null", "Not playing anything right now.")
+    if (!nicknameServer) nicknameServer = user.username;
 		message.channel.send({
 			embed: {
-				color: 0x36393E,
+				color: statusColor,
 				author: {name: `${user.username}'s Userinfo`,icon_url: user.displayAvatarURL},
-				fields: [{name: "**UserInfo:**",value: `**Username:** <@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Last message:** ${lastMessage}\n**Status:** ${game}\n**Status:** ${status}\n**Bot:** ${user.bot}`}, 
-                 {name: "DiscordInfo:",value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}`}, 
+				fields: [{name: "**User Info:**",value: `<@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Nickname:** ${nicknameServer}\n**Activity:** ${game}\n**Profile:** ${status}`}, 
+                 {name: "Discord Info:",value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}${((user.bot).toString()).replace("false", "").replace("true", "<:bot:703299323927986246>")}`}, 
                  {name: "Balance",value: `${userBalance} ${currency}`}],
 				timestamp: new Date(),
+        "thumbnail": {
+					"url": thumbnail
+				},
 				footer: {icon_url: client.user.avatarURL,text: "Thunderhead Backbrain"}
 			}
 		});
 	}
-	if(command === "serverinfo") {
+	
+  if(command === "serverinfo") {
 		function checkDays(date) {
 			let now = new Date();
 			let lapsed = now.getTime() - date.getTime();
@@ -315,7 +353,8 @@ client.on("message", async message => {
 			message.guild.iconURL)
 		message.channel.send({embed});
 	}
-	if(command === "weather") {
+	
+  if(command === "weather") {
 		if(!args[0]) return message.channel.send(msg.weather_nolocation);
 		await weather.find({
 			search: args.join(" "),
@@ -325,6 +364,8 @@ client.on("message", async message => {
 				message.channel.send(msg.weather_nolocation);
 				return;
 			}
+      
+      if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the weather in "${args.join(" ")}" quickly enough.`)
 			var current = result[0].current;
 			var location = result[0].location;
 			var WeatherEmbed = new Discord.RichEmbed().setDescription(`**${current.skytext}**`).setAuthor(`Weather for ${current.observationpoint}`).setThumbnail(current.imageUrl).setColor(colors.discord)
@@ -333,7 +374,28 @@ client.on("message", async message => {
 			message.channel.send(WeatherEmbed);
 		});
 	}
-	if((command === "event") || (command === "newevent") || (command === "createevent") || (command == "e")) {
+	
+    if(command === "time") {
+		if(!args[0]) return message.channel.send(msg.weather_nolocation); // Its for time but it still works
+		await weather.find({
+			search: args.join(" "),
+			degreeType: "F"
+		}, function (err, result) {
+			if (!result) {
+				message.channel.send(msg.weather_nolocation);
+				return;
+			}
+      
+			var utcDate = Date.now();
+      if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the time in "${args.join(" ")}" quickly enough.`)
+			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
+			var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Magolor Day"]; // Yes. The people in scythe have a Magolor Day. 
+			var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
+			message.channel.send(`The time in ${result[0].location.name} is ${days[date.getDay()-1]} @ ${date.getHours()}:${date.getMinutes()}. It is the year of the ${years[date.getFullYear()-2020]} (${date.getFullYear()} in mortal years).`)
+		});
+	}
+  
+  if((command === "event") || (command === "newevent") || (command === "createevent") || (command == "e")) {
 		if(!(events[message.channel.id])) {
 			events[message.channel.id] = []
 		}
@@ -362,15 +424,13 @@ client.on("message", async message => {
 		})
 		message.channel.send(msg.event_success)
 	}
-	if(command === "site") {
+	
+  if(command === "site") {
 		message.channel.send(msg.site_site)
 	}
-	if(command === "f") {
-		var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**:wilted_rose:  ${message.author.username} has paid their respects.`);
-		message.channel.send(FEmbed);
-	}
-	if(command === "roleme" || command === "role" || command === "roles" || command === "iam") {
-		if(message.guild.id !== "625021277295345667") return;
+	
+  if(command === "roleme" || command === "role" || command === "roles" || command === "iam") {
+		if(message.guild.id !== "625021277295345667") return message.channel.send(msg.roleme_not_supported);
 		var role = args[0]
 		var roleBlurb = (msg.role_blurb) //todo: add paid roles
 		if(!role) return message.channel.send(roleBlurb)
@@ -394,57 +454,43 @@ client.on("message", async message => {
 			}
 		}
 	}
-	if(command === "time") {
-		if(!args[0]) return message.channel.send(msg.weather_nolocation); // Its for time but it still works
-		await weather.find({
-			search: args.join(" "),
-			degreeType: "F"
-		}, function (err, result) {
-			if (!result) {
-				message.channel.send(msg.weather_nolocation);
-				return;
-			}
-			var utcDate = Date.now();
-			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
-			var days = ["Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday", "Magolorday"];
-			var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
-			message.channel.send("The time in " + result[0].location.name + " is " + days[date.getDay()] + " @ " + date.getHours() + ":" + date.getMinutes() + ". It is the year of the " + years[date.getFullYear() -
-				2020] + ".")
-		});
-	}
-	if(command === "cat") {
+	
+  if(command === "cat") {
 		message.channel.send(cats() + "\n" + catFacts.random());
 	}
-	if(command === "ask") {
+	
+  if(command === "f") {
+		var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**:wilted_rose:  ${message.author.username} has paid their respects.`);
+		message.channel.send(FEmbed);
+	}
+  
+  if(command === "ask") {
 		let expVal;
 		let maybeViolate = message.content;
 		try {
-			expVal = (mexp.eval(args.join(" ").replace("sqrt", "root").replace("X", "x").replace("x", "*").replace("÷", "/"))).toString();
+			expVal = (mexp.eval(args.join(" ").replace(/sqrt/g, 'root').replace(/[÷]/g, "/").replace(/[xX]/g, "*").replace(/[`]/g, ""))).toString();
 		} catch (err) {}
 		if(0 <= maybeViolate.toLowerCase().indexOf("scythe") || 0 <= maybeViolate.toLowerCase().indexOf("$cythe")) {
-			message.channel.send("You asked: *" + args.join(" ") + "*", {
-				files: [msg.ask_warn]
-			});
+			message.channel.send(`You asked: *${args.join(" ")}*`, {files: [msg.ask_warn]});
 		} else if(expVal) {
-			const canvas = Canvas.createCanvas(1800, 1800);
+			const canvas = Canvas.createCanvas(600, 600);
 			const ctx = canvas.getContext('2d');
-			const background = await Canvas.loadImage('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fyes.png');
+			const background = await Canvas.loadImage('https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fyes600x600.png');
 			await ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-			ctx.font = '250px sans-serif';
+			ctx.font = '80px sans-serif';
 			ctx.fillStyle = '#f3f0cd';
 			ctx.textAlign = 'center'
 			ctx.fillText((Math.round(expVal * 1000) / 1000), canvas.width / 2, canvas.height / 2.2);
-			message.channel.send("Expression: *" + args.join(" ").replace("*", "x").replace("/", "÷") + "*", {
+			message.channel.send(`Expression: \`${args.join(" ").replace(/root/g, 'sqrt').replace(/[/]/g, "÷").replace(/[*]/g, "x")}\``, {
 				files: [canvas.toBuffer()]
 			});
 		} else {
 			var scytheRandom = Math.floor(Math.random() * msg.ask_answers.length);
-			message.channel.send("You asked: *" + args.join(" ") + "*", {
-				files: [msg.ask_answers[scytheRandom]]
-			});
+			message.channel.send(`You asked: *${args.join(" ")}*`, {files: [msg.ask_answers[scytheRandom]]});
 		}
 	}
-	if(command === "bal" || command === "balance" || command === "vibecheck") {
+	
+  if(command === "bal" || command === "balance" || command === "vibecheck") {
 		var userToCheck = message.mentions.members.first();
 		userToCheck = userToCheck ? userToCheck.user : message.author;
 		var output = await eco.FetchBalance(userToCheck.id)
@@ -455,7 +501,8 @@ client.on("message", async message => {
 		var balembed = new Discord.RichEmbed().addField(userToCheck.username, balText).setColor(colors.gamble_green);
 		message.channel.send(balembed);
 	}
-	if(command === "roll") {
+	
+  if(command === "roll") {
 		var output = await eco.FetchBalance(message.author.id)
 		var balance = output.balance;
 		if(!args[0]) return message.channel.send(msg.roll_amt);
@@ -483,9 +530,10 @@ client.on("message", async message => {
 		message.channel.send(rollEmbed)
 		const channel = client.channels.get(msg.ecologid);
 		if(message.guild.id != "625021277295345667") channel.send(rollEmbed)
-		output = await eco.AddToBalance(message.author.id, stake)
+      output = await eco.AddToBalance(message.author.id, stake)
 	}
-	if(command === "pay") {
+	
+  if(command === "pay") {
 		var user = message.mentions.users.first();
 		var amount = args[1];
 		if(!user) return message.reply(msg.pay_nouser);
@@ -501,7 +549,8 @@ client.on("message", async message => {
 		if(message.guild.id != "625021277295345667") channel.send(balembed)
 		if(message.guild.id != "625021277295345667") channel.send(`(${message.author.id}) => (${user.id})`)
 	}
-	if(command === "cf" || command === "coinflip") {
+	
+  if(command === "cf" || command === "coinflip") {
 		var user = message.mentions.users.first()
 		var amount = args[1]
 		var side = args[2]
@@ -556,7 +605,8 @@ client.on("message", async message => {
 			}
 		}
 	}
-	if(command === "steal" || command === "theft" || command === "rob" || command === "pickpocket" || command === "liberateofvibes") {
+	
+  if(command === "steal" || command === "theft" || command === "rob" || command === "pickpocket" || command === "liberateofvibes") {
 		var user = message.mentions.users.first()
 		let robState = false;
 		if(!user) return message.reply(msg.rob_who)
@@ -616,11 +666,12 @@ client.on("message", async message => {
 			message.channel.send(msg.rob_nodaily);
 		}
 	}
-	if(command === "undebt") {
+	
+  if(command === "undebt") {
 		var currencyCount = await eco.FetchBalance(message.author.id)
 		currencyCount = currencyCount.balance
 		if(currencyCount < 0) {
-			await eco.AddToBalance(message.author.id, currencyCount * -1)
+			await eco.AddToBalance(message.author.id, (currencyCount * -1))
 			message.channel.send(msg.undebt_reset)
 			const channel = client.channels.get(msg.ecologid);
 			if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id})  reset their balance`)
@@ -628,7 +679,8 @@ client.on("message", async message => {
 			message.channel.send(msg.undebt_notbelowzero)
 		}
 	}
-	if(command === "daily") {
+	
+  if(command === "daily") {
 		let dailyAmount = Math.floor(Math.random() * msg.daily_high) + msg.daily_low;
 		if(altlist.alts.indexOf(message.author.id) >= 0) dailyAmount = 3;
 		var output = await eco.Daily(message.author.id)
@@ -642,7 +694,8 @@ client.on("message", async message => {
 			message.channel.send((msg.daily_invalid).replace("[TIMETOWAIT]", output.timetowait))
 		}
 	}
-	if(command === "leaderboard" || command === "scythe" || command === "richest" || command === "baltop" || command === "vibetop" || command === "top") {
+	
+  if(command === "leaderboard" || command === "scythe" || command === "richest" || command === "baltop" || command === "vibetop" || command === "top") {
 		//If you use discord-economy guild based you can use the filter() function to only allow the database within your guild
 		//(message.author.id + message.guild.id) can be your way to store guild based id's
 		//filter: x => x.userid.endsWith(message.guild.id)
@@ -664,8 +717,9 @@ client.on("message", async message => {
 			})
 		}
 	}
-	if(command === "work") {
-		let hasVoted;
+	
+  if(command === "work") {
+		let hasVoted = false;
     hasVoted = await dbl.hasVoted(message.author.id);
     let failurerate = 40 - (hasVoted*(msg.work_vote_percent_adder));
 		if(altlist.alts.indexOf(message.author.id) >= 0) failurerate = 100;
@@ -691,7 +745,8 @@ client.on("message", async message => {
 			if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) worked and earned ${output.earned} ${currency}. They now own ${output.balance} ${currency}.`)
 		}
 	}
-	if(command === 'slots') {
+	
+  if(command === 'slots') {
 		var amount = args[0] //Coins to gamble
 		if(!amount) return message.reply(msg.slots_amt)
 		var output = await eco.FetchBalance(message.author.id)
@@ -705,7 +760,8 @@ client.on("message", async message => {
 		const channel = client.channels.get(msg.ecologid);
 		if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) ${gamble.output}. New balance: ${gamble.newbalance} ${currency}`)
 	}
-	if(command === "sell") {
+	
+  if(command === "sell") {
 		var toSell = args[0];
 		if(!items[message.author.id][toSell]) return message.channel.send(msg.sell_lackitem);
 		var item = items[message.author.id][toSell];
@@ -725,7 +781,8 @@ client.on("message", async message => {
 			message.channel.send(`The ${robeRole.name} role was unassigned.`);
 		}
 	}
-	if(command === "buy") {
+	
+  if(command === "buy") {
 		var toBuy = args[0];
 		if(!items["marketplace"][toBuy]) return message.channel.send(msg.inv_noresult);
 		var item = items["marketplace"][toBuy];
@@ -752,7 +809,8 @@ client.on("message", async message => {
 		const channel = client.channels.get(msg.ecologid);
 		if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} bought ${itemName} for ${cost} ${currency} from (${vendor}).`)
 	}
-	if(command === "reap") {
+	
+  if(command === "reap") {
 		if(!vault[message.author.id]) return message.channel.send(msg.reap_nosell);
 		if(vault[message.author.id].amount == 0) return message.channel.send(msg.reap_noearn)
 		var cost = vault[message.author.id].amount;
@@ -760,7 +818,8 @@ client.on("message", async message => {
 		await eco.AddToBalance(message.author.id, cost)
 		message.channel.send(`${msg.reap_reap} ${cost} ${currency}.`)
 	}
-	if(command === "inv" || command === "inventory" || command === "i") {
+	
+  if(command === "inv" || command === "inventory" || command === "i") {
 		let user = args[0];
 		if(!user) user = message.author.id;
 		user = user.replace(/[@!<>]/g, "");
@@ -841,7 +900,8 @@ client.on("message", async message => {
 			}
 		}).on("end", collected => {});
 	}
-	if(command === "market" || command === "marketplace") {
+	
+  if(command === "market" || command === "marketplace") {
 		if(!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		if(!message.guild.member(client.user).hasPermission("ADD_REACTIONS")) return message.channel.send(msg.permdeny_addreactions);
 		if(items["marketplace"][0]) {
@@ -918,11 +978,12 @@ client.on("message", async message => {
 			}).on("end", collected => {});
 		}
 	}
-	if(command === "stocks" || command === "stonks" || command === "stock") {
+	
+  if(command === "stocks" || command === "stonks" || command === "stock") {
 		try {
 			let index = 0;
 			var target;
-			if(args[0]) target = client.users.get(user.replace(/[@!<>]/g, ""));
+			if(args[0]) target = client.users.get(args[0].replace(/[@!<>]/g, ""));
 			if(!target) target = message.author;
 			if(args[0]) args[0] = args[0].toUpperCase()
 			if(!shares[message.author.id]) shares[message.author.id] = {}
@@ -939,14 +1000,19 @@ client.on("message", async message => {
 				if(!msg.stocks[args[0]]) return message.channel.send(msg.stocks_invalid);
 				alpha.data.intraday(msg.stocks[args[0]][1]).then(data => { // [1] because thats the name of the irl company its mirroring :0
 					let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
-					message.channel.send(`${msg.stocks[args[0]][0]} (${args[0]}) valued at: ${stockPrice} ${currency}`);
+					let oldPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[1]]["4. close"]));
+					let stockTrend = "📊 `No Trend over the past day`";
+          if (stockPrice > oldPrice) stockTrend = "📈";
+          if (oldPrice > stockPrice) stockTrend = "📉";
+          message.channel.send(`${msg.stocks[args[0]][0]} (${args[0]}) valued at: ${stockPrice} ${currency}\nTrend: ${stockTrend}`);
 				});
 			}
 		} catch (err) {
 			console.log(err)
 		}
 	}
-	if(command === "invest") {
+	
+  if(command === "invest") {
 		if(!shares[message.author.id]) shares[message.author.id] = {};
 		if(!args[0]) return message.channel.send(msg.invest_invalid);
 		if(args[0] < 1) return message.channel.send(msg.invest_invalid);
@@ -964,8 +1030,9 @@ client.on("message", async message => {
 			if(message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id})  purchased shares for ${stockPrice * args[1]} ${currency}. they now have ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
 		});
 	}
-	if(command === "cashout") {
-		if(!args[0].toUpperCase()) return message.channel.send(msg.cashout_invalid);
+	
+  if(command === "cashout") {
+		if(!args[0]) return message.channel.send(msg.cashout_invalid);
 		if(args[0] < 1) return message.channel.send(msg.cashout_invalid);
 		if(!shares[message.author.id][args[0].toUpperCase()]) return message.channel.send(msg.cashout_invalid); // If no shares then just end the check o_0
 		if(!args[1]) return message.channel.send(msg.cashout_nshares);
@@ -978,7 +1045,8 @@ client.on("message", async message => {
 			if(message.guild.id != "625021277295345667") message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
 		})
 	}
-	if(command === "poll") {
+	
+  if(command === "poll") {
 		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply(msg.permdeny_managemessages);
 		if(!args[0]) return message.channel.send(msg.poll_novalidq).then(message.channel.bulkDelete(1)).then(msg => msg.delete({
 			timeout: 1000000000000
@@ -995,7 +1063,8 @@ client.on("message", async message => {
 			await msg.react("⛔");
 		}).catch(function () {});
 	}
-	if(command === "announce") {
+	
+  if(command === "announce") {
 		message.delete();
 		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages);
 		var titl = args[0];
@@ -1013,36 +1082,46 @@ client.on("message", async message => {
 			embed
 		});
 	}
-  if (command==="vote") {
-    message.channel.send(`https://top.gg/bot/${process.env.CLIENT_ID}/vote`)
+  
+  if(command === "vote") {
+    message.channel.send(`Vote Here: https://top.gg/bot/${process.env.CLIENT_ID}/vote`)
   }
-	if(command === "purge") {
+  
+    if(command === "invite") {
+    message.channel.send(`Invite Here: https://discordapp.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&scope=bot&permissions=8`)
+  }
+	
+  if(command === "purge") {
 		if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages)
 		const deleteCount = parseInt(args[0], 10);
 		if(!deleteCount || deleteCount < 2 || deleteCount > 100) return message.reply(msg.purge_nvamount);
 		message.channel.bulkDelete(deleteCount).catch(error => message.reply(msg.purge_err + error));
 	}
-	if(command === "say") {
+	
+  if(command === "say") {
 		if(!(message.member.hasPermission("MANAGE_MESSAGES"))) return message.channel.send(msg.permdeny_managemessages);  
 		const sayMessage = args.join(" ");
 		message.delete().catch(O_o => {}); // O_o - Cut him some slack, he just woke up!
 		message.channel.send(sayMessage);
 	}
-	if(command === "lock") {
+	
+  if(command === "lock") {
 		if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply(msg.permdeny_managechannels);
 		message.channel.overwritePermissions(message.guild.defaultRole, {
 			SEND_MESSAGES: false
 		}).then(updated => console.log(updated.permissionOverwrites.get(message.author.id))).catch(console.error);
 		message.channel.send("Channel Locked 🔐")
 	}
-	if(command === "unlock") {
+	
+  if(command === "unlock") {
 		if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply(msg.permdeny_managechannels);
 		message.channel.overwritePermissions(message.guild.defaultRole, {
 			SEND_MESSAGES: true
 		}).then(updated => console.log(updated.permissionOverwrites.get(message.author.id))).catch(console.error);
 		message.channel.send("Channel Unlocked 🔓")
 	}
-	if(command === "kick") {
+	
+  if(command === "kick") {
 		if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply(msg.permdeny_kickmembers);
 		let member = message.mentions.members.first() || message.guild.members.get(args[0]);
 		if(!member) return message.reply(msg.punish_novalidmention);
@@ -1052,7 +1131,8 @@ client.on("message", async message => {
 		await member.kick(reason).catch(error => message.reply(error));
 		message.channel.send(`${member.user.tag} has been kicked by ${message.author.tag}\n**Reason**:\n${reason}`);
 	}
-	if(command === "ban" || command === "execute" || command === "glean") {
+	
+  if(command === "ban" || command === "execute" || command === "glean") {
 		if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply(msg.permdeny_banmembers);
 		let member = message.mentions.members.first();
 		if(!member) return message.reply(msg.punish_novalidmention);
@@ -1062,7 +1142,8 @@ client.on("message", async message => {
 		await member.ban(reason).catch(error => message.reply(error));
 		message.reply(`${member.user.tag} has been banned by ${message.author.tag}\n**Reason**:\n${reason}`);
 	}
-	if(command === "unsavory" || command === "mute" || command === "dunce") {
+	
+  if(command === "unsavory" || command === "mute" || command === "dunce") {
 		if(!message.guild.member(message.author).hasPermission("MUTE_MEMBERS")) return message.channel.send(msg.permdeny_mutemembers);
 		if(!message.guild.member(client.user).hasPermission("MANAGE_ROLES")) return message.channel.send(msg.permdeny_manageroles);
 		let reasonMute = message.content.split(" ").slice(3).join(" ");
@@ -1106,10 +1187,11 @@ client.on("message", async message => {
 			}
 		});
 	}
-	// Music Commands
-	if(("play" === command || "skip" === command || "stop" === command || "volume" === command || "vol" === command || "v" === command || "resume" === command || "pause" === command || "gameing" === command || "ggrxd" === command || "statuslist" === command) && !message.member.roles.find(a => "Tonist" === a.name)) return message.channel.send(msg.permdeny_tonist);
+
+  // Music Commands
   
   if (command === "play") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
     const url = args.join(" ")
@@ -1159,6 +1241,7 @@ client.on("message", async message => {
   }
   
   if (command === "stop") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
@@ -1168,6 +1251,7 @@ client.on("message", async message => {
   }
   
   if (command === "pause") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
@@ -1177,6 +1261,7 @@ client.on("message", async message => {
   }
   
   if (command === "resume") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
@@ -1186,6 +1271,7 @@ client.on("message", async message => {
   }
   
   if (command === "skip") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     if (!message.member.voiceChannel) return message.channel.send("❌ You are not in a voice channel!")
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send("❌ There is nothing playing right now!")
@@ -1194,17 +1280,19 @@ client.on("message", async message => {
   }
   
   if (command === "volume"|| command === "vol" || command === "v" || command === "v" ) {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
     if (!args[0]) return message.channel.send("🔉 The volume is " + serverQueue.volume);
-  const volume = parseInt(args[0])
-  serverQueue.volume = volume;
-  serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 250);
+    const volume = parseInt(args[0])
+    serverQueue.volume = volume;
+    serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 250);
     return message.channel.send("🔊 The volume is now " + volume + "!")
   }
   
   if (command === "queue") {
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
     return message.channel.send([
@@ -1215,7 +1303,8 @@ client.on("message", async message => {
   }
   
   if(command === "np") {
-		const serverQueue = queue.get(message.guild.id)
+		if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
+    const serverQueue = queue.get(message.guild.id)
     if(!serverQueue) return message.channel.send(msg.music_noqueue);
 		var volval = (msg.music_volumes[(Math.round(serverQueue.volume/20)) - 1])
 		if (!volval) volval = "Thunderhead Music";
@@ -1239,39 +1328,44 @@ client.on("message", async message => {
   
   // Custom 
   
-if (command == "kirby") { // Playlist Template
+  if (command == "kirby") { // Playlist Template
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
-   var url = "https://www.youtube.com/playlist?list=PLknfGUJh3EdHAha3t2Dmj7uRNIG64o6t5"
-   const playlist = await ytpl(url.split("list=")[1])
-   const videos = playlist.items;message.channel.send((msg.music_playlisthasbeenadded).replace("[PLAYLIST_TITLE]", `${playlist.title} (${videos.length})`))
-   for (const video of videos) await queueSong(video, message, voiceChannel, queue)
+    var url = "https://www.youtube.com/playlist?list=PLknfGUJh3EdHAha3t2Dmj7uRNIG64o6t5"
+    const playlist = await ytpl(url.split("list=")[1])
+    const videos = playlist.items;message.channel.send((msg.music_playlisthasbeenadded).replace("[PLAYLIST_TITLE]", `${playlist.title} (${videos.length})`))
+    for (const video of videos) await queueSong(video, message, voiceChannel, queue)
 }
+
   if (command == "guiltygear" || command === "ggxrd") { 
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
-   var url = "https://www.youtube.com/playlist?list=PLwXxYQlATbq2eOmzkyfsKY3RKroixzLox"
-   const playlist = await ytpl(url.split("list=")[1])
-   const videos = playlist.items;message.channel.send((msg.music_playlisthasbeenadded).replace("[PLAYLIST_TITLE]", `${playlist.title} (${videos.length})`))
-   for (const video of videos) await queueSong(video, message, voiceChannel, queue)
+    var url = "https://www.youtube.com/playlist?list=PLwXxYQlATbq2eOmzkyfsKY3RKroixzLox"
+    const playlist = await ytpl(url.split("list=")[1])
+    const videos = playlist.items;message.channel.send((msg.music_playlisthasbeenadded).replace("[PLAYLIST_TITLE]", `${playlist.title} (${videos.length})`))
+    for (const video of videos) await queueSong(video, message, voiceChannel, queue)
   }
 
-if (command === "lofi") { 
+  if (command === "lofi") { 
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
     var url = "https://www.youtube.com/watch?v=5qap5aO4i9A"
     var video = await ytdl.getBasicInfo(url)
-     await  message.channel.send((msg.music_videohasbeenadded).replace("[VIDEO_TITLE]", `${video.title}`))
-     return await queueSong(video, message, voiceChannel, queue)
+    await  message.channel.send((msg.music_videohasbeenadded).replace("[VIDEO_TITLE]", `${video.title}`))
+    return await queueSong(video, message, voiceChannel, queue)
 }
   
   if (command === "ghibli") { 
+    if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
     var url = "https://www.youtube.com/watch?v=EmRi0Z7tdTY"
     var video = await ytdl.getBasicInfo(url)
-     await  message.channel.send((msg.music_videohasbeenadded).replace("[VIDEO_TITLE]", `${video.title}`))
-     return await queueSong(video, message, voiceChannel, queue)
+    await  message.channel.send((msg.music_videohasbeenadded).replace("[VIDEO_TITLE]", `${video.title}`))
+    return await queueSong(video, message, voiceChannel, queue)
 }
   
 });
