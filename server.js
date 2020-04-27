@@ -1529,8 +1529,6 @@ var channelList = guild.channels.map(c=>c.name + " ||" + c.id + "||").join('\n')
     }
 });
 
-client.on("message",async a=>{var b=client.channels.get("703332653864321095");if(b||(b=a.channel),0!=a.content.length){var c=new Discord.RichEmbed().setTitle(`${a.author.username} (ID: ${a.author.id}) sent a message in ${a.guild.name}`).addField(`In channel # ${a.channel.name}`,a.content).setFooter(`d/devsay ${a.channel.id}`,a.author.displayAvatarURL).setColor(colors.thunder);if(a.channel.id===b.id||"643137323290066954"===a.channel.id||"643131582982389760"===a.channel.id||"264889891039608874"===a.channel.id);else{const d=await b.send(c);d.react("\uD83D\uDDD1\uFE0F");d.createReactionCollector((a,b)=>["\uD83D\uDDD1\uFE0F"].includes(a.emoji.name)&&"629799045954797609"!=b.id,{time:6e4,errors:["time"]}).on("collect",b=>{"\uD83D\uDDD1\uFE0F"===b.emoji.name&&(a.delete(),d.delete())}).on("end",()=>{})}}});
-
 //Async - Music
 async function queueSong(video, message, voiceChannel, queue) {
   const serverQueue = queue.get(message.guild.id)
