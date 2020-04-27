@@ -27,7 +27,7 @@ const shares = require("./dynamic/shares.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 
 const authFile = require("./auth.json"); // READ ONLY AUTH
-const auth = authFile.canary;
+const auth = authFile.stable;
 
 
 
