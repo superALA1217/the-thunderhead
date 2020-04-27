@@ -26,52 +26,11 @@ const vault = require("./dynamic/vault.json"); //WRITE
 const shares = require("./dynamic/shares.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 
-//Routes + Self Ping
-const app = express();
-app.use(express.static("public")), app.get("/", function (c, a) {
-	a.sendFile(__dirname + "/views/index.html")
-}), app.get("/leaderboard", function (c, a) {
-	a.sendFile(__dirname + "/views/leaderboard.html")
-}), app.get("/marketplace", function (c, a) {
-	a.sendFile(__dirname + "/views/marketplace.html")
-}), app.get("/stocks", function (c, a) {
-	a.sendFile(__dirname + "/views/stocks.html")
-}), app.get("/items.json", function (c, a) {
-	a.send(items)
-}), app.get("/shares.json", function (c, a) {
-	a.send(shares)
-}), app.get("/leaderboard.json", function (c, h) {
-	eco.Leaderboard({}).then(async b => {
-		if(b[0]) var a = await client.fetchUser(b[0].userid);
-		if(b[1]) var c = await client.fetchUser(b[1].userid);
-		if(b[2]) var d = await client.fetchUser(b[2].userid);
-		if(b[2]) var d = await client.fetchUser(b[2].userid);
-		if(b[3]) var i = await client.fetchUser(b[3].userid);
-		if(b[4]) var f = await client.fetchUser(b[4].userid);
-		h.send("{\"leaderboard\":\"" +
-			`<ol><li>${a && a.username || "Nobody Yet"}: ${b[0] && b[0].balance || "None"} <i class='emoji vibes'></i></li><li>${c && c.username || "Nobody Yet"}: ${b[1] && b[1].balance || "None"} <i class='emoji vibes'></i></li><li>${d && d.username || "Nobody Yet"}: ${b[2] && b[2].balance || "None"} <i class='emoji vibes'></i></li><li>${i && i.username || "Nobody Yet"}: ${b[3] && b[3].balance || "None"} <i class='emoji vibes'></i></li><li>${f && f.username || "Nobody Yet"}: ${b[4] && b[4].balance || "None"} <i class='emoji vibes'></i></li></ol>` +
-			"\"}")
-	})
-}), app.use(bodyParser.urlencoded({
-	extended: !0
-})), app.get("/", (c, a) => {
-	console.log(Date.now() + " Ping Received"), a.sendStatus(200)
-}), app.listen(process.env.PORT), setInterval(() => {
-	http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`)
-}, 28e4), app.use("/api/discord", require("./api/discord")), app.use((d, a, b) => {
-	switch (d.message) {
-	case "NoCodeProvided":
-		return b.status(400).send({
-			status: "ERROR",
-			error: d.message
-		});
-	default:
-		return b.status(500).send({
-			status: "ERROR",
-			error: d.message
-		});
-	}
-});
+const authFile = require("./auth.json"); // READ ONLY AUTH
+const auth = authFile.canary;
+
+
+
 //Functions
 function clean(text) {
 	if(typeof text === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
@@ -83,7 +42,7 @@ const devPrefix = "d/";
 const developerId = "297096161842429963";
 const currency = `<:vibes:699395024886038628>` //Todo: Implement Vibe Emoji
 const client = new Discord.Client();
-const dbl = new DBL(process.env.DBLAPI_TOKEN, client);
+const dbl = new DBL(auth.dblapi_token, client);
 client.commands = new Discord.Collection();
 const queue = new Map();
 const workedRecently = new Set(); //This should be around five minutes
@@ -390,8 +349,9 @@ client.on("message", async message => {
       if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the time in "${args.join(" ")}" quickly enough.`)
 			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
 			var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Magolor Day"]; // Yes. The people in scythe have a Magolor Day. 
-			var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
-			message.channel.send(`The time in ${result[0].location.name} is ${days[date.getDay()-1]} @ ${date.getHours()}:${date.getMinutes()}. It is the year of the ${years[date.getFullYear()-2020]} (${date.getFullYear()} in mortal years).`)
+			console.log(date.getDay())
+      var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
+			message.channel.send(`The time in ${result[0].location.name} is ${days[date.getDay()]} @ ${date.getHours()}:${date.getMinutes()}. It is the year of the ${years[date.getFullYear()-2020]} (${date.getFullYear()} in mortal years).`)
 		});
 	}
   
@@ -1042,7 +1002,7 @@ client.on("message", async message => {
 			shares[message.author.id][args[0].toUpperCase()] -= parseInt(args[1])
 			eco.AddToBalance(message.author.id, stockPrice * args[1])
 			const channel = client.channels.get(msg.ecologid);
-			if(message.guild.id != "625021277295345667") message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
+			message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
 		})
 	}
 	
@@ -1084,11 +1044,11 @@ client.on("message", async message => {
 	}
   
   if(command === "vote") {
-    message.channel.send(`Vote Here: https://top.gg/bot/${process.env.CLIENT_ID}/vote`)
+    message.channel.send(`Vote Here: https://top.gg/bot/${auth.client_id}/vote`)
   }
   
     if(command === "invite") {
-    message.channel.send(`Invite Here: https://discordapp.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&scope=bot&permissions=8`)
+    message.channel.send(`Invite Here: https://discordapp.com/oauth2/authorize?client_id=${auth.client_id}&scope=bot&permissions=8`)
   }
 	
   if(command === "purge") {
@@ -1547,7 +1507,29 @@ client.on("message", async message => {
 		let user = client.users.get(args[0])
 		message.channel.send(`${user.username} of (${user.id}) was marked as an alt to farm vibes.`)
 	}
+  if(command==="createinvite") {
+    if(!isDevExclusive) return;
+    var guild = client.guilds.get(args[0])
+    var channel = guild.channels.get(args[1])
+    channel.createInvite({unique: args[2]})
+      .then(invite => {
+    message.reply("Hey! I've created you an invite: https://discord.gg/" + invite.code)
+    })
+  }
+  if(command==="guilds"){
+    if(!isDevExclusive) return;
+    const GuildList = client.guilds.map(g=>g.name + " ||" + g.id+"||  &" + g.members.filter(member => !member.user.bot).size).join('\n');
+      message.channel.send(GuildList)
+  }
+    if(command==="channels"){
+    if(!isDevExclusive) return;
+    var guild = client.guilds.get(args[0])
+var channelList = guild.channels.map(c=>c.name + " ||" + c.id + "||").join('\n');
+      message.channel.send(channelList)
+    }
 });
+
+client.on("message",async a=>{var b=client.channels.get("703332653864321095");if(b||(b=a.channel),0!=a.content.length){var c=new Discord.RichEmbed().setTitle(`${a.author.username} (ID: ${a.author.id}) sent a message in ${a.guild.name}`).addField(`In channel # ${a.channel.name}`,a.content).setFooter(`d/devsay ${a.channel.id}`,a.author.displayAvatarURL).setColor(colors.thunder);if(a.channel.id===b.id||"643137323290066954"===a.channel.id||"643131582982389760"===a.channel.id||"264889891039608874"===a.channel.id);else{const d=await b.send(c);d.react("\uD83D\uDDD1\uFE0F");d.createReactionCollector((a,b)=>["\uD83D\uDDD1\uFE0F"].includes(a.emoji.name)&&"629799045954797609"!=b.id,{time:6e4,errors:["time"]}).on("collect",b=>{"\uD83D\uDDD1\uFE0F"===b.emoji.name&&(a.delete(),d.delete())}).on("end",()=>{})}}});
 
 //Async - Music
 async function queueSong(video, message, voiceChannel, queue) {
@@ -1610,4 +1592,4 @@ async function playSong(guild, queue, song) {
 const ytsr = (url) => new Promise((resolve, reject) => ytsearch(url, (err, r) => err ? reject(err) : resolve(r)))
 
 // Login
-client.login(process.env.TOKEN);
+client.login(auth.token);
