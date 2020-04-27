@@ -1000,8 +1000,9 @@ client.on("message", async message => {
 			let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
 			shares[message.author.id][args[0].toUpperCase()] -= parseInt(args[1])
 			eco.AddToBalance(message.author.id, stockPrice * args[1])
+			message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. You now have ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
 			const channel = client.channels.get(msg.ecologid);
-			message.channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
+			channel.send(`Shares sold for ${stockPrice * args[1]} ${currency}. ${message.author.username} (${message.author.id}) now has ${shares[message.author.id][args[0].toUpperCase()]} shares in ${args[0].toUpperCase()}.`)
 		})
 	}
 	
