@@ -349,7 +349,7 @@ client.on("message", async message => {
       if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the time in "${args.join(" ")}" quickly enough.`)
 			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
 			var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Magolor Day"]; // Yes. The people in scythe have a Magolor Day. 
-			console.log(date.getDay())
+			console.log(date.getDay()-1)
       var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
 			message.channel.send(`The time in ${result[0].location.name} is ${days[date.getDay()]} @ ${date.getHours()}:${date.getMinutes()}. It is the year of the ${years[date.getFullYear()-2020]} (${date.getFullYear()} in mortal years).`)
 		});
