@@ -518,6 +518,12 @@ client.on("message", async message => {
 		if(message.guild.id != "625021277295345667") channel.send(`(${message.author.id}) => (${user.id})`)
 	}
 
+    if (command === "nod") {
+        let nodEmbed = new Discord.RichEmbed()
+            .addField("Land of Nod", "Let\u2019s all forsake,\r\nThe Land of Wake,\r\nAnd break for the Land of Nod.\r\n\r\nWhere we can try,\r\nTo touch the sky,\r\nOr dance beneath the sod.\r\n\r\nA toll for the living,\r\nA toll for the lost,\r\nA toll for the wise ones,\r\nWho tally the cost,\r\n\r\nSo let\u2019s escape,\r\nDue south of \u2009Wake,\r\nAnd make for the Land of Nod.\r\n*\u2014Nursery Rhyme (origin unknown)*");
+        message.channel.send(nodEmbed);
+    }
+
     if (command === "rps") {
         let choice = args[0];
         if (!choice) return message.channel.send(msg.rps_invalid);
@@ -529,7 +535,7 @@ client.on("message", async message => {
         else if (choice === "paper" || choice === "p") {
             message.channel.send(msg.rps_p);
         }
-        else if (choice = "scissors" || choice === "s") {
+        else if (choice === "scissors" || choice === "s") {
             message.channel.send(msg.rps_s);
         }
         return message.channel.send(msg.rps_invalid)
