@@ -1318,15 +1318,16 @@ client.on("message", async message => {
     return await queueSong(video, message, voiceChannel, queue)
 }
 	
- if (command === "swoge") { 
+
+if (command == "swoge") { 
     if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.channel.send(msg.music_notinvc)
     var url = "https://www.youtube.com/playlist?list=PL0aso3-ouj1yJDaJkq72TY9-WLuFC-oe_"
-    var video = await ytdl.getBasicInfo(url)
-    await  message.channel.send((msg.music_videohasbeenadded).replace("[VIDEO_TITLE]", `${video.title}`))
-    return await queueSong(video, message, voiceChannel, queue)
-}
+    const playlist = await ytpl(url.split("list=")[1])
+    const videos = playlist.items;message.channel.send((msg.music_playlisthasbeenadded).replace("[PLAYLIST_TITLE]", `${playlist.title} (${videos.length})`))
+    for (const video of videos) await queueSong(video, message, voiceChannel, queue)
+  }
   
   if (command === "ghibli") { 
     if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
