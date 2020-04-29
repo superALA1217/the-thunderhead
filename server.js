@@ -354,7 +354,7 @@ client.on("message", async message => {
 			}
       
 			var utcDate = Date.now();
-                if (!result[0]) return message.channel.send((msg.weather_notfastenough).replace("[JOINARGS]", args.join(" ")))
+                if (!result[0]) return message.channel.send((msg.time_notfastenough).replace("[JOINARGS]", args.join(" ")))
 			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
 			var days = ["Magolor Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Yes. The people in scythe have a Magolor Day. 
       var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
@@ -531,7 +531,8 @@ client.on("message", async message => {
         }
         else if (choice = "scissors" || choice === "s") {
             message.channel.send(msg.rps_s);
-        } else return message.channel.send(msg.rps_invalid)
+        }
+        return message.channel.send(msg.rps_invalid)
     }
   if(command === "cf" || command === "coinflip") {
 		var user = message.mentions.users.first()
