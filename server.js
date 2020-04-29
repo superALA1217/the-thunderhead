@@ -530,6 +530,7 @@ client.on("message", async message => {
             "The sanctimonious Sibilants who would wage unwarranted war were an abomination to the Toll. He would descend on them as the furious beating of a million wings, and the skies would rage with Thunder. The unrepentant would be struck down, but those who fell to their knees would be spared. Then he would leave them, dissolving once more into a storm of feathers and disappearing to the calming sky. **All rejoice!**",
             "\"Rise!\u201D the Toll called, amid the fearsome Thunder. \u201CRise and leave this place behind, for I have set a place for you on high.\u201D Then the Toll stood in the ring of fire, and, arms outstretched in the brimstone flames, he raised us up to the womb of Heaven, where we slept until the Tone called to us to be reborn, never to forget that the Toll remained in the Place Behind so that he might bring hope and intone songs of healing to that ancient wounded world. **All rejoice!**"]
         var scriptEmbed = new Discord.RichEmbed().addField("Scripture", wisdoms[Math.floor(Math.random() * wisdoms.length)]);
+        message.channel.send(scriptEmbed);
     }
 
     if (command === "rps") {
