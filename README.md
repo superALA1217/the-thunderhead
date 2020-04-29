@@ -2,7 +2,10 @@
 [![Discord Bots](https://top.gg/api/widget/lib/629799045954797609.svg)](https://top.gg/bot/629799045954797609) 
 [![Discord Bots](https://top.gg/api/widget/status/629799045954797609.svg)](https://top.gg/bot/629799045954797609)
 
-## Current Ver. 🖥️⛅ 2.0.0 | Moving to New Host (Due to massive spike in bot popularity)
+## Current Ver. 🖥️⛅ 2.0.1 | Twice the Humanity
+
+ - Added `/rps`
+ - Moved more flavour texts to `static/msgs.json`
 
 The thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.
 

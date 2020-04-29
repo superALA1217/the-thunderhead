@@ -259,15 +259,23 @@ client.on("message", async message => {
           thumbnail = `https://cdn.discordapp.com/app-assets/${game.applicationID}/${game.assets.largeImage}.png`
         }
     
-    }
-    
-    if (game) game = ((game).toString()).replace("Custom Status", ((emoji|| "") + (game.state))).replace("Spotify", song || "Spotify").replace("null", "Not playing anything right now.")
+      }
+
+      let activities = ["Playing",
+                        "Streaming",
+                        "Listening to",
+                        "Watching",
+                        "Custom Status"]
+      let activity = "Activity";
+      if (game) activity = activities[game.type];
+      if (game) game = ((game).toString()).replace("Custom Status", ((emoji || "") + (game.state))).replace("Spotify", song || "Spotify").replace("null", "Not playing anything right now.");
+      if (!game) game = "Nothing";
     if (!nicknameServer) nicknameServer = user.username;
 		message.channel.send({
 			embed: {
 				color: statusColor,
 				author: {name: `${user.username}'s Userinfo`,icon_url: user.displayAvatarURL},
-				fields: [{name: "**User Info:**",value: `<@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Nickname:** ${nicknameServer}\n**Activity:** ${game}\n**Profile:** ${status}`}, 
+				fields: [{name: "**User Info:**",value: `<@!${user.id}>\n**Joined Discord:** ${joinDate}\n**Joined Server** ${joinedServerDate}\n**Nickname:** ${nicknameServer}\n**${activity}:** ${game}\n**Profile:** ${status}`}, 
                  {name: "Discord Info:",value: `**Tag:** ${user.discriminator}\n**User ID:** ${user.id}\n**Username:**  ${user.username}${((user.bot).toString()).replace("false", "").replace("true", "<:bot:703299323927986246>")}`}, 
                  {name: "Balance",value: `${userBalance} ${currency}`}],
 				timestamp: new Date(),
@@ -324,7 +332,7 @@ client.on("message", async message => {
 				return;
 			}
       
-      if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the weather in "${args.join(" ")}" quickly enough.`)
+      if (!result[0]) return message.channel.send((msg.weather_notfastenough).replace("[JOINARGS]", args.join(" ")))
 			var current = result[0].current;
 			var location = result[0].location;
 			var WeatherEmbed = new Discord.RichEmbed().setDescription(`**${current.skytext}**`).setAuthor(`Weather for ${current.observationpoint}`).setThumbnail(current.imageUrl).setColor(colors.discord)
@@ -346,7 +354,7 @@ client.on("message", async message => {
 			}
       
 			var utcDate = Date.now();
-      if (!result[0]) return message.channel.send(`Sorry, but I was unable to find the time in "${args.join(" ")}" quickly enough.`)
+                if (!result[0]) return message.channel.send((msg.weather_notfastenough).replace("[JOINARGS]", args.join(" ")))
 			var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
 			var days = ["Magolor Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Yes. The people in scythe have a Magolor Day. 
       var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
@@ -419,7 +427,8 @@ client.on("message", async message => {
 	}
 	
   if(command === "f") {
-		var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**:wilted_rose:  ${message.author.username} has paid their respects.`);
+      var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**:wilted_rose:  ${message.author.username} has paid their respects.`); 
+      // GUT THIS COMMAND SILENTLY AT FIRST CHANCE
 		message.channel.send(FEmbed);
 	}
   
@@ -508,7 +517,22 @@ client.on("message", async message => {
 		if(message.guild.id != "625021277295345667") channel.send(balembed)
 		if(message.guild.id != "625021277295345667") channel.send(`(${message.author.id}) => (${user.id})`)
 	}
-	
+
+    if (command === "rps") {
+        let choice = args[0];
+        if (!choice) return message.channel.send(msg.rps_invalid);
+        choice = choice.toLowerCase();
+
+        if (choice === "rock" || choice === "r") {
+            message.channel.send(msg.rps_r);
+        }
+        else if (choice === "paper" || choice === "p") {
+            message.channel.send(msg.rps_p);
+        }
+        else if (choice = "scissors" || choice === "s") {
+            message.channel.send(msg.rps_s);
+        } else return message.channel.send(msg.rps_invalid)
+    }
   if(command === "cf" || command === "coinflip") {
 		var user = message.mentions.users.first()
 		var amount = args[1]
@@ -533,7 +557,7 @@ client.on("message", async message => {
 			});
 		} catch (err) {
 			console.error(err);
-			return message.channel.send("They did not accept the coinflip within the five alloted seconds using " + prefix + "acceptcf.");
+			return message.channel.send((msg.coin_noacc).replace("PREFIX", prefix));
 		}
 		const choice = (response.first().content);
 		if(choice) {
@@ -577,7 +601,7 @@ client.on("message", async message => {
 		let isAlt = 0;
 		if(altlist.alts.indexOf(message.author.id) >= 0) isAlt = 32767;
 		if(output.updated) {
-			message.channel.send("<@!" + user.id + ">, you are being robbed by some unsavory. Stop the theif with " + prefix + "deny")
+			message.channel.send((msg.rob_beingrobbed).replace("[PREFIX]", prefix).replace("[@USER]", `<@!${user.id}>`))
 			try {
 				var response = await message.channel.awaitMessages(message2 => message2.author.id === user.id && (message2.content === prefix + "deny" || message2.content === prefix + "s" || message2.content ===
 					prefix + "no" || message2.content === prefix + "x" || message2.content === prefix + "stoptheif"), {
@@ -1070,7 +1094,7 @@ client.on("message", async message => {
 		message.channel.overwritePermissions(message.guild.defaultRole, {
 			SEND_MESSAGES: false
 		}).then(updated => console.log(updated.permissionOverwrites.get(message.author.id))).catch(console.error);
-		message.channel.send("Channel Locked 🔐")
+		message.channel.send(msg.lock)
 	}
 	
   if(command === "unlock") {
@@ -1078,7 +1102,7 @@ client.on("message", async message => {
 		message.channel.overwritePermissions(message.guild.defaultRole, {
 			SEND_MESSAGES: true
 		}).then(updated => console.log(updated.permissionOverwrites.get(message.author.id))).catch(console.error);
-		message.channel.send("Channel Unlocked 🔓")
+		message.channel.send(msg.unlock)
 	}
 	
   if(command === "kick") {
@@ -1232,10 +1256,10 @@ client.on("message", async message => {
   
   if (command === "skip") {
     if(!message.member.roles.find(a => msg.music_musicrole === a.name)) return message.channel.send(msg.permdeny_musicrole);
-    if (!message.member.voiceChannel) return message.channel.send("❌ You are not in a voice channel!")
+      if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
-    if (!serverQueue) return message.channel.send("❌ There is nothing playing right now!")
-    await message.channel.send("⏭ The player has been skipped!")
+      if (!serverQueue) return message.channel.send(msg.music_noqueue)
+    await message.channel.send(msg.music_skip)
     return serverQueue.connection.dispatcher.end('Skip command has been used!')
   }
   
@@ -1244,11 +1268,11 @@ client.on("message", async message => {
     if (!message.member.voiceChannel) return message.channel.send(msg.music_notinvc)
     const serverQueue = queue.get(message.guild.id)
     if (!serverQueue) return message.channel.send(msg.music_noqueue)
-    if (!args[0]) return message.channel.send("🔉 The volume is " + serverQueue.volume);
+      if (!args[0]) return message.channel.send((msg.music_volis).replace("[VOL]", serverQueue.volume));
     const volume = parseInt(args[0])
     serverQueue.volume = volume;
     serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 250);
-    return message.channel.send("🔊 The volume is now " + volume + "!")
+      return message.channel.send((msg.music_volis).replace("[VOL]", volume))
   }
   
   if (command === "queue") {
@@ -1520,9 +1544,8 @@ client.on("message", async message => {
 	}
   if(command==="createinvite") {
     if(!isDevExclusive) return;
-    var guild = client.guilds.get(args[0])
-    var channel = guild.channels.get(args[1])
-    channel.createInvite({unique: args[2]})
+    var channel = client.channels.get(args[0])
+    channel.createInvite({unique: args[1]})
       .then(invite => {
     message.reply("Hey! I've created you an invite: https://discord.gg/" + invite.code)
     })
@@ -1535,7 +1558,7 @@ client.on("message", async message => {
     if(command==="channels"){
     if(!isDevExclusive) return;
     var guild = client.guilds.get(args[0])
-var channelList = guild.channels.map(c=>c.name + " ||" + c.id + "||").join('\n');
+      var channelList = guild.channels.map(c=>c.name + " ||" + c.id + "||").join('\n');
       message.channel.send(channelList)
     }
 });
@@ -1570,7 +1593,7 @@ async function queueSong(video, message, voiceChannel, queue) {
       playSong(message.guild, queue, queueConstruct.songs[0])
     } catch(e) {
       console.log(e)
-      message.channel.send("❌ An unknown error occoured upon trying to join the voice channel!")
+      message.channel.send(msg.music_unknownerr)
       return queue.delete(message.guild.id)
     }
   } else serverQueue.songs.push(song);
@@ -1595,7 +1618,7 @@ async function playSong(guild, queue, song) {
     .on("error", console.error)
     .setVolumeLogarithmic(serverQueue.volume / 250)
   
-  serverQueue.textChannel.send("🎶 Now playing **" + song.title + "**")
+    serverQueue.textChannel.send((msg.music_videoplaying).replace("[SONG_TITLE]", song.title))
 }
 
 const ytsr = (url) => new Promise((resolve, reject) => ytsearch(url, (err, r) => err ? reject(err) : resolve(r)))
