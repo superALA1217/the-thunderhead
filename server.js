@@ -265,16 +265,21 @@ client.on("message", async message => {
         message.channel.send("https://imgur.com/CwQRLGK")
     }
     if (command === "userinfo") {
-        let user = message.mentions.users.first();
-        if (!user) return message.reply(msg.userinfo_nomention);
+        if (!args[0]) return message.channel.send(userinfo_nomention)
+        let user = client.users.get(args[0].replace(/[@!<>]/g, ""));
+        if (!user) return message.channel.send(msg.userinfo_nomention);
         var userBalance = await eco.FetchBalance(user.id);
         userBalance = userBalance.balance;
+
+        let joinedServerDate = "n/a"
+        let nicknameServer = "n/a"
+
         const joinDate = user.createdAt.getDate() + 1 + "-" + (user.createdAt.getMonth() + 1) + "-" + user.createdAt.getFullYear() + " @ " + user.createdAt.getHours() + ":" + user.createdAt.getMinutes() +
             ":" + user.createdAt.getSeconds();
-        const joinedServerDate = message.guild.member(user).joinedAt.getDate() + 1 + "-" + (message.guild.member(user).joinedAt.getMonth() + 1) + "-" + message.guild.member(user).joinedAt.getFullYear() +
+        if (message.guild.member(user)) joinedServerDate = message.guild.member(user).joinedAt.getDate() + 1 + "-" + (message.guild.member(user).joinedAt.getMonth() + 1) + "-" + message.guild.member(user).joinedAt.getFullYear() +
             " @ " + message.guild.member(user).joinedAt.getHours() + ":" + message.guild.member(user).joinedAt.getMinutes() + ":" + message.guild.member(user).joinedAt.getSeconds();
         let game = user.presence.game;
-        let nicknameServer = message.guild.member(user).nickname;
+        if (message.guild.member(user)) nicknameServer = message.guild.member(user).nickname;
         let status;
         let statusColor;
         if (user.presence.status === "online") status = "<:online:703296745228075078> Online";
