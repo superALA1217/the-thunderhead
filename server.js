@@ -767,9 +767,12 @@ client.on("message", async message => {
     }
     if (command === "work") {
         let hasVoted = false;
-        hasVoted = await dbl.hasVoted(message.author.id);
-        console.log(hasVoted);
-        if (typeof variable != "boolean") hasVoted = false;
+        try {
+            hasVoted = await dbl.hasVoted(message.author.id);
+        } catch (err) { 
+            hasVoted = false;
+
+        }
         let failurerate = 40 - (hasVoted * (msg.work_vote_percent_adder));
         if (altlist.alts.indexOf(message.author.id) >= 0) failurerate = 100;
         //10% chance to fail and earn nothing. You earn between 1-500 coins. And you get one of those 3 random jobs.
