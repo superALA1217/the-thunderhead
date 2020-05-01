@@ -492,7 +492,8 @@ client.on("message", async message => {
         let summary = await page.summary();
         let image = await page.mainImage();
         console.log(summary);
-        console.log(image);
+        console.log(image); 
+        console.log(" ")
 
     }
 
