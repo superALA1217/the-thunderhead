@@ -488,7 +488,7 @@ client.on("message", async message => {
         message.channel.send(FEmbed);
     }
     if (command === "wiki") {
-        wiki().page(args.join(" ")).then(page => message.channel.send(page.summary()));
+        wiki().page(args.join(" ")).then(page => page.summary()).then(console.log);
     }
 
     if (command === "ask") {
