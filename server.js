@@ -493,7 +493,8 @@ client.on("message", async message => {
         let image = await page.mainImage();
 
         let WikiEmbed = new Discord.RichEmbed()
-            .addField(page.title, summary)
+            .setTitle(page.title)
+            .setDescription((summary.match(/.{1,2048}/g))[0])
             .setImage(image)
         message.channel.send(WikiEmbed);
 
