@@ -491,9 +491,11 @@ client.on("message", async message => {
         let page = await wiki().page(args.join(" "));
         let summary = await page.summary();
         let image = await page.mainImage();
-        console.log(summary);
-        console.log(image); 
-        console.log(" ")
+
+        let WikiEmbed = new Discord.RichEmbed()
+            .addField(page.title, summary)
+            .setImage(image)
+        message.channel.send(WikiEmbed);
 
     }
 
