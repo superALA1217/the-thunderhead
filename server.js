@@ -8,17 +8,14 @@ const mexp = require('math-expression-evaluator');
 const Canvas = require('canvas');
 var eco = require("discord-economy");
 const catFacts = require("cat-facts");
-const alpha = require("alphavantage")({
-    key: `thunder${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}`
-});
+const alpha = require("alphavantage")({ key: `thunder${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}` });
+const wiki = require('wikijs').default;
 var cats = require("cat-ascii-faces");
 var weather = require("weather-js");
 const ytdl = require("ytdl-core"),
     ytpl = require("ytpl"),
     ytsearch = require("yt-search"),
-    {
-        Util
-    } = require("discord.js");
+    {Util} = require("discord.js");
 const http = require("http");
 const express = require("express");
 var bodyParser = require("body-parser");
@@ -490,6 +487,10 @@ client.on("message", async message => {
         // GUT THIS COMMAND SILENTLY AT FIRST CHANCE
         message.channel.send(FEmbed);
     }
+    if (command === "wiki") {
+        wiki().page(args.join(" ")).then(page => message.channel.send(page.summary()));
+    }
+
     if (command === "ask") {
         let expVal;
         let maybeViolate = message.content;
