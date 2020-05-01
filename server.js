@@ -174,9 +174,9 @@ client.on("message", async message => {
         }
     }
     try {
-        if (message.member.roles.find("Unsavory" === role.name)) return message.delete()
+        if (message.member.roles.find(role => role.name === "Unsavory")) return message.delete();
     } catch (error) {
-        /*error=>trashcan :)*/
+       console.log(error);
 }
     // Before Prefix Check
     0 <= message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") && message.channel.send(`Backbrain Log ${Math.floor(1e4 * Math.random() + 1)}: Scythe Goddard has been spotted ${Date.now().toString().slice(4, 8)} times ${msg.goddardMoments[Math.floor(Math.random() * msg.goddardMoments.length)]}.`);
