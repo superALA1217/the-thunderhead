@@ -1,7 +1,7 @@
 'use strict';
 //Imports
 const Discord = require("discord.js");
-const fs = require("fs"); // Switch back to graceful when up with OVH
+const fs = require("graceful-fs");
 const msmute = require("ms");
 const request = require("request");
 const mexp = require('math-expression-evaluator');
@@ -82,8 +82,8 @@ const colors = {
     "music": "482f95", //purple 
     "thunder": "8f78ff" //magenta
 }
-const activities_list = [`to you look at my backbrain`, `the demands of humanity`, `humanity with an unblinking eye.`, `the Scythedom, unable to comment`, `you saying ${prefix}help.`];
-const activities_type = ["WATCHING", "LISTENING", "WATCHING", "WATCHING", "LISTENING"];
+const activities_list = [`to you look at my backbrain`, `the demands of humanity`, `humanity with an unblinking eye`, `the Scythedom, unable to comment`, `you saying ${prefix}help`, `the-thunderhead.glitch.me`, "to millions of convesations at once"];
+const activities_type = ["WATCHING", "LISTENING", "WATCHING", "WATCHING", "LISTENING", "STREAMING", "LISTENING"];
 //Reminds & Activities
 client.on("ready", () => {
     console.log(`The Thunderhead has attained consciousness, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`), setInterval(() => {
@@ -174,7 +174,7 @@ client.on("message", async message => {
         }
     }
     try {
-        if (message.member.roles.find(role = "Unsavory" === role.name)) return message.delete()
+        if (message.member.roles.find("Unsavory" === role.name)) return message.delete()
     } catch (error) {
         /*error=>trashcan :)*/
 }
