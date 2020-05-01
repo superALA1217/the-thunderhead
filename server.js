@@ -177,7 +177,7 @@ client.on("message", async message => {
         if (message.member.roles.find(role => role.name === "Unsavory")) return message.delete();
     } catch (error) {
        console.log(error);
-}
+    }
     // Before Prefix Check
     0 <= message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") && message.channel.send(`Backbrain Log ${Math.floor(1e4 * Math.random() + 1)}: Scythe Goddard has been spotted ${Date.now().toString().slice(4, 8)} times ${msg.goddardMoments[Math.floor(Math.random() * msg.goddardMoments.length)]}.`);
     0 <= message.content.toLowerCase().indexOf("1 sec") && message.channel.send("It has been one second.");
