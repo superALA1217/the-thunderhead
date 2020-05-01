@@ -488,15 +488,19 @@ client.on("message", async message => {
         message.channel.send(FEmbed);
     }
     if (command === "wiki") {
-        let page = await wiki().page(args.join(" "));
-        let summary = await page.summary();
-        let image = await page.mainImage();
+        try {
+            let page = await wiki().page(args.join(" "));
+            let summary = await page.summary();
+            let image = await page.mainImage();
 
-        let WikiEmbed = new Discord.RichEmbed()
-            .setTitle(page.title)
-            .setDescription((summary.match(/.{1,2048}/g))[0])
-            .setImage(image)
-        message.channel.send(WikiEmbed);
+            let WikiEmbed = new Discord.RichEmbed()
+                .setTitle(page.raw.title)
+                .setDescription((summary.match(/.{1,2048}/g))[0])
+                .setImage(image)
+            message.channel.send(WikiEmbed);
+        } catch (err) {
+            message.channel.send(err);
+        }
 
     }
 
