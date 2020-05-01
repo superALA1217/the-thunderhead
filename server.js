@@ -489,8 +489,11 @@ client.on("message", async message => {
     }
     if (command === "wiki") {
         let page = await wiki().page(args.join(" "));
-        console.log(page.summary());
-        console.log(page.mainImage());
+        let summary = await page.summary();
+        let image = await page.mainImage();
+        console.log(summary);
+        console.log(image);
+
     }
 
     if (command === "ask") {
