@@ -544,11 +544,14 @@ client.on("message", async message => {
             const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["face"]}.png`);
             const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["robe"]}.png`);
             const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["gem"]}.png`);
-            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+
+
             ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(robe, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(gem, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'scythe-avatar.png');
 
@@ -587,18 +590,20 @@ client.on("message", async message => {
                 if (!typeOf) return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
                 typeOf = typeOf.toLowerCase().replace("angry", "anger").replace("blushing", "blush").replace("normal", "default");
                 if (typeOf === "anger" || typeOf === "blush" || typeOf === "serious" || typeOf === "default") {
-                    faceArgs = (profile[target]["face"]).split("_");
+                    let faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[2] = typeOf;
                     profile[target]["face"] = faceArgs.join("_");
+                    message.channel.send("Succesfully set face.")
                 } else return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
 
             } else if (toEdit === "hair" || toEdit === "hairs" || toEdit === "head") {
                 if (!typeOf) return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
                 typeOf = typeOf.toLowerCase();
                 if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yelllow") {
-                    faceArgs = (profile[target]["face"]).split("_");
+                    let faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[1] = typeOf;
                     profile[target]["face"] = faceArgs.join("_");
+                    message.channel.send("Succesfully set hair colour.")
                 } else return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
 
             } else if (toEdit === "backdrop" || toEdit === "background" || toEdit === "enviroment") {
@@ -607,7 +612,7 @@ client.on("message", async message => {
                 if (typeOf == "red" || typeOf == "green" || typeOf == "turqoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
                     profile[target]["robe"] = `backdrop_${typeOf}`;
                 } else profile[target]["gem"] = `backdrop_none`;
-                message.channel.send("Successfully set robe.");
+                message.channel.send("Successfully set backdrop.");
 
             } else return message.channel.send(`"${args[0]}" is not something you can change on your profile.`);
 
