@@ -28,6 +28,7 @@ const events = require("./dynamic/events.json"); //WRITE
 const items = require("./dynamic/items.json"); //WRITE
 const vault = require("./dynamic/vault.json"); //WRITE
 const shares = require("./dynamic/shares.json"); //WRITE
+const profile = require("./dynamic/profiles.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 const authFile = require("./auth.json"); // READ ONLY AUTH
 const auth = authFile.stable;
@@ -87,7 +88,7 @@ client.on("ready", () => {
         const a = Math.floor(Math.random() * (activities_list.length - 1) + 1);
         client.user.setActivity(activities_list[a], {
             type: activities_type[a]
-        }), fs.writeFile("./dynamic/reminds.json", JSON.stringify(reminds, null, 4), function (a) {
+        }), fs.writeFile("./dynamic/reminds.json", JSON.stringify(reminds, null, 4), function (a) { // Essentially writes from what we have stored in RAM to the file because json is super cool and awesome 
             a && console.log(a)
         }), fs.writeFile("./dynamic/events.json", JSON.stringify(events, null, 4), function (a) {
             a && console.log(a)
@@ -95,7 +96,10 @@ client.on("ready", () => {
             a && console.log(a)
         }), fs.writeFile("./dynamic/vault.json", JSON.stringify(vault, null, 4), function (a) {
             a && console.log(a)
-        }), fs.writeFile("./dynamic/shares.json", JSON.stringify(shares, null, 4), function (a) {
+        }), fs.writeFile("./dynamic/profiles.json", JSON.stringify(profile, null, 4), function (a) {
+            a && console.log(a)
+        }), 
+            fs.writeFile("./dynamic/shares.json", JSON.stringify(shares, null, 4), function (a) {
             a && console.log(a)
         });
         var b = new Date;
@@ -173,7 +177,7 @@ client.on("message", async message => {
     try {
         if (message.member.roles.find(role => role.name === "Unsavory")) return message.delete();
     } catch (error) {
-       console.log(error);
+        console.log(error);
     }
     // Before Prefix Check
     0 <= message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") && message.channel.send(`Backbrain Log ${Math.floor(1e4 * Math.random() + 1)}: Scythe Goddard has been spotted ${Date.now().toString().slice(4, 8)} times ${msg.goddardMoments[Math.floor(Math.random() * msg.goddardMoments.length)]}.`);
@@ -501,6 +505,114 @@ client.on("message", async message => {
         } catch (err) {
             message.channel.send(err);
         }
+
+    }
+
+    if (command === "profile") {
+
+        target = message.author.id;
+        if (args[0]) if (client.users.get(args[0].replace(/[@!<>]/g, ""))) let target = args[0].replace(/[@!<>]/g, "");
+        // omega
+        if (!profile[target]) {
+            profile[target] = {};
+            message.channel.send("Set up profile.");
+        }
+
+        if (!profile[target][skin]) profile[target][skin] = "skin_olive";
+        if (!profile[target][face]) profile[target][face] = "face_brown_default";
+        if (!profile[target][robe]) profile[target][robe] = "robe_red";
+        if (!profile[target][gem]) profile[target][gem] = "gem_none";
+        if (!profile[target][backdrop]) profile[target][backdrop] = "backdrop_none";
+
+        // Profile 
+        //  -target
+        //      -Colour
+        //      -Skin
+        //      -Face
+        //      -Backdrop ()
+        //      -Gems ()
+
+        // profile[target]
+
+        //`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${item}.png`
+
+        if (!args[0] || target != message.author.id) {
+            const canvas = Canvas.createCanvas(512, 512);
+            const ctx = canvas.getContext('2d');
+            const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][backdrop]}.png`);
+            const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][skin]}.png`);
+            const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][face]}.png`);
+            const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][robe]}.png`);
+            const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][gem]}.png`);
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(robe, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(gem, 0, 0, canvas.width, canvas.height);
+
+            const attachment = new Discord.Attachment(canvas.toBuffer(), 'scythe-avatar.png');
+
+            message.channel.send(`Profile:`, attachment);
+        } else {
+            let toEdit = args[0].toLowerCase();
+            let typeOf = args[0];
+
+            // Face is split into two types: color and expression
+            if (toEdit === "skin" || toEdit === "skincolor" || toEdit === "race") {
+                if (!typeOf) return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown.");
+                typeOf = typeOf.toLowerCase().replace("pale", "white");
+                if (typeOf === "white" || typeOf === "olive" || typeOf === "tan" || typeOf === "brown") {
+                    profile[target][skin] = `skin_${typeOf}`;
+                    message.channel.send("Succesfully set robe color.");
+                } else return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown");
+
+            } else if (toEdit === "robe" || toEdit === "frock" || toEdit === "clothing") {
+                if (!typeOf) return message.channel.send("Please select a valid robe: Red, Orange, Yellow, Lime, Green, Turquoise, Blue, Lavender, Purple, Tonist, Black, or White.");
+                typeOf = typeOf.toLowerCase();  
+                if (typeOf === "red" || typeOf === "orange" || typeOf === "yellow" || typeOf === "lime" || typeOf === "green" || typeOf === "turquoise" ||
+                    typeOf === "blue" || typeOf === "lavender" || typeOf === "purple" || typeOf === "tonist" || typeOf === "black" || typeOf === "white") {
+                    profile[target][robe] = `robe_${typeOf}`;
+                    message.channel.send("Succesfully set robe color.");
+                } else return message.channel.send("Please select a valid robe: Red, Orange, Yellow, Lime, Green, Turquoise, Blue, Lavender, Purple, Tonist, Black, or White.");
+
+            } else if (toEdit === "gem" || toEdit === "gems" || toEdit === "jewels") {
+                if (!typeOf) return message.channel.send("Please select what gems you want on your robe: Blue, Green, Purple, Red, White, Yellow, or None.");
+                typeOf = typeOf.toLowerCase();
+                if (typeOf == "blue" || typeOf == "green" || typeOf == "purple" || typeOf == "red" || typeOf == "white" || typeOf == "yellow") {
+                    profile[target][robe] = `robe_${typeOf}`;
+                } else profile[target][gem] = `robe_none`;
+                message.channel.send("Successfully set gems.");
+
+            } else if (toEdit === "expression" || toEdit === "emotion" || toEdit === "face") {
+                if (!typeOf) return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
+                typeOf = typeOf.toLowerCase().replace("angry", "anger").replace("blushing", "blush").replace("normal", "default");
+                if (typeOf === "anger" || typeOf === "blush" || typeOf === "serious" || typeOf === "default") {
+                    faceArgs = (profile[target][face]).split("_");
+                    faceArgs[2] = typeOf;
+                    profile[target][face] = faceArgs.join("_");
+                } else return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
+
+            } else if (toEdit === "hair" || toEdit === "hairs" || toEdit === "head") {
+                if (!typeOf) return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
+                typeOf = typeOf.toLowerCase();
+                if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yelllow") {
+                    faceArgs = (profile[target][face]).split("_");
+                    faceArgs[1] = typeOf;
+                    profile[target][face] = faceArgs.join("_");
+                } else return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
+
+            } else if (toEdit === "backdrop" || toEdit === "background" || toEdit === "enviroment") {
+                if (!typeOf) return message.channel.send("Please select what backdrop you want: Red, Green, Turquoise, Dream, Incorrect, Correct, or None.");
+                typeOf = typeOf.toLowerCase();
+                if (typeOf == "red" || typeOf == "green" || typeOf == "turqoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
+                    profile[target][robe] = `robe_${typeOf}`;
+                } else profile[target][gem] = `robe_none`;
+                message.channel.send("Successfully set robe.");
+
+            } else return message.channel.send(`"${args[0]}" is not something you can change on your profile.`);
+
+        }
+       
 
     }
 
