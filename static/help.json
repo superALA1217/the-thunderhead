@@ -172,6 +172,12 @@
             "state": "beta",
             "use": "event [Time] [Name] [Description]",
             "desc": "Make an event for everyone to join"
+        },
+        "profile": {
+            "name": "profile",
+            "state": "beta",
+            "use": "profile {[@User]/Category} {Value}",
+            "desc": "Categories: Robe, Hair, Background, Skin, Face, and Gems"
         }
     },
     "eco": {

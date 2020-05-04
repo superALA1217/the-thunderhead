@@ -609,7 +609,7 @@ client.on("message", async message => {
             } else if (toEdit === "backdrop" || toEdit === "background" || toEdit === "enviroment") {
                 if (!typeOf) return message.channel.send("Please select what backdrop you want: Red, Green, Turquoise, Dream, Incorrect, Correct, or None.");
                 typeOf = typeOf.toLowerCase();
-                if (typeOf == "red" || typeOf == "green" || typeOf == "turqoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
+                if (typeOf == "red" || typeOf == "green" || typeOf == "turquoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
                     profile[target]["backdrop"] = `backdrop_${typeOf}`;
                 } else profile[target]["backdrop"] = `backdrop_none`;
                 message.channel.send("Successfully set backdrop.");
