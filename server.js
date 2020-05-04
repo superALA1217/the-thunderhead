@@ -515,7 +515,7 @@ client.on("message", async message => {
         // omega
         if (!profile[target]) {
             profile[target] = {};
-            message.channel.send("Set up profile.");
+            message.channel.send(msg.profile_setup);
         }
 
         if (!profile[target]["skin"]) profile[target]["skin"] = "skin_olive";
@@ -558,59 +558,59 @@ client.on("message", async message => {
 
             // Face is split into two types: color and expression
             if (toEdit === "skin" || toEdit === "skincolor" || toEdit === "race") {
-                if (!typeOf) return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidskin);
                 typeOf = typeOf.toLowerCase().replace("pale", "white");
                 if (typeOf === "white" || typeOf === "olive" || typeOf === "tan" || typeOf === "brown") {
                     profile[target]["skin"] = `skin_${typeOf}`;
-                    message.channel.send("Succesfully set skin color.");
-                } else return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown");
+                    message.channel.send(msg.profile_skinset);
+                } else return message.channel.send(msg.profile_nvalidskin);
 
             } else if (toEdit === "robe" || toEdit === "frock" || toEdit === "clothing") {
-                if (!typeOf) return message.channel.send("Please select a valid robe: Red, Orange, Yellow, Lime, Green, Turquoise, Blue, Lavender, Purple, Tonist, Black, or White.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidrobe);
                 typeOf = typeOf.toLowerCase();  
                 if (typeOf === "red" || typeOf === "orange" || typeOf === "yellow" || typeOf === "lime" || typeOf === "green" || typeOf === "turquoise" ||
                     typeOf === "blue" || typeOf === "lavender" || typeOf === "purple" || typeOf === "tonist" || typeOf === "black" || typeOf === "white") {
                     profile[target]["robe"] = `robe_${typeOf}`;
-                    message.channel.send("Succesfully set robe color.");
-                } else return message.channel.send("Please select a valid robe: Red, Orange, Yellow, Lime, Green, Turquoise, Blue, Lavender, Purple, Tonist, Black, or White.");
+                    message.channel.send(msg.profile_robeset);
+                } else return message.channel.send(msg.profile_nvalidrobe);
 
             } else if (toEdit === "gem" || toEdit === "gems" || toEdit === "jewels") {
-                if (!typeOf) return message.channel.send("Please select what gems you want on your robe: Blue, Green, Purple, Red, White, Yellow, or None.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidgem);
                 typeOf = typeOf.toLowerCase();
                 if (typeOf == "blue" || typeOf == "green" || typeOf == "purple" || typeOf == "red" || typeOf == "white" || typeOf == "yellow") {
                     profile[target]["gem"] = `gem_${typeOf}`;
                 } else profile[target]["gem"] = `gem_none`;
-                message.channel.send("Successfully set gems.");
+                message.channel.send(msg.profile_gemset);
 
             } else if (toEdit === "expression" || toEdit === "emotion" || toEdit === "face") {
-                if (!typeOf) return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidface);
                 typeOf = typeOf.toLowerCase().replace("angry", "anger").replace("blushing", "blush").replace("normal", "default");
                 if (typeOf === "anger" || typeOf === "blush" || typeOf === "serious" || typeOf === "default") {
                     let faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[2] = typeOf;
                     profile[target]["face"] = faceArgs.join("_");
-                    message.channel.send("Succesfully set face.")
-                } else return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
+                    message.channel.send(msg.profile_faceset)
+                } else return message.channel.send(msg.profile_nvalidface);
 
             } else if (toEdit === "hair" || toEdit === "hairs" || toEdit === "head") {
-                if (!typeOf) return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidhair);
                 typeOf = typeOf.toLowerCase();
                 if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yelllow") {
                     let faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[1] = typeOf;
                     profile[target]["face"] = faceArgs.join("_");
-                    message.channel.send("Succesfully set hair colour.")
-                } else return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
+                    message.channel.send(msg.profile_hairset)
+                } else return message.channel.send(msg.profile_nvalidhair);
 
             } else if (toEdit === "backdrop" || toEdit === "background" || toEdit === "enviroment") {
-                if (!typeOf) return message.channel.send("Please select what backdrop you want: Red, Green, Turquoise, Dream, Incorrect, Correct, or None.");
+                if (!typeOf) return message.channel.send(msg.profile_nvalidbackdrop);
                 typeOf = typeOf.toLowerCase();
                 if (typeOf == "red" || typeOf == "green" || typeOf == "turquoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
                     profile[target]["backdrop"] = `backdrop_${typeOf}`;
                 } else profile[target]["backdrop"] = `backdrop_none`;
-                message.channel.send("Successfully set backdrop.");
+                message.channel.send(msg.profile_backdropset);
 
-            } else return message.channel.send(`"${args[0]}" is not something you can change on your profile.`);
+            } else return message.channel.send(msg.profile_invalid);
 
         }
        
