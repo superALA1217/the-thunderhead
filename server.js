@@ -483,7 +483,7 @@ client.on("message", async message => {
         message.channel.send(cats() + "\n" + catFacts.random());
     }
     if (command === "f") {
-        var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**:wilted_rose:  ${message.author.username} has paid their respects.`);
+        var FEmbed = new Discord.RichEmbed().setColor(colors["thunder"]).setDescription(`**f**🥀  ${message.author.username} has paid their respects.`);
         // GUT THIS COMMAND SILENTLY AT FIRST CHANCE
         message.channel.send(FEmbed);
     }

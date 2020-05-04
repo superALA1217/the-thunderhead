@@ -190,7 +190,7 @@
     "rob_who": "Who are you robbing?",
     "rob_nodaily": "You cannot rob for the rest of the day.",
     "rob_stealthfail": "You failed to rob because you were not sneaky enough.",
-    "rob_beingrobbed": "[USERMENTION], you are being robbed by some unsavory. Stop the theif with [PREFIX]deny",
+    "rob_beingrobbed": "[@USER], you are being robbed by some unsavory. Stop the theif with [PREFIX]deny",
     "rob_win_chance": 60,
     "rob_penalty": 20,
     "repo_repo": "https://github.com/humboldt123/the-thunderhead",
