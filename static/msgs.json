@@ -81,7 +81,7 @@
     "weather_nolocation": "Provide a valid location",
     "weather_notfastenough": "Sorry, but I was unable to find the weather in \"[JOINARGS]\" quickly enough.",
     "time_notfastenough": "Sorry, but I was unable to find the time in \"[JOINARGS]\" quickly enough.",
-    "role_blurb": "__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your name instead of having it boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nUnsavory: ...",
+    "role_blurb": "__Please select your desired role from this list__ (selecting an already assigned role will unassign it):\nArtist: Fancy Art Flair.\nWriter: Show off that your literary talent.\nScythe: Doesn't do much. Just colours your name instead of having it boring white.\nSpoiled: Access secret spoiler channel. There are Toll spoilers, so be wary.\nTonist: Use music commands. Abuse will result in a mute.\nMinecraft: Get pinged for Minecraft events\nUnsavory: ...",
     "roleme_not_supported": "I am afraid `/roleme` is not supported on this server yet. Don't worry, though, as it will be rolled out soon.",
     "roll_amt": "How much do you want to roll.",
     "roll_validint": "Would you like to me roll *you* into the negatives.",
