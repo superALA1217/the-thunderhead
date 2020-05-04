@@ -510,8 +510,8 @@ client.on("message", async message => {
 
     if (command === "profile") {
 
-        target = message.author.id;
-        if (args[0]) if (client.users.get(args[0].replace(/[@!<>]/g, ""))) let target = args[0].replace(/[@!<>]/g, "");
+        let target = message.author.id;
+        if (args[0]) if (client.users.get(args[0].replace(/[@!<>]/g, ""))) target = args[0].replace(/[@!<>]/g, "");
         // omega
         if (!profile[target]) {
             profile[target] = {};
