@@ -61,9 +61,9 @@
         "HAY": [ "Hay Front Company", "FMNB" ]
     },
     "rps_invalid": "Please choose `Rock` `Paper` or `Scissors`.",
-    "rps_r": "You chose `Rock` | Thunderhead choose `Paper` | Thunderhead Wins!",
-    "rps_p": "You chose `Paper` | Thunderhead choose `Scissors` | Thunderhead Wins!",
-    "rps_s": "You chose `Scissors` | Thunderhead choose `Rock` | Thunderhead Wins!",
+    "rps_r": "You chose `Rock` | Thunderhead chose `Paper` | Thunderhead Wins!",
+    "rps_p": "You chose `Paper` | Thunderhead chose `Scissors` | Thunderhead Wins!",
+    "rps_s": "You chose `Scissors` | Thunderhead chose `Rock` | Thunderhead Wins!",
     "stocks_invalid": "That is not a valid stock.",
     "invest_invalid": "That is not a valid stock.",
     "invest_nshares": "Please provide a valid amount of shares.",
