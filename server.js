@@ -524,34 +524,30 @@ client.on("message", async message => {
         if (!profile[target]["gem"]) profile[target]["gem"] = "gem_none";
         if (!profile[target]["backdrop"]) profile[target]["backdrop"] = "backdrop_none";
 
-        // Profile 
-        //  -target
-        //      -Colour
-        //      -Skin
-        //      -Face
-        //      -Backdrop ()
-        //      -Gems ()
-
-        // profile[target]
+     
 
         //`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${item}.png`
 
         if (!args[0] || target != message.author.id) {
             const canvas = Canvas.createCanvas(512, 512);
             const ctx = canvas.getContext('2d');
-            const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["backdrop"]}.png`);
-            const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["skin"]}.png`);
-            const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["face"]}.png`);
-            const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["robe"]}.png`);
-            const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["gem"]}.png`);
-
-
-
+            const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["backdrop"]}.png?v=latest`);
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(robe, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(gem, 0, 0, canvas.width, canvas.height);
+
+            if (target != "629799045954797609" && target != "704354866671124545") {
+                const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["skin"]}.png?v=latest`);
+                const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["face"]}.png?v=latest`);
+                const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["robe"]}.png?v=latest`);
+                const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["gem"]}.png?v=latest`);
+                ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(robe, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(gem, 0, 0, canvas.width, canvas.height);
+            } else {
+                const bot = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F512${target}.png?v=latest`);
+                ctx.drawImage(bot, 0, 0, canvas.width, canvas.height);
+            }    
+
 
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'scythe-avatar.png');
 
@@ -566,7 +562,7 @@ client.on("message", async message => {
                 typeOf = typeOf.toLowerCase().replace("pale", "white");
                 if (typeOf === "white" || typeOf === "olive" || typeOf === "tan" || typeOf === "brown") {
                     profile[target]["skin"] = `skin_${typeOf}`;
-                    message.channel.send("Succesfully set robe color.");
+                    message.channel.send("Succesfully set skin color.");
                 } else return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown");
 
             } else if (toEdit === "robe" || toEdit === "frock" || toEdit === "clothing") {
