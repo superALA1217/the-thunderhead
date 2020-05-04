@@ -547,11 +547,11 @@ client.on("message", async message => {
 
 
 
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(robe, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(gem, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'scythe-avatar.png');
 
@@ -610,8 +610,8 @@ client.on("message", async message => {
                 if (!typeOf) return message.channel.send("Please select what backdrop you want: Red, Green, Turquoise, Dream, Incorrect, Correct, or None.");
                 typeOf = typeOf.toLowerCase();
                 if (typeOf == "red" || typeOf == "green" || typeOf == "turqoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
-                    profile[target]["robe"] = `backdrop_${typeOf}`;
-                } else profile[target]["gem"] = `backdrop_none`;
+                    profile[target]["backdrop"] = `backdrop_${typeOf}`;
+                } else profile[target]["backdrop"] = `backdrop_none`;
                 message.channel.send("Successfully set backdrop.");
 
             } else return message.channel.send(`"${args[0]}" is not something you can change on your profile.`);
