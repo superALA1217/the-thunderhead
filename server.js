@@ -613,8 +613,8 @@ client.on("message", async message => {
             message.channel.send(msg.rps_p);
         } else if (choice === "scissors" || choice === "s") {
             message.channel.send(msg.rps_s);
-        } else if (choice === "gun" || choice === "g") {
-        message.channel.send(msg.rps_s);
+        } else if (choice === "shoot") {
+        message.channel.send(msg.rps_g);
         }
         else return message.channel.send(msg.rps_invalid)
     }
