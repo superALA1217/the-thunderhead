@@ -613,8 +613,7 @@ client.on("message", async message => {
             message.channel.send(msg.rps_p);
         } else if (choice === "scissors" || choice === "s") {
             message.channel.send(msg.rps_s);
-        }
-        return message.channel.send(msg.rps_invalid)
+        } else return message.channel.send(msg.rps_invalid)
     }
     if (command === "cf" || command === "coinflip") {
         var user = message.mentions.users.first()
