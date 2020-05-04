@@ -64,6 +64,7 @@
     "rps_r": "You chose `Rock` | Thunderhead chose `Paper` | Thunderhead Wins!",
     "rps_p": "You chose `Paper` | Thunderhead chose `Scissors` | Thunderhead Wins!",
     "rps_s": "You chose `Scissors` | Thunderhead chose `Rock` | Thunderhead Wins!",
+    "rps_g":  "You chose `Gun` | Thunderhead chose being shot five times in the chest | You Win!"
     "stocks_invalid": "That is not a valid stock.",
     "invest_invalid": "That is not a valid stock.",
     "invest_nshares": "Please provide a valid amount of shares.",
