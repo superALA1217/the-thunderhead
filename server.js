@@ -509,7 +509,7 @@ client.on("message", async message => {
     }
 
     if (command === "profile") {
-
+        if (!profile) profile = {};
         let target = message.author.id;
         if (args[0]) if (client.users.get(args[0].replace(/[@!<>]/g, ""))) target = args[0].replace(/[@!<>]/g, "");
         // omega
@@ -518,11 +518,11 @@ client.on("message", async message => {
             message.channel.send("Set up profile.");
         }
 
-        if (!profile[target][skin]) profile[target][skin] = "skin_olive";
-        if (!profile[target][face]) profile[target][face] = "face_brown_default";
-        if (!profile[target][robe]) profile[target][robe] = "robe_red";
-        if (!profile[target][gem]) profile[target][gem] = "gem_none";
-        if (!profile[target][backdrop]) profile[target][backdrop] = "backdrop_none";
+        if (!profile[target]["skin"]) profile[target]["skin"] = "skin_olive";
+        if (!profile[target]["face"]) profile[target]["face"] = "face_brown_default";
+        if (!profile[target]["robe"]) profile[target]["robe"] = "robe_red";
+        if (!profile[target]["gem"]) profile[target]["gem"] = "gem_none";
+        if (!profile[target]["backdrop"]) profile[target]["backdrop"] = "backdrop_none";
 
         // Profile 
         //  -target
@@ -539,11 +539,11 @@ client.on("message", async message => {
         if (!args[0] || target != message.author.id) {
             const canvas = Canvas.createCanvas(512, 512);
             const ctx = canvas.getContext('2d');
-            const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][backdrop]}.png`);
-            const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][skin]}.png`);
-            const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][face]}.png`);
-            const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][robe]}.png`);
-            const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target][gem]}.png`);
+            const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["backdrop"]}.png`);
+            const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["skin"]}.png`);
+            const face = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["face"]}.png`);
+            const robe = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["robe"]}.png`);
+            const gem = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["gem"]}.png`);
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(skin, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(face, 0, 0, canvas.width, canvas.height);
@@ -555,14 +555,14 @@ client.on("message", async message => {
             message.channel.send(`Profile:`, attachment);
         } else {
             let toEdit = args[0].toLowerCase();
-            let typeOf = args[0];
+            let typeOf = args[1];
 
             // Face is split into two types: color and expression
             if (toEdit === "skin" || toEdit === "skincolor" || toEdit === "race") {
                 if (!typeOf) return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown.");
                 typeOf = typeOf.toLowerCase().replace("pale", "white");
                 if (typeOf === "white" || typeOf === "olive" || typeOf === "tan" || typeOf === "brown") {
-                    profile[target][skin] = `skin_${typeOf}`;
+                    profile[target]["skin"] = `skin_${typeOf}`;
                     message.channel.send("Succesfully set robe color.");
                 } else return message.channel.send("Please select a valid skin color: Pale, Olive, Tan, or Brown");
 
@@ -571,7 +571,7 @@ client.on("message", async message => {
                 typeOf = typeOf.toLowerCase();  
                 if (typeOf === "red" || typeOf === "orange" || typeOf === "yellow" || typeOf === "lime" || typeOf === "green" || typeOf === "turquoise" ||
                     typeOf === "blue" || typeOf === "lavender" || typeOf === "purple" || typeOf === "tonist" || typeOf === "black" || typeOf === "white") {
-                    profile[target][robe] = `robe_${typeOf}`;
+                    profile[target]["robe"] = `robe_${typeOf}`;
                     message.channel.send("Succesfully set robe color.");
                 } else return message.channel.send("Please select a valid robe: Red, Orange, Yellow, Lime, Green, Turquoise, Blue, Lavender, Purple, Tonist, Black, or White.");
 
@@ -579,34 +579,34 @@ client.on("message", async message => {
                 if (!typeOf) return message.channel.send("Please select what gems you want on your robe: Blue, Green, Purple, Red, White, Yellow, or None.");
                 typeOf = typeOf.toLowerCase();
                 if (typeOf == "blue" || typeOf == "green" || typeOf == "purple" || typeOf == "red" || typeOf == "white" || typeOf == "yellow") {
-                    profile[target][robe] = `robe_${typeOf}`;
-                } else profile[target][gem] = `robe_none`;
+                    profile[target]["gem"] = `gem_${typeOf}`;
+                } else profile[target]["gem"] = `gem_none`;
                 message.channel.send("Successfully set gems.");
 
             } else if (toEdit === "expression" || toEdit === "emotion" || toEdit === "face") {
                 if (!typeOf) return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
                 typeOf = typeOf.toLowerCase().replace("angry", "anger").replace("blushing", "blush").replace("normal", "default");
                 if (typeOf === "anger" || typeOf === "blush" || typeOf === "serious" || typeOf === "default") {
-                    faceArgs = (profile[target][face]).split("_");
+                    faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[2] = typeOf;
-                    profile[target][face] = faceArgs.join("_");
+                    profile[target]["face"] = faceArgs.join("_");
                 } else return message.channel.send("Please select a valid face: Angry, Blushing, Serious, or Normal.");
 
             } else if (toEdit === "hair" || toEdit === "hairs" || toEdit === "head") {
                 if (!typeOf) return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
                 typeOf = typeOf.toLowerCase();
                 if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yelllow") {
-                    faceArgs = (profile[target][face]).split("_");
+                    faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[1] = typeOf;
-                    profile[target][face] = faceArgs.join("_");
+                    profile[target]["face"] = faceArgs.join("_");
                 } else return message.channel.send("Please choose a valid hair colour: Black, Brown, Green, Red, White, Or Yellow.");
 
             } else if (toEdit === "backdrop" || toEdit === "background" || toEdit === "enviroment") {
                 if (!typeOf) return message.channel.send("Please select what backdrop you want: Red, Green, Turquoise, Dream, Incorrect, Correct, or None.");
                 typeOf = typeOf.toLowerCase();
                 if (typeOf == "red" || typeOf == "green" || typeOf == "turqoise" || typeOf == "dream" || typeOf == "incorrect" || typeOf == "correct") {
-                    profile[target][robe] = `robe_${typeOf}`;
-                } else profile[target][gem] = `robe_none`;
+                    profile[target]["robe"] = `backdrop_${typeOf}`;
+                } else profile[target]["gem"] = `backdrop_none`;
                 message.channel.send("Successfully set robe.");
 
             } else return message.channel.send(`"${args[0]}" is not something you can change on your profile.`);
@@ -861,12 +861,12 @@ client.on("message", async message => {
         let dailyAmount = Math.floor(Math.random() * msg.daily_high) + msg.daily_low;
         if (altlist.alts.indexOf(message.author.id) >= 0) dailyAmount = 3;
         var output = await eco.Daily(message.author.id)
-        //output.updated will tell you if the user already claimed his/her daily yes or no.
+        //output.updated will tell you if the user already claimed his/her daily yes or  no.
         if (output.updated) {
-            var profile = await eco.AddToBalance(message.author.id, dailyAmount)
-            message.channel.send(((msg.daily_confirm).replace("[DAILYAMOUNT]", dailyAmount).replace("[CUR]", currency)).replace("[NEWBALANCE]", profile.newbalance).replace("[CUR]", currency));
+            var dailyProfile = await eco.AddToBalance(message.author.id, dailyAmount)
+            message.channel.send(((msg.daily_confirm).replace("[DAILYAMOUNT]", dailyAmount).replace("[CUR]", currency)).replace("[NEWBALANCE]", dailyProfile.newbalance).replace("[CUR]", currency));
             const channel = client.channels.get(msg.ecologid);
-            if (message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) did their daily and got ${dailyAmount} leaving them with ${profile.newbalance} ${currency}`);
+            if (message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) did their daily and got ${dailyAmount} leaving them with ${dailyProfile.newbalance} ${currency}`);
         } else {
             message.channel.send((msg.daily_invalid).replace("[TIMETOWAIT]", output.timetowait))
         }
