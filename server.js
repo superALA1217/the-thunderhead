@@ -468,7 +468,7 @@ client.on("message", async message => {
         var roleBlurb = (msg.role_blurb) //todo: add paid roles
         if (!role) return message.channel.send(roleBlurb)
         var _r = role.toLowerCase().charAt(0).toUpperCase() + role.toLowerCase().slice(1)
-        if (_r === "Artist" || _r === "Writer" || _r === "Scythe" || _r === "Spoiled" || _r === "Tonist", _r === "Minecraft") {
+        if (_r === "Artist" || _r === "Writer" || _r === "Scythe" || _r === "Spoiled" || _r === "Tonist"|| _r === "Minecraft") {
             var rl = message.guild.roles.find('name', _r);
             if (message.member.roles.find(r => r.name === _r)) {
                 message.member.removeRole(rl)
