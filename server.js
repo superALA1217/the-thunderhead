@@ -464,18 +464,17 @@ client.on("message", async message => {
     }
     if (command === "roleme" || command === "role" || command === "roles" || command === "iam") {
         if (message.guild.id !== "625021277295345667") return message.channel.send(msg.roleme_not_supported);
-        var role = args[0]
-        var roleBlurb = (msg.role_blurb) //todo: add paid roles
-        if (!role) return message.channel.send(roleBlurb)
-        var _r = role.toLowerCase().charAt(0).toUpperCase() + role.toLowerCase().slice(1)
+        var role = args[0];
+        if (!role) return message.channel.send(msg.role_blurb);
+        var _r = role.toLowerCase().charAt(0).toUpperCase() + role.toLowerCase().slice(1);
         if (_r === "Artist" || _r === "Writer" || _r === "Scythe" || _r === "Spoiled" || _r === "Tonist"|| _r === "Minecraft") {
             var rl = message.guild.roles.find('name', _r);
             if (message.member.roles.find(r => r.name === _r)) {
-                message.member.removeRole(rl)
+                message.member.removeRole(rl);
                 message.channel.send(`The ${_r} role was unassigned.`);
             } else {
                 message.member.addRole(rl);
-                message.channel.send(`The ${_r} role was assigned.`)
+                message.channel.send(`The ${_r} role was assigned.`);
             }
         }
         if (_r === "Unsavory") {
@@ -600,7 +599,7 @@ client.on("message", async message => {
             } else if (toEdit === "hair" || toEdit === "hairs" || toEdit === "head") {
                 if (!typeOf) return message.channel.send(msg.profile_nvalidhair);
                 typeOf = typeOf.toLowerCase();
-                if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yelllow") {
+                if (typeOf === "black" || typeOf === "brown" || typeOf === "green" || typeOf === "red" || typeOf === "white" || typeOf === "yellow") {
                     let faceArgs = (profile[target]["face"]).split("_");
                     faceArgs[1] = typeOf;
                     profile[target]["face"] = faceArgs.join("_");
