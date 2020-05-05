@@ -516,7 +516,7 @@ client.on("message", async message => {
         if (!profile) profile = {};
         let target = message.author.id;
         if (args[0]) if (client.users.get(args[0].replace(/[@!<>]/g, ""))) target = args[0].replace(/[@!<>]/g, "");
-        // omega
+
         if (!profile[target]) {
             profile[target] = {};
             message.channel.send(msg.profile_setup);
@@ -530,13 +530,14 @@ client.on("message", async message => {
 
      
 
-        //`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${item}.png`
 
         if (!args[0] || target != message.author.id) {
             const canvas = Canvas.createCanvas(512, 512);
             const ctx = canvas.getContext('2d');
             const background = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["backdrop"]}.png?v=latest`);
+            const darkener = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2Fdarkener.png`);
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(darkener, 0, 0, canvas.width, canvas.height);
 
             if (target != "629799045954797609" && target != "704354866671124545") {
                 const skin = await Canvas.loadImage(`https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${profile[target]["skin"]}.png?v=latest`);
