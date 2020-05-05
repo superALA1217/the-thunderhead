@@ -1262,9 +1262,10 @@ client.on("message", async message => {
     if (command === "lang"||command==="language"||command==="l") {
         if (!args[0]) return message.channel.send(msg.lang_is + prefs[message.author.id]);
         args[0] = args[0].toLowerCase();
-        if (!global_msgs.args[0]) return (args[0] + msg.lang_nvalid + ((Object.keys(global_msgs)).join(", ")));
+
         prefs[message.author.id] = args[0];
-        message.channel.send(msg.lang_set +  args[0])
+        if (!global_msgs[prefs[message.author.id]]) return message.channel.send(args[0] + msg.lang_nvalid + ((Object.keys(global_msgs)).join(", ")));
+        message.channel.send(msg.lang_set + args[0])
 
     }
     if (command === "purge") {
