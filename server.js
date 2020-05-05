@@ -200,7 +200,7 @@ client.on("message", async message => {
 
     if (message.mentions.users.has("629799045954797609")) {
         var mentionedEmbed = new Discord.RichEmbed().setColor(colors.thunder)
-            .setTitle(msgs.greetings)
+            .setTitle(msg.greetings)
             .setDescription((msg.greetings_desc).replace("[AUTHOR]", message.author.username).replace("[SITE]", msg.site_site).replace("[PREFIX]", prefix))
             .setFooter("", message.mentions.users.first().displayAvatarURL);
         message.channel.send(mentionedEmbed)
