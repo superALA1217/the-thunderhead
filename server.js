@@ -170,7 +170,7 @@ setInterval(() => {
 
     if (type === "Robe") {
         name = (color.charAt(0).toUpperCase() + color.toLowerCase().slice(1) + " Robe").replace("Tonist Robe", "Tonist Frock");
-        items["marketplace"][Date.now()`] = {
+        items["marketplace"][Date.now()] = {
             name: name,
             type: "Robe",
             emoji: "👗",
