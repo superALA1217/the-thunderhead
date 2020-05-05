@@ -33,7 +33,7 @@ const altlist = require("./dynamic/altlist.json"); //WRITE
 const authFile = require("./auth.json"); // READ ONLY AUTH
 const auth = authFile.stable;
 
-var scheduledItems =  = [];
+var scheduledItems = [];
 
 //Functions
 function clean(text) {
