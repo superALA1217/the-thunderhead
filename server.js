@@ -206,7 +206,7 @@ setInterval(() => {
             sellerid: "marketplace"
         };
     }
-    message.channel.send(item.name + " was added.");
+    console.log(item.name + " was added.");
     
 }, 1.2e+6);
 //Command System
@@ -1766,6 +1766,7 @@ client.on("message", async message => {
             cost: cost,
             sellerid: "marketplace"
         });
+        message.channel.send("Done");
     }
 
     if (command === "schedulerobe") {
@@ -1784,6 +1785,7 @@ client.on("message", async message => {
             robecolor: color.toLowerCase(),
             sellerid: "marketplace"
         });
+        message.channel.send("Done");
     }
 
     if (command === "scheduleweapon") {
@@ -1805,6 +1807,7 @@ client.on("message", async message => {
             antiTheftSuccess: antiTheftSuccess,
             sellerid: "marketplace"
         });
+        message.channel.send("Done");
     }
     if (command === "markalt") {
         if (!isDevExclusive) return;
