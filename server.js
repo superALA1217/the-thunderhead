@@ -82,7 +82,7 @@ const colors = {
     "music": "482f95", //purple 
     "thunder": "8f78ff" //magenta
 }
-const activities_list = [`to you look at my backbrain`, `the demands of humanity`, `humanity with an unblinking eye`, `the Scythedom, unable to comment`, `you saying ${prefix}help`, `the-thunderhead.glitch.me`, "to millions of convesations at once"];
+const activities_list = [`to you look at my backbrain`, `the demands of humanity`, `humanity with an unblinking eye`, `the Scythedom, unable to comment`, `you saying ${prefix}help`, `the-thunderhead.glitch.me`, `millions of convesations at once`];
 const activities_type = ["WATCHING", "LISTENING", "WATCHING", "WATCHING", "LISTENING", "STREAMING", "LISTENING"];
 //Reminds & Activities
 client.on("ready", () => {
