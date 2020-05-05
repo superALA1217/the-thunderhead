@@ -1111,7 +1111,7 @@ client.on("message", async message => {
                     }
                 });
             }
-            message.channel.send("Stock: "(count + 1) + " items.")
+            message.channel.send("Stock: " + (count + 1) + " items.")
             var b = "◀";
             var f = "▶";
             var page = args[0] - 1;
@@ -1262,7 +1262,7 @@ client.on("message", async message => {
     if (command === "lang"||command==="language"||command==="l") {
         if (!args[0]) return message.channel.send(msg.lang_is + prefs[message.author.id]);
         args[0] = args[0].toLowerCase();
-        if (!global_msgs[args[0]]) return (args[0] + msg.lang_nvalid + ((Object.keys(global_msgs)).join(", ")));
+        if (!global_msgs.args[0]) return (args[0] + msg.lang_nvalid + ((Object.keys(global_msgs)).join(", ")));
         prefs[message.author.id] = args[0];
         message.channel.send(msg.lang_set +  args[0])
 
