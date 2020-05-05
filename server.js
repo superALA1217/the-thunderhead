@@ -32,6 +32,9 @@ const profile = require("./dynamic/profiles.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 const authFile = require("./auth.json"); // READ ONLY AUTH
 const auth = authFile.stable;
+
+var scheduledItems = require('./scheduleditems.js');
+
 //Functions
 function clean(text) {
     if (typeof text === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
