@@ -87,9 +87,27 @@
         "addweapon": {
             "name": "addweapon",
             "state": "delta",
-            "use": "addweapon [@User] [Name] [%Success] [%Defense] [id] [cost] [description]",
+            "use": "addweapon [Name] [%Success] [%Defense] [id] [cost] [description]",
             "desc": "add weapon to database"
         },
+        "scheduleitem": {
+            "name": "scheduleitem",
+            "state": "delta",
+            "use": "scheduleitem [Name] [Type] [:emoji] [cost] {imageURL} [description]",
+            "desc": "add item to *automatic* database"
+          },
+          "schedulerobe": {
+            "name": "schedulerobe",
+            "state": "delta",
+            "use": "schedulerobe [Color] [cost] [description]",
+            "desc": "add robe to *automatic* database"
+          },
+          "scheduleweapon": {
+            "name": "scheduleweapon",
+            "state": "delta",
+            "use": "scheduleweapon [Name] [%Success] [%Defense] [cost] [description]",
+            "desc": "add weapon to *automatic* database"
+          },
         "markalt": {
             "name": "markalt",
             "state": "delta",

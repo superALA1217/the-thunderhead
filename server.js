@@ -32,6 +32,9 @@ const profile = require("./dynamic/profiles.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 const authFile = require("./auth.json"); // READ ONLY AUTH
 const auth = authFile.stable;
+
+var scheduledItems = require('./scheduleditems.js');
+
 //Functions
 function clean(text) {
     if (typeof text === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
@@ -1693,6 +1696,64 @@ client.on("message", async message => {
             sellerid: "marketplace"
         };
         message.channel.send(items[owner][id].name + " was added.")
+    }
+    if (command === "scheduleitem") {
+        if (!isDevExclusive) return;
+        let name = args[1];
+        let type = args[2];
+        let emoji = args[3].replace(":", "");
+        let cost = args[4];
+        let imageURL = args[5];
+        let description = args.slice(6).join(" ");
+        if (!type || !name || !emoji || !cost || !imageURL || !description) return message.channel.send("Missing Field");
+        scheduledItems.push({
+            name: name,
+            type: type,
+            emoji: emoji,
+            description: description,
+            image: imageURL,
+            cost: cost,
+            sellerid: "marketplace"
+        });
+    }
+
+    if (command === "schedulerobe") {
+        if (!isDevExclusive) return;
+        let color = args[0];
+        let cost = args[1]
+        let description = args.slice(2).join(" ");
+        if (!cost || !color || !description) return message.channel.send("Missing Field");
+        scheduledItems.push({
+            name: (color.charAt(0).toUpperCase() + color.toLowerCase().slice(1) + " Robe").replace("Tonist Robe", "Tonist Frock"),
+            type: "Robe",
+            emoji: "👗",
+            description: description,
+            image: `https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${color.toLowerCase()}.png`,
+            cost: cost,
+            robecolor: color.toLowerCase(),
+            sellerid: "marketplace"
+        });
+    }
+
+    if (command === "scheduleweapon") {
+        if (!isDevExclusive) return;
+        let name = args[0]
+        let theftSuccess = args[1];
+        let antiTheftSuccess = args[2]
+        let cost = args[3]
+        let description = args.slice(4).join(" ");
+        if (!name || !cost || !theftSuccess || !antiTheftSuccess || !description) return message.channel.send("Missing Field");
+        scheduledItems.push({
+            name: (name.charAt(0).toUpperCase() + name.toLowerCase().slice(1)).replace("Thunder", "Thunder Banking Solutions"),
+            type: "Weapon",
+            emoji: "⚔️",
+            description: description + `\nStealth: ${theftSuccess}%\nDefence: ${antiTheftSuccess}%`,
+            image: `https://cdn.glitch.com/8d7ee13d-7445-4225-9d61-e264d678640b%2F${name.toLowerCase()}.png`,
+            cost: cost,
+            theftSuccess: theftSuccess,
+            antiTheftSuccess: antiTheftSuccess,
+            sellerid: "marketplace"
+        });
     }
     if (command === "markalt") {
         if (!isDevExclusive) return;
