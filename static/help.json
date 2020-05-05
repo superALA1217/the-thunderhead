@@ -195,7 +195,7 @@
             "name": "profile",
             "state": "beta",
             "use": "profile {[@User]/Category} {Value}",
-            "desc": "Categories: Robe, Hair, Background, Skin, Face, and Gems"
+            "desc": "Make a scythely avatar! Categories: Robe, Hair, Background, Skin, Face, and Gems"
         }
     },
     "eco": {
@@ -222,12 +222,6 @@
             "state": "gamma",
             "use": "roll [Amount]",
             "desc": "Gamble an amount of money"
-        },
-        "slots": {
-            "name": "slots",
-            "state": "gamma",
-            "use": "slots [Amount]",
-            "desc": "Gamble an amount of money and see how close you were to winning... at the end"
         },
         "bal": {
             "name": "pay",

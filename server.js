@@ -22,12 +22,13 @@ var bodyParser = require("body-parser");
 const DBL = require("dblapi.js");
 //JSON
 const helpList = require("./static/help.json"); //READ ONLY
-const msg = require("./static/msgs.json"); //READ ONLY
+const global_msgs = require("./static/msgs.json"); //READ ONLY
 const reminds = require("./dynamic/reminds.json"); //WRITE 
 const events = require("./dynamic/events.json"); //WRITE 
 const items = require("./dynamic/items.json"); //WRITE
 const vault = require("./dynamic/vault.json"); //WRITE
 const shares = require("./dynamic/shares.json"); //WRITE
+const prefs = require("./dynamic/prefs.json"); //WRITE
 const profile = require("./dynamic/profiles.json"); //WRITE
 const altlist = require("./dynamic/altlist.json"); //WRITE
 const authFile = require("./auth.json"); // READ ONLY AUTH
@@ -100,7 +101,9 @@ client.on("ready", () => {
             a && console.log(a)
         }), fs.writeFile("./dynamic/profiles.json", JSON.stringify(profile, null, 4), function (a) {
             a && console.log(a)
-        }), 
+        }), fs.writeFile("./dynamic/prefs.json", JSON.stringify(prefs, null, 4), function (a) {
+            a && console.log(a)
+        }),  
             fs.writeFile("./dynamic/shares.json", JSON.stringify(shares, null, 4), function (a) {
             a && console.log(a)
         });
@@ -161,6 +164,7 @@ client.on("ready", () => {
 
 //Command System
 client.on("message", async message => {
+
     if (message.author.bot && !botception) return; //if botception is on
     if (!message.guild) return;
     if (message.guild.id === "625021277295345667") {
@@ -186,8 +190,19 @@ client.on("message", async message => {
     // Before Prefix Check
     0 <= message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").indexOf("scythe goddard") && message.channel.send(`Backbrain Log ${Math.floor(1e4 * Math.random() + 1)}: Scythe Goddard has been spotted ${Date.now().toString().slice(4, 8)} times ${msg.goddardMoments[Math.floor(Math.random() * msg.goddardMoments.length)]}.`);
     0 <= message.content.toLowerCase().indexOf("1 sec") && message.channel.send("It has been one second.");
+
+
+    if (!prefs[message.author.id]) prefs[message.author.id] = "en"
+    if (!global_msgs[prefs[message.author.id]]) prefs[message.author.id] = "en"
+    let lang = prefs[message.author.id]
+    const msg = global_msgs[lang]
+
+
     if (message.mentions.users.has("629799045954797609")) {
-        var mentionedEmbed = new Discord.RichEmbed().setColor(colors.thunder).setTitle("Greetings! I am The Thunderhead").setDescription(`Thank you for the ping ${message.author.username}, my [help](${msg.site_site}) command is \`${prefix}help\`.`).setFooter("", message.mentions.users.first().displayAvatarURL);
+        var mentionedEmbed = new Discord.RichEmbed().setColor(colors.thunder)
+            .setTitle(msgs.greetings)
+            .setDescription((msg.greetings_desc).replace("[AUTHOR]", message.author.username).replace("[SITE]", msg.site_site).replace("[PREFIX]", prefix))
+            .setFooter("", message.mentions.users.first().displayAvatarURL);
         message.channel.send(mentionedEmbed)
     }
     if (message.content.indexOf(prefix) !== 0) return;
@@ -215,9 +230,9 @@ client.on("message", async message => {
                     for (item in helpList[itemType]) helpList[itemType][item].name === args[0] && (commandData = helpList[itemType][item]);
                 commandTypeIndex++
             }
-            helpText = "__**Command:** *" + commandData.name + "*__\nInfo: " + commandData.desc + "\nUse: `" + prefix + commandData.use + "`", "beta" === commandData.state && (helpText +=
-                "\nThis command is in *beta*. It may be glitchy or sometimes not work."), "delta" === commandData.state && (helpText += "\nThis command is in **delta**. It is developer only."), helpText &&
-                commandData.name || (helpText = "Error: No Command at `pages[" + page + "]`")
+            helpText = "__**Command:** *" + commandData.name + "*__\nInfo: " + commandData.desc + "\nUse: `" + prefix + commandData.use + "`", "beta" === commandData.state && (helpText += msg.help_beta),
+                "delta" === commandData.state && (helpText += msg.help_delta), helpText &&
+                commandData.name || (helpText = msg.help_nocommand)
         }
         message.channel.send(helpText);
     }
@@ -325,7 +340,7 @@ client.on("message", async message => {
             "Custom Status"]
         let activity = "Activity";
         if (game) activity = activities[game.type];
-        if (game) game = ((game).toString()).replace("Custom Status", ((emoji || "") + (game.state))).replace("Spotify", song || "Spotify").replace("null", "Not playing anything right now.");
+        if (game) game = ((game).toString()).replace("Custom Status", ((emoji || "") + (game.state))).replace("Spotify", song || "Spotify").replace("null", msg.userinfo_notplaying);
         if (!game) game = "Nothing";
         if (!nicknameServer) nicknameServer = user.username;
         message.channel.send({
@@ -425,9 +440,9 @@ client.on("message", async message => {
             var utcDate = Date.now();
             if (!result[0]) return message.channel.send((msg.time_notfastenough).replace("[JOINARGS]", args.join(" ")))
             var date = new Date(utcDate + (result[0].location.timezone * 60 * 60 * 1000));
-            var days = ["Magolor Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Yes. The people in scythe have a Magolor Day. 
-            var years = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"] // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
-            message.channel.send(`The time in ${result[0].location.name} is ${days[date.getDay()]} @ ${date.getHours()}:${date.getMinutes()}. It is the year of the ${years[date.getFullYear() - 2020]} (${date.getFullYear()} in mortal years).`)
+            var days = msg.time_days;
+            var years = msg.time_years // Confirmed Scythe Cannon that They Used Chinese Calden and just added an animal each year
+            message.channel.send(`__${result[0].location.name}__:\n ${days[date.getDay()]} @ ${date.getHours()}:${date.getMinutes()}\n${years[date.getFullYear() - 2020]} || (${date.getFullYear()})`)
         });
     }
     if ((command === "event") || (command === "newevent") || (command === "createevent") || (command == "e")) {
@@ -653,11 +668,8 @@ client.on("message", async message => {
     if (command === "bal" || command === "balance" || command === "vibecheck") {
         var userToCheck = message.mentions.members.first();
         userToCheck = userToCheck ? userToCheck.user : message.author;
-        var output = await eco.FetchBalance(userToCheck.id)
-        var balText = `${userToCheck.username} has **${output.balance}** ${currency} in their account.`
-        if (userToCheck.id === message.author.id) {
-            balText = `You have **${output.balance}** ${currency} in your account.`
-        }
+        var output = await eco.FetchBalance(userToCheck.id);
+        balText = `Balance: **${output.balance}** ${currency}`;
         var balembed = new Discord.RichEmbed().addField(userToCheck.username, balText).setColor(colors.gamble_green);
         message.channel.send(balembed);
     }
@@ -670,22 +682,22 @@ client.on("message", async message => {
         if (stake < 1 || stake > balance) return message.channel.send(msg.roll_namt);
         var staticStake = stake;
         var profitFactor = Math.floor((Math.random() * 6) + 1) - 4;
-        var profitWord = "broke even and gained";
+        var profitWord = "Nothing Happened";
         var gambleEndColor = colors.gamble_even;
         if (0 < profitFactor) {
             // positive value
-            profitWord = "gained";
+            profitWord = "Won";
             stake = stake * profitFactor;
             gambleEndColor = colors.gamble_green;
         } else if (profitFactor < 0) {
             // negative value
-            profitWord = "lost";
+            profitWord = "Lost";
             stake = stake * -1;
             gambleEndColor = colors.gamble_red;
         } else {
             stake = 0;
         }
-        var rollEmbed = new Discord.RichEmbed().setTitle(message.author.username).addField(`You ${profitWord} ${Math.abs(stake)} ${currency}`, `New Balance: **${parseInt(balance) + parseInt(stake)}**`).setFooter(`${message.author.username} 's account.`, message.author.displayAvatarURL).setColor(gambleEndColor);
+        var rollEmbed = new Discord.RichEmbed().setTitle(message.author.username).addField(`${profitWord} ${Math.abs(stake)} ${currency}`, `Balance: **${parseInt(balance) + parseInt(stake)}**`).setFooter(`${message.author.username} 's account.`, message.author.displayAvatarURL).setColor(gambleEndColor);
         message.channel.send(rollEmbed)
         const channel = client.channels.get(msg.ecologid);
         if (message.guild.id != "625021277295345667") channel.send(rollEmbed)
@@ -749,7 +761,7 @@ client.on("message", async message => {
         var _output = await eco.FetchBalance(user.id)
         if (_output.balance < amount) return message.reply(user.username + msg.coinflipnfund)
         if (message.author.id === user.id) return message.channel.send(msg.coinflip_noself)
-        message.channel.send("<@!" + user.id + ">, accept the coinflip with " + prefix + "acceptcf ")
+        message.channel.send((msg.coinflip_doacc).replace("[@USER]", `<@!${user.id}>`).replace("[PREFIX]", prefix));
         try {
             var response = await message.channel.awaitMessages(message2 => message2.author.id === user.id && (message2.content === prefix + "acceptcf" || message2.content === prefix + "cfaccept" || message2
                 .content === prefix + "accept" || message2.content === prefix + "cf" || message2.content === prefix + "cfyes"), {
@@ -769,21 +781,19 @@ client.on("message", async message => {
             var item = randoms[Math.floor(Math.random() * randoms.length)]
             if (side === item) {
                 item.charAt(0).toUpperCase()
-                message.channel.send("The coin landed on " + item + ". <@!" + message.author.id + "> won " + amount + " " + currency)
+                message.channel.send((coinflip_whowon).replace("[ITEM]", item).replace("[@USER]" `<@!${message.author.id}>`).replace("[AMOUNT]", amount).replace("[CURRENCY]", currency))
                 var transfer = await eco.Transfer(user.id, message.author.id, amount)
                 var balText = `${message.author.username} won **${amount}** ${currency} from  ${user.username}.`
                 var balembed = new Discord.RichEmbed().addField(message.author.username, balText).setColor(colors.gamble_green);
-                message.channel.send(balembed);
                 const channel = client.channels.get(msg.ecologid);
                 if (message.guild.id != "625021277295345667") channel.send(balembed)
                 if (message.guild.id != "625021277295345667") channel.send(`(${user.id}) => (${message.author.id})`)
             } else {
                 item.charAt(0).toUpperCase()
-                message.channel.send("The coin landed on " + item + ". <@!" + user.id + "> won " + amount + " " + currency)
+                message.channel.send((coinflip_whowon).replace("[ITEM]", item).replace("[@USER]" `<@!${user.id}>`).replace("[AMOUNT]", amount).replace("[CURRENCY]", currency))
                 var transfer = await eco.Transfer(message.author.id, user.id, amount)
                 var balText = `${user.username} won **${amount}** ${currency} from ${message.author.username}.`
                 var balembed = new Discord.RichEmbed().addField(user.username, balText).setColor(colors.gamble_green);
-                message.channel.send(balembed);
                 const channel = client.channels.get(msg.ecologid);
                 if (message.guild.id != "625021277295345667") channel.send(balembed)
                 if (message.guild.id != "625021277295345667") channel.send(`(${message.author.id}) => (${user.id})`)
@@ -829,7 +839,7 @@ client.on("message", async message => {
                 let stealthCheck = Math.floor((Math.random() * 10) + 1);
                 if (!(stealthCheck > (isAlt + (100 - (msg.rob_win_chance + stealthIncrease)) / 10))) return message.channel.send(msg.rob_stealthfail);
                 var transfer = await eco.Transfer(user.id, message.author.id, 3 * stealthCheck - 2)
-                var balText = `${message.author.username} stole **${3 * stealthCheck - 2}** ${currency} from  ${user.username}.`
+                var balText = (msg.rob_stole).replace("[AUTHOR]", message.author.username).replace("[AMOUNT]", (3*stealthCheck-2)).replace("[CURRENCY]", currency).replace("[USER]", user.username)
                 var balembed = new Discord.RichEmbed().addField(message.author.username, balText).setColor(colors.gamble_green);
                 message.channel.send(balembed);
                 const channel = client.channels.get(msg.ecologid);
@@ -840,7 +850,7 @@ client.on("message", async message => {
             //punishment
             if (robState) return;
             var transfer = await eco.Transfer(message.author.id, user.id, msg.rob_penalty)
-            var balText = `${user.username} was awarded **${msg.rob_penalty}** ${currency} because ${message.author.username} tried to rob them.`
+            var balText = (msg.rob_punish).replace("[AUTHOR]", message.author.username).replace("[PENALTY]", msg.rob_penalty).replace("[CURRENCY]", currency).replace("[USER]", user.username)
             var balembed = new Discord.RichEmbed().addField(user.username, balText).setColor(colors.gamble_green);
             message.channel.send(balembed);
             const channel = client.channels.get(msg.ecologid);
@@ -886,7 +896,7 @@ client.on("message", async message => {
                 filter: x => x.balance > 50,
                 search: message.mentions.users.first().id
             })
-            message.channel.send(`${message.mentions.users.first().username} is the #${output} richest.`);
+            message.channel.send(`${(output).replace("Not found", "?")} - ${message.mentions.users.first().username}`);
         } else {
             eco.Leaderboard({}).then(async users => { //async
                 if (users[0]) var firstplace = await client.fetchUser(users[0].userid) //Searches for the user object in discord for first place
@@ -925,24 +935,10 @@ client.on("message", async message => {
             })
             //50% chance to fail and earn nothing. You earn between 1-9
             if (output.earned == 0) return message.reply((msg.work_fail).replace("[PREFIX]", prefix))
-            message.channel.send(`You worked as a ${output.job} and earned ${output.earned} ${currency}. You now own ${output.balance} ${currency}.`)
+            message.channel.send((msg.work_success).replace("[JOB]", output.job).replace("[EARNED]", output.earned).replace("[BALANCE]", output.balance).replace("[CURRENCY]", currency).replace("[CURRENCY]", currency))
             const channel = client.channels.get(msg.ecologid);
             if (message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) worked and earned ${output.earned} ${currency}. They now own ${output.balance} ${currency}.`)
         }
-    }
-    if (command === 'slots') {
-        var amount = args[0] //Coins to gamble
-        if (!amount) return message.reply(msg.slots_amt)
-        var output = await eco.FetchBalance(message.author.id)
-        if (output.balance < amount) return message.reply(msg.slots_amt)
-        var gamble = await eco.Slots(message.author.id, amount, {
-            width: 3,
-            height: 4
-        }).catch(console.error)
-        message.channel.send(gamble.grid) //Grid checks for a 100% match vertical or horizontal.
-        message.channel.send(`You ${gamble.output}. New balance: ${gamble.newbalance} ${currency}`)
-        const channel = client.channels.get(msg.ecologid);
-        if (message.guild.id != "625021277295345667") channel.send(`${message.author.username} (${message.author.id}) ${gamble.output}. New balance: ${gamble.newbalance} ${currency}`)
     }
     if (command === "sell") {
         var toSell = args[0];
@@ -1115,7 +1111,7 @@ client.on("message", async message => {
                     }
                 });
             }
-            message.channel.send("The market has " + (count + 1) + " items.")
+            message.channel.send("Stock: "(count + 1) + " items.")
             var b = "◀";
             var f = "▶";
             var page = args[0] - 1;
@@ -1179,10 +1175,10 @@ client.on("message", async message => {
                 alpha.data.intraday(msg.stocks[args[0]][1]).then(data => { // [1] because thats the name of the irl company its mirroring :0
                     let stockPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[0]]["4. close"]));
                     let oldPrice = (parseInt(data["Time Series (1min)"][Object.keys(data["Time Series (1min)"])[1]]["4. close"]));
-                    let stockTrend = "📊 `No Trend over the past day`";
+                    let stockTrend = "📊";
                     if (stockPrice > oldPrice) stockTrend = "📈";
                     if (oldPrice > stockPrice) stockTrend = "📉";
-                    message.channel.send(`${msg.stocks[args[0]][0]} (${args[0]}) valued at: ${stockPrice} ${currency}\nTrend: ${stockTrend}`);
+                    message.channel.send(`${msg.stocks[args[0]][0]} (${args[0]}) @ ${stockPrice} ${currency}\nTrend: ${stockTrend}`);
                 });
             }
         } catch (err) {
@@ -1262,6 +1258,14 @@ client.on("message", async message => {
     }
     if (command === "invite") {
         message.channel.send(`Invite Here: https://discordapp.com/oauth2/authorize?client_id=${auth.client_id}&scope=bot&permissions=8`)
+    }
+    if (command === "lang"||command==="language"||command==="l") {
+        if (!args[0]) return message.channel.send(msg.lang_is + prefs[message.author.id]);
+        args[0] = args[0].toLowerCase();
+        if (!global_msgs[args[0]]) return (args[0] + msg.lang_nvalid + ((Object.keys(global_msgs)).join(", ")));
+        prefs[message.author.id] = args[0];
+        message.channel.send(msg.lang_set +  args[0])
+
     }
     if (command === "purge") {
         if (!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(msg.permdeny_managemessages)
@@ -1538,8 +1542,8 @@ client.on("message", async message => {
         var commandData = {};
         commandData = helpList["dev"][args[0]];
         helpText = "__**Command:** *" + commandData["name"] + "*__\nInfo: " + commandData["desc"] + "\nUse: `" + devPrefix + commandData["use"] + "`"
-        if (commandData["state"] === "beta") helpText = helpText + "\nThis command is in *beta*. It may be glitchy or sometimes not work."
-        if (commandData["state"] === "delta") helpText = helpText + "\nThis command is in **delta**. It is developer only!"
+        if (commandData["state"] === "beta") helpText = helpText + msg.help_beta;
+        if (commandData["state"] === "delta") helpText = helpText + msg.help_delta;
         if (!helpText || !(commandData["name"])) helpText = "Error: No Command at `pages[" + (args[0]) + "]`";
         message.channel.send(helpText);
     }
