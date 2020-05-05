@@ -170,7 +170,7 @@ setInterval(() => {
 
     if (type === "Robe") {
         name = (color.charAt(0).toUpperCase() + color.toLowerCase().slice(1) + " Robe").replace("Tonist Robe", "Tonist Frock");
-        items["marketplace"][`${item[name]}-${Date.now()}`] = {
+        items["marketplace"][Date.now()`] = {
             name: name,
             type: "Robe",
             emoji: "👗",
@@ -183,7 +183,7 @@ setInterval(() => {
     }
     else if (type === "Weapon") {
         name = (name.charAt(0).toUpperCase() + name.toLowerCase().slice(1)).replace("Thunder", "Thunder Banking Solutions");
-        items["marketplace"][`${item[name]}-${Date.now()}`] = {
+        items["marketplace"][Date.now()] = {
             name: name,
             type: "Weapon",
             emoji: "⚔️",
@@ -196,7 +196,7 @@ setInterval(() => {
         };
     }
     else {
-        items["marketplace"][`${item[name]}-${Date.now()}`] = {
+        items["marketplace"][Date.now()] = {
             name: name,
             type: type,
             emoji: emoji,
