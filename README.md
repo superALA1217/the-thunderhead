@@ -2,8 +2,9 @@
 [![Discord Bots](https://top.gg/api/widget/lib/629799045954797609.svg)](https://top.gg/bot/629799045954797609) 
 [![Discord Bots](https://top.gg/api/widget/status/629799045954797609.svg)](https://top.gg/bot/629799045954797609)
 
-## Current Ver. 📋⛅ 2.1.0 | Profiles
+## Current Ver. 📋⛅ 2.1.1 | Profiles
 
+ - Scheduled Items
  - Bug Fixes
  - Adding Profiles
 The thunderhead cannot intervene in affairs of the Scythedom. All it can do is watch; with an unblinking eye.
